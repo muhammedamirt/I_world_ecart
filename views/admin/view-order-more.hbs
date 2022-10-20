@@ -1,0 +1,77 @@
+<section>
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="">{{userOrder.userName}}</h2>
+                        <ul style="font: size 40px ; font-weight: bold;">
+                            <li>Mobile: {{userOrder.userMobile}}</li>
+                            <li>Date: {{userOrder.date}}</li>
+                            <li>Full Address: {{userOrder.address}}</li>
+                            <li>Status: {{userOrder.paymentStatus}}</li>
+                        </ul>
+                        <h3 style="text-align:center ; color:blue ;">Ordered Products</h3>
+                        <div class="table-responsive pt-3">
+                            <table class="table table-bordered" style="text-align:c ;">
+
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            No.
+                                        </th>
+                                        <th>
+                                            Image
+                                        </th>
+                                        <th>
+                                            ProductName
+                                        </th>
+                                        <th>
+                                            Unit Price
+                                        </th>
+                                        <th>
+                                            Product<br>Quantity
+                                        </th>
+                                        <th>
+                                            Total Amount
+                                        </th>
+                                        <th>
+                                            Cancel
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each products}}
+                                    <tr class="table-info">
+                                        <td>
+                                            {{@index}}
+                                        </td>
+                                        <td>
+                                            <img src="/product-images/{{this.productImages.[0]}}" alt="image">
+                                        </td>
+                                        <td>
+                                            {{this.productName}}
+                                        </td>
+                                        <td>
+                                            {{this.productPrice}}
+                                        </td>
+                                        <td>
+                                            {{this.ProductQuantity}}
+                                        </td>
+                                        <td>
+                                            {{this.TotalPrice}}
+                                        </td>
+                                        <td>
+                                            Cancel
+                                        </td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

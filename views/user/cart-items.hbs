@@ -1,0 +1,158 @@
+<!-- preloader -->
+<div id="preloader">
+   <div class="preloader">
+      <span></span>
+      <span></span>
+   </div>
+</div>
+<!-- preloader end  -->
+
+
+<main>
+
+   <!-- breadcrumb-area -->
+   <section class="breadcrumb__area pt-60 pb-60 tp-breadcrumb__bg" data-background="/img/banner/breadcrumb-01.jpg">
+      <div class="container">
+         <div class="row align-items-center">
+            <div class="col-xl-7 col-lg-12 col-md-12 col-12">
+               <div class="tp-breadcrumb">
+                  <h2 class="tp-breadcrumb__title">Your Cart</h2>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- breadcrumb-area-end -->
+
+   <!-- cart area -->
+   <section class="cart-area pt-80 pb-80 wow fadeInUp" data-wow-duration=".8s" data-wow-delay=".2s">
+      <div class="container">
+         <div class="row">
+            <div class="col-12">
+               <form action="#">
+                  <div class="table-content table-responsive">
+                     <table class="table">
+                        <thead>
+                           <tr>
+                              <th class="product-thumbnail">Images</th>
+                              <th class="cart-product-name">Product Name</th>
+                              <th class="product-price">Unit Price</th>
+                              <th class="product-quantity">Quantity</th>
+                              <th class="product-subtotal">Total</th>
+                              <th class="product-remove">Remove</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+
+                           {{#each productData}}
+                           <tr>
+                              <td class="product-thumbnail">
+                                 <a href="/product-detials/{{this.productId}}"><img
+                                       src="/product-images/{{this.productImages.[0]}}" alt="">
+                                 </a>
+                              </td>
+                              <td class="product-name">
+                                 <a href="/product-detials/{{this.productId}}">{{this.productName}}</a>
+                              </td>
+                              <td class="product-price">
+                                 <span class="amount" id="{{this.productId}}price">{{this.productPrice}}</span>
+                              </td>
+
+                              <td class="product-quantity">
+                                 <span class="cart-minus" onclick="cartquantitydec('{{this.productId}}')">-</span>
+                                 <input class="cart-input" type="number" value="{{this.ProductQuantity}}"
+                                    name="quantity" id="{{this.productId}}quantityValue" />
+                                 <span class="cart-plus" onclick="cartquantityinc('{{this.productId}}')">+</span>
+                              </td>
+                              <td class="product-subtotal">
+                                 <span class="amount" id="{{this.productId}}totalPrice">{{this.TotalPrice}}</span>
+                              </td>
+                              <td class="product-remove">
+                                 <a href="/remove-cart-product/{{this.productId}}" style="color:red ;"><i
+                                       class="fa fa-times"></i></a>
+                              </td>
+                           </tr>
+                           {{/each}}
+
+                        </tbody>
+                     </table>
+                  </div>
+                  <div class="row">
+                     <div class="col-12">
+                        <div class="coupon-all">
+                           <div class="coupon">
+                              <input id="coupon_code" class="input-text" name="coupon_code" value=""
+                                 placeholder="Coupon code" type="text">
+                              <button class="tp-btn tp-color-btn banner-animation" name="apply_coupon"
+                                 type="submit">Apply
+                                 Coupon</button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row justify-content-end">
+                     <div class="col-md-5 ">
+                        <div class="cart-page-total">
+                           <h2>Cart totals</h2>
+                           <ul class="mb-20">
+
+                              {{!-- <li>Subtotal <span>00000</span></li> --}}
+                              <li>Total<span id="allTotal">{{cartData.totalAmount}}</span><i class="bi bi-currency-rupee"></i></li>
+                           </ul>
+                           <a href="/view-checkout" class="tp-btn tp-color-btn banner-animation">Proceed to Checkout</a>
+                        </div>
+                     </div>
+                  </div>
+               </form>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- cart area end-->
+
+</main>
+
+
+<script>
+   function cartquantityinc(product) {
+      console.log(product)
+      $.ajax({
+         url: '/cartquantityinc/' + product,
+         method: 'get',
+         
+      })
+      let cartPrice = document.getElementById(product+"price").innerHTML
+      //console.log(cartPrice)
+      let quantity = document.getElementById(product+'quantityValue').value
+      let exQuantity = Number(quantity) + 1
+      //console.log(exQuantity)
+      let totalAmount = Number(cartPrice) * Number(exQuantity)
+      //console.log(totalAmount)
+      document.getElementById(product+"totalPrice").innerHTML = totalAmount
+      let allTotal = document.getElementById('allTotal').innerHTML
+      //console.log(allTotal)
+      document.getElementById('allTotal').innerHTML = Number(allTotal) + Number(cartPrice)
+
+   } 
+</script>
+<script>
+   function cartquantitydec(product) {
+      console.log(product)
+      $.ajax({
+         url: '/cartquantitydec/' + product,
+         method: 'get',
+
+      })
+      let cartPrice = document.getElementById(product+"price").innerHTML
+      //console.log(cartPrice)
+      let quantity = document.getElementById(product+'quantityValue').value
+      let exQuantity = Number(quantity) - 1
+      //console.log(exQuantity)
+      let totalAmount = Number(cartPrice) * Number(exQuantity)
+      //console.log(totalAmount)
+      document.getElementById(product+"totalPrice").innerHTML = totalAmount
+      let allTotal = document.getElementById('allTotal').innerHTML
+      //console.log(allTotal)
+      document.getElementById('allTotal').innerHTML = Number(allTotal) - Number(cartPrice)
+   } 
+</script>

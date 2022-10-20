@@ -1,0 +1,51 @@
+<section>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-sm-12" style="margin-top: 5rem;">
+                <div class="tptrack__product mb-40">
+                    <div class="tptrack__thumb">
+                        <img src="/img/banner/login-bg.jpg" alt="">
+                    </div>
+                    <div class="tptrack__content grey-bg-3">
+                        <div class="tptrack__item d-flex mb-20">
+                            <div class="tptrack__item-content">
+                                <h4 class="tptrack__item-title">Login Here<i class="bi bi-box-arrow-in-right"></i></h4>
+
+                            </div>
+                        </div>
+                        <form action="/admin/admin-login" method="post">
+                           <div class="form-outline mb-4">
+                                        <label class="form-label" for="form3Example3"></label>
+                                        <input type="email" id="form3Example3" class="form-control form-control-lg"
+                                            placeholder="Email" name="Email" />
+                                            {{#if emailMessage}}
+                                            <p class="text-danger " style="text-align:center ;">{{emailMessage}}</p>
+                                            {{/if}}
+
+                                    </div>
+                            <div class="form-outline mb-3">
+                                        <label class="form-label" for="form3Example4"></label>
+
+                                        <input type="password" id="form3Example4" class="form-control form-control-lg"
+                                            placeholder="Password" name="Password" />
+                                            {{#if passwordMessage}}
+                                            <p class="text-danger" style="text-align: center;">{{passwordMessage}}</p>
+                                            {{/if}}
+                                    </div>
+                        
+                        <div class="tpsign__remember d-flex align-items-center justify-content-between mb-15">
+                            <div class="tpsign__pass">
+                                <a href="#">Forget Password</a>
+                            </div>
+                        </div>
+                        <div class="tptrack__btn">
+                            <button class="tptrack__submition" type="submit">Login Now</a><i
+                                    class="fal fa-long-arrow-right"></i></button>
+                        </div>
+                         </form>
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </div>
+</section>

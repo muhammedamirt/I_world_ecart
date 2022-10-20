@@ -1,0 +1,76 @@
+
+
+
+
+<section>
+    <div class="container py-5">
+
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+                            alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+                        <h5 class="my-3">{{admin.FirstName}}{{admin.LastName}}</h5>
+
+                        <a href="/admin/edit-profile"><button type="button" class="btn btn-success btn-icon-text"> Edit
+                                Profile</button></a>
+
+                        <div class="d-flex justify-content-center mb-2">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Full Name</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class=" mb-0">{{admin.FirstName}}{{admin.LastName}}</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Status</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class=" mb-0">Admin</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Email</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class=" mb-0">{{admin.Email}}</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Mobile</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class=" mb-0">{{admin.Mobile}}</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <a href="/admin/admin-logout" onclick="askConfirm()" style="font-weight: bold;">Logout your account ?</a><br>
+                        <a href="/admin/chande-password" style="font-weight: bold;">Change your Password ?</a><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    const askConfirm = () =>{
+        confirm("Are you Sure to Logout your account")
+    }
+</script>

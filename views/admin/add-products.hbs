@@ -1,0 +1,58 @@
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Add Product</h4>
+                    <p class="card-description">
+                        Add a new product!
+                    </p>
+
+                    <form class="forms-sample" action="/admin/add-products" method="post" enctype="multipart/form-data">
+
+
+                        <div class="form-group">
+                            <label for="productName">Product Name</label>
+                            <input type="text" class="form-control" id="productName" placeholder="Product Name"
+                                name="ProdName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="productPrice">price</label>
+                            <input type="number" class="form-control" id="productPrice" placeholder="Price" name="Price"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="productCategury">Categury</label>
+                            <select class="form-control" id="productCategury" name="Categury">
+                                 
+                                <option>Mobile</option>
+                                <option>laptop</option>
+                                <option>Air Pods</option>
+                                <option>Watches</option>
+
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>image upload</label>
+                            {{!-- <input type="file"  class="file-upload-default"> --}}
+                            <div class="input-group col-xs-12">
+                                <input type="file" name="img" class="form-control file-upload-info" placeholder="Upload Image"
+                                    multiple>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="productDescription">description</label>
+                            <textarea name="Description" placeholder="decsription" class="form-control"
+                                id="productDescription" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

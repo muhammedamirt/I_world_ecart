@@ -1,0 +1,81 @@
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title" style="text-align:center ;">ALL USERS</h4>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                     <th>
+                                        No.
+                                    </th>
+                                    <th>
+                                        User
+                                    </th>
+                                    <th>
+                                        Full Name
+                                    </th>
+                                    <th>
+                                        User Name
+                                    </th>
+                                    <th>
+                                        Email
+                                    </th>
+                                    <th>
+                                        Mobile
+                                    </th>
+                                    <th>
+                                        Block
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{!-- <h5>{{users}}</h5> --}}
+
+                                {{#each data}}
+
+                                <tr>
+                                    <td>
+                                        {{@index}}
+                                    </td>
+                                    <td class="py-1">
+                                        <img src="/admin/images/faces/face1.jpg" alt="image" />
+                                    </td>
+                                    <td>
+                                        {{this.FirstName}} {{this.LastName}}
+                                    </td>
+                                    <td>
+                                        {{this.UserName}}
+                                    </td>
+                                    <td>
+                                        {{this.Email}}
+                                    </td>
+                                    <td>
+                                        {{this.Mobile}}
+                                    </td>
+                                    <td>
+                                        {{#if this.Access}}
+                                        <a href="/admin/block-user-account/{{this._id}}" style="color:red ;"><i
+                                                class="bi bi-x-octagon-fill"></i>Block</a>
+                                        {{else}}
+                                        <a href="/admin/unblock-user-account/{{this._id}}">
+                                            <p class="text-success"><i class="bi bi-arrow-repeat"></i>unbock</p>
+                                        </a>
+                                        {{/if}}
+
+                                    </td>
+                                </tr>
+
+                                {{/each}}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

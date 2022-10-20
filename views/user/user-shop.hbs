@@ -1,0 +1,146 @@
+<!-- preloader -->
+<div id="preloader">
+   <div class="preloader">
+      <span></span>
+      <span></span>
+   </div>
+</div>
+<!-- preloader end  -->
+
+<!-- Scroll-top -->
+<button class="scroll-top scroll-to-target" data-target="html">
+   <i class="fas fa-angle-up"></i>
+</button>
+<!-- Scroll-top-end-->
+
+<!-- main-area-start -->
+<main>
+
+
+
+   <!-- breadcrumb-area -->
+   <section class="breadcrumb__area pt-60 pb-60 tp-breadcrumb__bg" data-background="/img/banner/breadcrumb-01.jpg">
+      <div class="container">
+         <div class="row align-items-center">
+            <div class="col-xl-7 col-lg-12 col-md-12 col-12">
+               <div class="tp-breadcrumb">
+                  <h2 class="tp-breadcrumb__title">Shope Now</h2>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- breadcrumb-area-end -->
+
+   <!-- product-filter-area-start -->
+   <div class="product-filter-area pt-65 pb-80">
+      <div class="container">
+         <form action="/filter-product" method="post" style="text-align:center ;">
+         {{#each category}}
+            <label for="">{{this.categuryName}}</label>
+            <input type="radio"  value="{{this.categuryName}}" name="filter">
+            {{/each}}
+            <br>
+            <button class="btn btn-primary" type="submit">filter</button>
+            <hr style="color:pink ;">
+         </form>
+         <div class="row mb-50">
+            <div class="col-lg-12 col-md-4 ">
+
+               <div class="tab-pane fade show active" id="nav-popular" role="tabpanel"
+                  aria-labelledby="nav-popular-tab">
+                  <div
+                     class="row row-cols-xxl-5 row-cols-xl-4 row-cols-lg-3 row-cols-md-3 row-cols-sm-2 row-cols-1 tpproduct">
+                     {{#each products}}
+                     <div class="col">
+                        <div class="tpproduct tpproductitem mb-15 p-relative">
+                           <div class="tpproduct__thumb">
+                              <div class="tpproduct__thumbitem p-relative">
+                                 <a href="/product-detials/{{this._id}}">
+                                    <img src="/product-images/{{this.images.[0]}}" alt="image">
+                                    <img class="thumbitem-secondary" src="/product-images/{{this.images.[1]}}"
+                                       alt="image">
+                                       
+
+                                 </a>
+                                 <div class="tpproduct__thumb-bg">
+                                    <div class="tpproductactionbg">
+                                       <a  onclick="addToCart('{{this._id}}')"><i class="fal fa-shopping-basket"></i></a>
+                                       {{!-- <a href=""><i class="fal fa-exchange"></i></a> --}}
+                                       <a href="/product-detials/{{this._id}}"><i class="fal fa-eye"></i></a>
+                                       <a href="/add-to-wishlist/{{this._id}}"><i class="fal fa-heart"></i></a>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="tpproduct__content-area">
+                              <h2 class="tpproduct__title mb-5" style="font-size:large ; color:black;">
+                                 {{this.ProductName}}</h2>
+                              <div class="tpproduct__priceinfo p-relative">
+                                 <div class="tpproduct__ammount">
+                                    <span><i class="bi bi-currency-rupee"></i>{{this.Price}}</span>
+                                 </div>
+                              </div>
+                              {{!-- <div class="tpproduct__cart" style="margin-left:auto ;">
+                                 <a href="/add-to-cart/{{this._id}}"><i class="fal fa-shopping-cart"></i>Add To
+                                    Cart</a>
+                              </div> --}}
+                           </div>
+                           <div class="tpproduct__ratingarea">
+                              <div class="d-flex align-items-center justify-content-between">
+                                 <div class="tpproductdot">
+                                    <a class="tpproductdot__variationitem" href="shop-details.html">
+                                       <div class="tpproductdot__termshape">
+                                          <span class="tpproductdot__termshape-bg"></span>
+                                          <span class="tpproductdot__termshape-border"></span>
+                                       </div>
+                                    </a>
+                                    <a class="tpproductdot__variationitem" href="shop-details.html">
+                                       <div class="tpproductdot__termshape">
+                                          <span class="tpproductdot__termshape-bg red-product-bg"></span>
+                                          <span class="tpproductdot__termshape-border red-product-border"></span>
+                                       </div>
+                                    </a>
+                                    <a class="tpproductdot__variationitem" href="shop-details.html">
+                                       <div class="tpproductdot__termshape">
+                                          <span class="tpproductdot__termshape-bg orange-product-bg"></span>
+                                          <span class="tpproductdot__termshape-border orange-product-border"></span>
+                                       </div>
+                                    </a>
+                                    <a class="tpproductdot__variationitem" href="shop-details.html">
+                                       <div class="tpproductdot__termshape">
+                                          <span class="tpproductdot__termshape-bg purple-product-bg"></span>
+                                          <span class="tpproductdot__termshape-border purple-product-border"></span>
+                                       </div>
+                                    </a>
+                                 </div>
+
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     {{/each}}
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+   </div>
+   </div>
+
+   <!-- product-filter-area-end -->
+
+</main>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+<script>
+   const addToCart = (productId)=>{
+      console.log(productId)
+      alert('Cart Added')
+       $.ajax({
+                url: `/add-to-cart/${productId}`,
+                method: "get"
+            })
+   }
+</script>

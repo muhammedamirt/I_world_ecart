@@ -1,0 +1,105 @@
+<!-- preloader -->
+<div id="preloader">
+    <div class="preloader">
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<!-- preloader end  -->
+
+
+<section>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-sm-12" style="margin-top: 5rem;">
+                <div class="tptrack__product mb-40">
+                    <div class="tptrack__thumb">
+                        <img src="/img/banner/sign-bg.jpg" alt="">
+                    </div>
+                    <div class="tptrack__content grey-bg-3">
+                        <div class="tptrack__item d-flex mb-20">
+                            <div class="tptrack__item-icon">
+                                <img src="/img/icon/sign-up.png" alt="">
+                            </div>
+                            <div class="tptrack__item-content">
+                                <h4 class="tptrack__item-title">Sign Up</h4>
+                                <p>Your personal data will be used to support your experience throughout this website,
+                                    to
+                                    manage access to your account.</p>
+                            </div>
+                        </div>
+
+
+                        <form action="/user-signup" method="post">
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-outline">
+                                        <label class="form-label" for="form3Example1"></label>
+                                        <input type="text" id="form3Example1" class="form-control" name="FirstName"
+                                            placeholder="First Name" {{#if errMessage}} value="{{balData.FirstName}}" {{/if}}required />
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-outline">
+                                        <label class="form-label" for="form3Example2"></label>
+                                        <input type="text" id="form3Example2" class="form-control" name="LastName"
+                                            placeholder="Last Name" {{#if errMessage}} value="{{balData.LastName}}" {{/if}} required />
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-outline">
+                                        <label class="form-label" for="form3Example6"></label>
+                                        <input type="text" id="form3Example6" class="form-control" name="UserName"
+                                            placeholder="User Name"{{#if errMessage}} value="{{balData.UserName}}" {{/if}}required />
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-outline">
+                                        <label class="form-label" for="form3Example6"></label>
+                                        <input type="number" id="form3Example6" class="form-control" name="Mobile"
+                                            placeholder="Mobile"{{#if errMessage}} value="{{balData.Mobile}}" {{/if}} required />
+
+                                    </div>
+                                </div>
+                                <div class="form-outline mb-4">
+                                    <label class="form-label" for="form3Example3"></label>
+                                    <input type="email" id="form3Example3" class="form-control" name="Email"
+                                        placeholder="Email"  required />
+                                    {{#if errMessage}}
+                                    <p style="color:red ; text-align:center ;">{{errMessage}}</p>
+                                    {{/if}}
+
+                                </div>
+
+                                <!-- Password input -->
+                                <div class="form-outline mb-4">
+                                    <label class="form-label" for="form3Example4"></label>
+                                    <input type="password" id="form3Example4" class="form-control" name="Password"
+                                        placeholder="Password" {{#if errMessage}} value="{{balData.Password}}" {{/if}} required />
+
+                                </div>
+
+
+
+
+                                <div class="tpsign__account">
+                                    <a href="/user-login">Already Have Account?</a>
+                                </div>
+                                <div class="tptrack__btn">
+                                    <button type="submit" class="tptrack__submition tpsign__reg">Register Now<i
+                                            class="fal fa-long-arrow-right"></i></button>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+
+</style>

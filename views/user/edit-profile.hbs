@@ -1,0 +1,74 @@
+<section>
+
+
+
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                        class="rounded-circle img-fluid" style="width: 150px;">
+                    <h5 class="my-3">{{user.FirstName}}{{user.LastName}}</h5>
+                    <input type="file">
+
+                    <div class="d-flex justify-content-center mb-2">
+                    </div>
+                </div>
+            </div>
+            <div class=" grid-margin stretch-card">
+                
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Edit Your Profile</h4>
+
+                        <form class="forms-sample" action="/edit-profile/{{user._id}}" method="post">
+
+                            <div class="form-group row">
+                                <label for="editFirstName" class="col-sm-3 col-form-label">First Name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="editFirstName"
+                                        value="{{user.FirstName}}" name="FirstName" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="editLastName" class="col-sm-3 col-form-label">Last Name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="editlastName"
+                                        value="{{user.LastName}}" name="LastName" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="editUserName" class="col-sm-3 col-form-label">Username</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="editUserName"
+                                        value="{{user.UserName}}" name="UserName" required>
+                                </div>
+                            </div>
+                             <div class="form-group row">
+                                <label for="editUserEmail" class="col-sm-3 col-form-label">Email</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="editUserEmail"
+                                        value="{{user.Email}}" name="Email" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="editMobile" class="col-sm-3 col-form-label">Mobile</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control" id="editMobile"
+                                        value="{{user.Mobile}}" name="Mobile" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success mr-2 " style="">Save Updates</button>
+                            
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+    </div>
+
+
+</section>
