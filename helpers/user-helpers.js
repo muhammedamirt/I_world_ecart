@@ -9,6 +9,7 @@ const adminCollection = require('../models/schema/admin')
 const { Promise } = require('mongoose')
 const order = require('../models/schema/order')
 const { TodayInstance } = require('twilio/lib/rest/api/v2010/account/usage/record/today')
+const mongoose = require('mongoose')
 // const orderCollection = require('../models/schema/order')/
 
 const regExp = /^[a-zA-Z]*$/
@@ -310,10 +311,9 @@ module.exports = {
     addProductToOrders: (orderDocument, userAddress, userId) => {
         return new Promise(async (res, rej) => {
             let user = await userCollection.findOne({ _id: userId })
-            let cart = await cartCollection.find({ userId: userId })
-            let admin = await adminCollection.find({})
-            let adminId = admin[0]._id
-            let order = await orderCollection.findOne({ adminId: adminId })
+            let cart = await cartCollection.findOne({ userId: userId })
+            
+            let order = await orderCollection.findOne({ userId: userId })
 
             let paymentType = orderDocument.payment
 
@@ -321,62 +321,45 @@ module.exports = {
             let date = new Date().toJSON().slice(0, 10);
             // let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 
-            let products = cart[0].cartItems
+            let products = cart.cartItems
             console.log(products);
-            let totalAmount = cart[0].totalAmount
+            let totalAmount = cart.totalAmount
 
 
 
             let userFullName = user.FirstName + user.LastName
             console.log(userFullName);
             let userMobile = user.Mobile
-            console.log(order)
+            // console.log(order)
             if (cart) {
                 if (order) {
-                    let itemIndex = order.orders.findIndex(p => p.userId == userId);
-                    console.log(itemIndex)
-                    if (itemIndex >= 0) {
-                        // let userOrder = order.orders
-                        console.log("olready have order");
-                        rej()
-                    } else {
-                        // console.log(cart);
-                        // console.log(products)
-                        userCollection.updateOne(
-                            { _id: userId },
-                            {
-                                $set: {
-                                    address: userAddress
-                                }
-                            }
-                        ).then((data) => {
-                            console.log(data, "++++++++++++++++++++++++")
-                        })
+                    
+                    console.log("already have order");
+                   
 
+                    console.log(order);
 
-                        order.orders.push({
-                            date: date,
-                            userName: userFullName,
-                            userId: userId,
-                            address: userAddress,
-                            userMobile: userMobile,
-                            products: products,
-                            totalAmount: totalAmount,
-                            paymentStatus: "pending",
-                            paymentType: paymentType
-                        })
-                        order.numberOfOrders = "0"
-                        order.save()
+                    order.orders.push({
+                        date: date,
+                        userName: userFullName,
+                        userId: userId,
+                        address: userAddress,
+                        userMobile: userMobile,
+                        products: products,
+                        totalAmount: totalAmount,
+                        paymentStatus: "pending",
+                        paymentType: paymentType
+                    })
+                    order.save()
+                    console.log("product push");
+                    cartCollection.deleteOne({ userId: userId }).then((data) => {
+                        console.log('cart cleared ==================', data);
+                    })
 
-                        cartCollection.deleteOne({ userId: userId }).then((data) => {
-                            console.log('cart cleared ==================', data);
-                        })
-                        res()
-
-                    }
+                    res()
                 } else {
-                    console.log(cart);
-                    console.log(products)
+                    // console.log(cart);
+                    // console.log(products)
                     userCollection.updateOne(
                         { _id: userId },
                         {
@@ -387,8 +370,8 @@ module.exports = {
                     ).then((data) => {
                         console.log(data, "++++++++++++++++++++++++")
                     })
-
                     orderCollection.create({
+                        userId: userId,
                         orders: [{
                             date: date,
                             userName: userFullName,
@@ -399,17 +382,23 @@ module.exports = {
                             totalAmount: totalAmount,
                             paymentStatus: "pending",
                             paymentType: paymentType
-                        }],
-                        adminId: adminId,
-                        numberOfOrders: "0"
+                        }]
+
                     })
+
+
+                    // order.numberOfOrders = "0"
+                    // order.save()
+
                     cartCollection.deleteOne({ userId: userId }).then((data) => {
                         console.log('cart cleared ==================', data);
                     })
                     res()
 
-
                 }
+                
+
+
             } else {
                 console.log("no cart");
                 rej()
@@ -424,25 +413,18 @@ module.exports = {
     getOrderProducts: (userId) => {
         console.log(userId);
         return new Promise(async (res, rej) => {
-            let order = await orderCollection.findOne().lean()
-            // console.log(order);
-            if (order) {
-                let itemIndex = order.orders.findIndex(p => p.userId == userId);
-                // console.log(itemIndex);
-                if (itemIndex >= 0) {
-                    let userOrders = order.orders[itemIndex]
-                    // console.log(userOrders);
-                    
-                    // console.log(products);
-                    // let productImages = products.productImages
-                    res(userOrders)
-                } else {
-                    rej()
-                }
-            } else {
-                rej()
-            }
-
+            orderCollection.aggregate([
+                {
+                    $match:{userId:userId}
+                },
+                
+            ]).then((data) => {
+                console.log(data,"======================");
+                let userData = data[0]
+                let orders = userData.orders
+                console.log(orders);
+                res(orders)
+            })
         })
 
     },
@@ -454,6 +436,29 @@ module.exports = {
                     // console.log(data);
                     res(data)
                 })
+        })
+    },
+    getMoreOrderDetailes:(orderId)=>{
+        return new Promise(async (res, rej) => {
+            let id = mongoose.Types.ObjectId(orderId)
+            orderCollection.aggregate([
+                {
+                    $unwind: "$orders"
+                },
+                {
+                    $project: {
+                        orders: 1
+                    }
+                },
+                {
+                    $match: {
+                        "orders._id": id
+                    }
+                }
+            ]).then((data) => {
+                console.log(data);
+                res(data)
+            })
         })
     }
 }

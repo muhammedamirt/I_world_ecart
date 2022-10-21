@@ -20,7 +20,7 @@ const otpgen = otpGenerator.generate(4, { upperCaseAlphabets: false, specialChar
 let emailErrVal = {}
 let passwordErrVal = {}
 let signupErr = {}
-let otpErr={}
+let otpErr = {}
 
 
 
@@ -105,14 +105,14 @@ module.exports = {
         if (req.session.user) {
             res.redirect("/")
         } else {
-            if(otpErr.status){
+            if (otpErr.status) {
                 let message = otpErr.message
                 console.log(message);
-                res.render("user/OTP-confermation",{message})
-            }else{
+                res.render("user/OTP-confermation", { message })
+            } else {
                 res.render("user/OTP-confermation")
             }
-            
+
 
         }
     },
@@ -146,15 +146,15 @@ module.exports = {
     },
     getShop: (req, res) => {
         let user = req.session.user
-        productHelpers.getCateguryList().then( (category)=>{
-        // console.log(category);
-           productHelpers.getProductDetails().then((products) => {
-            // console.log(products);
-            // console.log(images);
-            res.render('user/user-shop', { products, user ,category})
+        productHelpers.getCateguryList().then((category) => {
+            // console.log(category);
+            productHelpers.getProductDetails().then((products) => {
+                // console.log(products);
+                // console.log(images);
+                res.render('user/user-shop', { products, user, category })
 
-        }) 
-    })
+            })
+        })
     },
     getCart: (req, res) => {
         if (req.session.user) {
@@ -163,7 +163,7 @@ module.exports = {
                 if (cartData) {
                     console.log(cartData);
                     let productData = cartData.cartItems
-                    console.log(productData,"=======================");
+                    console.log(productData, "=======================");
                     res.render('user/cart-items', { productData, cartData })
 
                 } else {
@@ -186,8 +186,8 @@ module.exports = {
                 if (cartData) {
                     console.log(cartData);
                     let productData = cartData.cartItems
-                    console.log(productData,"=======================");
-                    res.render('user/checkout', { productData, cartData,userData })
+                    console.log(productData, "=======================");
+                    res.render('user/checkout', { productData, cartData, userData })
 
                 } else {
                     console.log("===========================");
@@ -248,11 +248,11 @@ module.exports = {
         console.log(req.body);
         let user = req.session.user
         let filterCategury = req.body.filter
-        productHelpers.getCateguryList().then( (category)=>{
-        userHelpers.findFilterCategoryProduct(filterCategury).then((products)=>{
-            res.render('user/user-shop', { products, user , category })
+        productHelpers.getCateguryList().then((category) => {
+            userHelpers.findFilterCategoryProduct(filterCategury).then((products) => {
+                res.render('user/user-shop', { products, user, category })
+            })
         })
-    })
 
     },
     getUserLogout: (req, res) => {
@@ -285,10 +285,10 @@ module.exports = {
             console.log(quantity, "+++++++++++++++++++++++++++");
 
             userHelpers.addProductToCartQuantity(productId, quantity, userId)
-            .then((data) => {
-                console.log(data);
-                res.redirect('/view-cart')
-            })
+                .then((data) => {
+                    console.log(data);
+                    res.redirect('/view-cart')
+                })
         } else {
             res.redirect('/user-login')
         }
@@ -311,50 +311,66 @@ module.exports = {
         let user = req.session.user
         let productId = req.params.id
         let userId = user._id
-        userHelpers.incCartProductQuantity(productId, userId).then((data)=>{
+        userHelpers.incCartProductQuantity(productId, userId).then((data) => {
             console.log(productId);
             res.redirect('/view-cart')
         })
-        
+
         // res.send({status:'ok'})
     },
     getdcrQuantity: (req, res) => {
         let user = req.session.user
         let productId = req.params.id
         let userId = user._id
-        userHelpers.decCartProductQuantity(productId, userId).then((data)=>{
+        userHelpers.decCartProductQuantity(productId, userId).then((data) => {
             console.log(productId);
             res.redirect('/view-cart')
         })
-        
+
     },
     postOrderDetailes: (req, res) => {
         console.log(req.body);
         let userAddress = req.body.address
         let userId = req.session.user._id
-        userHelpers.addProductToOrders(req.body,userAddress,userId)
-        .then((data)=>{
-            res.redirect('/viewUserOrders')
-        }).catch((data)=>{
-            res.redirect('/view-checkout')
-        })
+        userHelpers.addProductToOrders(req.body, userAddress, userId)
+            .then((data) => {
+                res.redirect('/viewUserOrders')
+            }).catch((data) => {
+                res.redirect('/view-checkout')
+            })
 
     },
-    getViewOrders:(req,res)=>{
-        if(req.session.user){
+    getViewOrders: (req, res) => {
+        if (req.session.user) {
             userId = req.session.user._id
-            userHelpers.getOrderProducts(userId).then((data)=>{
-                console.log(data);
-                let products = data.products
-                res.render('user/view-orders-user',{products,data})
-            }).catch(()=>{
+            userHelpers.getOrderProducts(userId).then((data) => {
+                // console.log(data);
+                // let products = data.products
+                // console.log(products);
+                res.render('user/view-orders-user', { data })
+            }).catch(() => {
                 res.render('user/view-orders-user')
             })
-           
-        }else{
+
+        } else {
             res.redirect('/user-login')
         }
-       
+
+    },
+    getMoreAboutOrder: (req, res) => {
+        let orderId = req.params.orderId
+        if (req.session.user) {
+            userHelpers.getMoreOrderDetailes(orderId).then((data) => {
+                let userData = data[0]
+                let products = data[0].orders.products
+                // console.log(userData);
+                res.render('user/more-about-order', { userData, products })
+            })
+        } else {
+            res.redirect('/uder-login')
+        }
+
+
     }
 
 

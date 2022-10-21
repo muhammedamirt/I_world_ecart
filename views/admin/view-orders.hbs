@@ -118,24 +118,23 @@
                                             <a style="color:red ;">{{@index}}</a>
                                         </td>
                                         <td class="product-price">
-                                            <span class="amount">{{this.userName}}</span>
+                                            <span class="amount">{{this.orders.userName}}</span>
                                         </td>
                                         <td class="product-quantity">
-                                           {{this.userMobile}}
+                                           {{this.orders.userMobile}}
                                         </td>
                                         <td class="product-quantity">
-                                            <i class="bi bi-currency-rupee"></i>{{this.totalAmount}}
+                                            <i class="bi bi-currency-rupee"></i>{{this.orders.totalAmount}}
                                         </td>
                                         
                                         <td>
-                                            {{this.date}}
+                                            {{this.orders.date}}
                                         </td>
                                         <td class="product-remove">
-                                            <a href="">
-                                                <a href=""><label class="badge badge-warning">In progress</label></a>
+                                            {{this.orders.paymentType}}   
                                         </td>
                                         <td class="product-remove">
-                                            <a href="/admin/view-order-more/{{this.userId}}">
+                                            <a href="/admin/view-order-more/{{this.orders._id}}">
                                                 <p ><i class="bi bi-eye-fill" style="font-size:20px;"></i></p>
                                             </a>
                                         </td>

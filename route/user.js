@@ -3,6 +3,8 @@ const router = Express.Router()
 
 const userControllers = require('../controllers/user')
 
+
+
 router.get('/', userControllers.getHome)
 
 router.route('/user-login')
@@ -50,6 +52,8 @@ router.get('/cartquantityinc/:id', userControllers.getIncQuantity)
 router.get('/cartquantitydec/:id', userControllers.getdcrQuantity)
 
 router.get('/viewUserOrders',userControllers.getViewOrders)
+
+router.get('/more-about-order/:orderId',userControllers.getMoreAboutOrder)
 
 
 

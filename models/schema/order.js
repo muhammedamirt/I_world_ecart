@@ -44,11 +44,7 @@ const orderDetailes = new Schema({
 })
 
 const orderSchema = new Schema({
-    numberOfOrders: {
-        type: String,
-        require: true
-    },
-    adminId:{
+    userId:{
         type:String,
         require:true
     },

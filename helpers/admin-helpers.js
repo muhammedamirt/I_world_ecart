@@ -2,7 +2,8 @@ const { resolve } = require('path')
 const userCollection = require('../models/schema/user')
 const productCollection = require('../models/schema/products')
 const adminCollection = require('../models/schema/admin')
-const orderColeection = require('../models/schema/order')
+const orderCollection = require('../models/schema/order')
+const mongoose = require('mongoose')
 
 module.exports = {
     getUserDetailes: () => {
@@ -91,38 +92,45 @@ module.exports = {
 
     getAllOrders: () => {
         return new Promise((res, rej) => {
-            orderColeection.findOne()
-                .lean()
-                .then((data) => {
-                    let orderData = data.orders
-                    res(orderData)
-                })
+            orderCollection.aggregate([
+                {
+                    $unwind: "$orders"
+                },
+                {
+                    $project: { orders: 1 }
+                },
+                {
+                    $sort: { "orders.date": 1 }
+                }
+            ]).then((data) => {
+                // console.log(data)
+                res(data)
+            })
         })
 
     },
 
-    getOneUserOrder: (userId) => {
+    getOneUserOrder: (orderId) => {
         return new Promise(async (res, rej) => {
-            let admin = await adminCollection.findOne()
-            let adminId = admin._id
-            orderColeection.findOne({ adminId: adminId })
-            .lean()
-            .then((data) => {
-                // console.log(data);
-                console.log(userId);
-                let userIndex = data.orders.findIndex(p => p.userId == userId);
-                console.log(userIndex);
-                if (userIndex >= 0) {
-                    let userOrder = data.orders[userIndex]
-                    // console.log(userOrder);
-                    // console.log(products);
-                    // console.log(products.productImages);
-                    res(userOrder)
-                } else {
-
+            let id = mongoose.Types.ObjectId(orderId)
+            orderCollection.aggregate([
+                {
+                    $unwind: "$orders"
+                },
+                {
+                    $project: {
+                        orders: 1
+                    }
+                },
+                {
+                    $match: {
+                        "orders._id": id
+                    }
                 }
+            ]).then((data) => {
+                console.log(data);
+                res(data)
             })
-
         })
 
     }

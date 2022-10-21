@@ -294,6 +294,7 @@ module.exports = {
         if (req.session.admin) {
             adminHelpers.getAllOrders().then((orderData)=>{
                 // console.log(orderData);
+
                 res.render('admin/view-orders', { admin: true , orderData })
             })
 
@@ -305,10 +306,10 @@ module.exports = {
 
     getViewOrderMore: (req,res)=>{
         let userId = req.params.userId
-        // console.log(userId);
+        console.log(userId);
         adminHelpers.getOneUserOrder(userId).then((userOrder)=>{
             console.log(userOrder);
-            let products = userOrder.products
+            let products =userOrder[0].orders.products
             console.log(products);
             res.render('admin/view-order-more',{admin:true,products,userOrder})
         })

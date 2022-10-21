@@ -8,6 +8,16 @@
                     <div class="tp-breadcrumb">
                         <h2 class="tp-breadcrumb__title" style="color: palevioletred ;">Your Orders</h2>
                     </div>
+                    <div style="padding-top:  10px; ">
+                        <h3>Your Detailes</h3>
+                    <ul style="list-style-type: none;font-weight: bold;font-size: medium;">
+
+                        <li>Name : {{userData.orders.userName}}</li>
+                        <li>Mobile : {{userData.orders.userMobile}}</li>
+                        <li>Delivery Address :{{userData.orders.address}}</li> 
+                        <a href="#"><label class="badge badge-primary">Update your details</label> </a>
+                    </ul>
+                    </div>
                     
                 </div>
             </div>
@@ -22,51 +32,41 @@
                 <div class="col-12">
                     <form action="#">
                         <div class="table-content table-responsive">
-                            <table class="table" style="background-color:pink ; font-weight: bold;">
+                            <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>
-                                            No.
-                                        </th>
-                                        <th class="product-thumbnail">FullName</th>
-                                        <th class="cart-product-name">Date</th>
-                                        <th class="cart-product-name">Address</th>
-                                        <th class="product-price">Total Amount</th>
-                                        <th class="product-subtotal">Order Status</th>
-                                        <th class="product-remove">Cancel</th>
-                                        <th>
-                                            View More
-                                        </th>
+                                        <th class="product-thumbnail">Images</th>
+                                        <th class="cart-product-name">Product Name</th>
+                                        <th class="product-price">Product Price</th>
+                                        <th class="product-quantity">Quantity</th>
+                                        <th class="product-subtotal">Total</th>
+                                        {{!-- <th class="product-remove">Cancel</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{#each data}}
+                                    {{#each products}}
                                     <tr>
-                                        <td class="product-name">
-                                            {{@index}}
+                                        <td class="product-thumbnail">
+                                            <a href="shop-details.html"><img
+                                                    src="/product-images/{{this.productImages.[0]}}" alt="">
+                                            </a>
                                         </td>
-
                                         <td class="product-name">
-                                           
-                                    <span class="amount">{{this.userName}}</span>   </td>
-                                        <td class="product-price">
-                                            <span class="amount">{{this.date}}</span>
+                                            <a href="/product-detials/{{this.orders.productId}}" style="color:red ;">{{this.productName}}</a>
                                         </td>
                                         <td class="product-price">
-                                            <span class="amount">{{this.address}}</span>
+                                            <span class="amount">{{this.productPrice}}</span>
                                         </td>
                                         <td class="product-quantity">
-                                            {{this.totalAmount}}
+                                            {{this.ProductQuantity}}
                                         </td>
                                         <td class="product-subtotal">
-                                            <span class="amount" style="color:red ;">{{this.paymentStatus}}</span>
+                                            <span class="amount">{{this.TotalPrice}}</span>
                                         </td>
-                                        <td class="product-remove">
+                                        
+                                        {{!-- <td class="product-remove">
                                             <a href=""><i class="fa fa-times"></i></a>
-                                        </td>
-                                        <td class="product-remove">
-                                            <a href="/more-about-order/{{this._id}}" class="btn btn-primary"><i class="bi bi-eye-fill"></i></a>
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                     {{/each}}
                                 </tbody>
