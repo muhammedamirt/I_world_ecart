@@ -12,6 +12,14 @@ const cookieParser = require('cookie-parser')
 // const fileUpload = require('express-fileupload')
 const nocache = require('nocache')
 
+const Handilebars = require('handlebars')
+
+const Swal = require('sweetalert2')
+
+Handilebars.registerHelper('ifEquals', function(arg1, arg2, options) {
+  return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+});
+
 
 const error = (err, req, res, next) => {
   if (err) {

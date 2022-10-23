@@ -30,6 +30,9 @@ module.exports = {
         let user = req.session.user
         res.render("user/index.hbs", { userHome: true, user })
     },
+
+    //autentication
+
     getLogin: (req, res) => {
         if (req.session.user) {
             res.redirect('/')
@@ -144,6 +147,8 @@ module.exports = {
 
 
     },
+
+    //shop
     getShop: (req, res) => {
         let user = req.session.user
         productHelpers.getCateguryList().then((category) => {
@@ -157,48 +162,45 @@ module.exports = {
         })
     },
     getCart: (req, res) => {
-        if (req.session.user) {
-            let userId = req.session.user._id
-            userHelpers.getCartProducts(userId).then((cartData) => {
-                if (cartData) {
-                    console.log(cartData);
-                    let productData = cartData.cartItems
-                    console.log(productData, "=======================");
-                    res.render('user/cart-items', { productData, cartData })
+        // if (req.session.user) {
+        let userId = req.session.user._id
+        userHelpers.getCartProducts(userId).then((cartData) => {
+            if (cartData) {
+                console.log(cartData);
+                let productData = cartData.cartItems
+                console.log(productData, "=======================");
+                res.render('user/cart-items', { productData, cartData })
 
-                } else {
-                    console.log("===========================");
-                    res.render('user/cart-items')
-                    // console.log("no cart");
-                }
-            })
+            } else {
+                console.log("===========================");
+                res.render('user/cart-items')
+                // console.log("no cart");
+            }
+        })
 
-        } else {
-            res.redirect('/user-login')
-        }
+        // } else {
+        // res.redirect('/user-login')
+        // }
 
     },
     getCeckout: (req, res) => {
-        if (req.session.user) {
-            let userId = req.session.user._id
-            let userData = req.session.user
-            userHelpers.getCartProducts(userId).then((cartData) => {
-                if (cartData) {
-                    console.log(cartData);
-                    let productData = cartData.cartItems
-                    console.log(productData, "=======================");
-                    res.render('user/checkout', { productData, cartData, userData })
+        let userId = req.session.user._id
+        let userData = req.session.user
+        userHelpers.getCartProducts(userId).then((cartData) => {
+            if (cartData) {
+                console.log(cartData);
+                let productData = cartData.cartItems
+                console.log(productData, "=======================");
+                res.render('user/checkout', { productData, cartData, userData })
 
-                } else {
-                    console.log("===========================");
-                    res.render('user/cart-items')
-                    // console.log("no cart");
-                }
-            })
+            } else {
+                console.log("===========================");
+                res.render('user/cart-items')
+                // console.log("no cart");
+            }
+        })
 
-        } else {
-            res.redirect('/user-login')
-        }
+
     },
     getProductDetails: (req, res) => {
         let user = req.session.user
@@ -218,21 +220,15 @@ module.exports = {
         }
     },
     getWishlist: (req, res) => {
-        if (req.session.user) {
-            let user = req.session.user
-            res.render('user/wishlist', { user })
-        } else {
-            res.redirect('/user-login')
-        }
+        let user = req.session.user
+        res.render('user/wishlist', { user })
 
     },
     getEditProfile: (req, res) => {
-        if (req.session.user) {
-            let user = req.session.user
-            res.render('user/edit-profile', { user })
-        } else {
-            res.redirect('/user-login')
-        }
+
+        let user = req.session.user
+        res.render('user/edit-profile', { user })
+
 
     },
     postEditProfile: (req, res) => {
@@ -263,49 +259,41 @@ module.exports = {
 
     //cart session starting
     getAddToCart: (req, res) => {
-        if (req.session.user) {
-            let user = req.session.user
-            let productId = req.params.prodId
-            let userId = user._id
-            console.log(productId, userId)
-            userHelpers.addProductToCart(productId, userId).then((data) => {
-                console.log('cart created');
-                res.redirect('/user-shop')
-            })
-        } else {
-            res.redirect('/user-login')
-        }
+
+        let user = req.session.user
+        let productId = req.params.prodId
+        let userId = user._id
+        console.log(productId, userId)
+        userHelpers.addProductToCart(productId, userId).then((data) => {
+            console.log('cart created');
+            res.redirect('/user-shop')
+        })
+
 
     },
     postAddToCart: (req, res) => {
-        if (req.session.user) {
-            let userId = req.session.user._id
-            let quantity = req.body.quantity
-            let productId = req.params.prodId
-            console.log(quantity, "+++++++++++++++++++++++++++");
 
-            userHelpers.addProductToCartQuantity(productId, quantity, userId)
-                .then((data) => {
-                    console.log(data);
-                    res.redirect('/view-cart')
-                })
-        } else {
-            res.redirect('/user-login')
-        }
+        let userId = req.session.user._id
+        let quantity = req.body.quantity
+        let productId = req.params.prodId
+        console.log(quantity, "+++++++++++++++++++++++++++");
+
+        userHelpers.addProductToCartQuantity(productId, quantity, userId)
+            .then((data) => {
+                console.log(data);
+                res.redirect('/view-cart')
+            })
 
 
     },
     getRemoveCartProduct: (req, res, next) => {
-        if (req.session.user) {
-            let productId = req.params.id
-            let userId = req.session.user._id
-            userHelpers.removeCartProduct(productId, userId).then((data) => {
-                console.log(data);
-                res.redirect('/view-cart')
-            })
-        } else {
-            res.redirect('user-login')
-        }
+        let productId = req.params.id
+        let userId = req.session.user._id
+        userHelpers.removeCartProduct(productId, userId).then((data) => {
+            console.log(data);
+            res.redirect('/view-cart')
+        })
+
     },
     getIncQuantity: (req, res) => {
         let user = req.session.user
@@ -333,45 +321,81 @@ module.exports = {
         let userAddress = req.body.address
         let userId = req.session.user._id
         userHelpers.addProductToOrders(req.body, userAddress, userId)
-            .then((data) => {
-                res.redirect('/viewUserOrders')
+            .then((response) => {
+                let orderId = response.orderId
+                let totalAmount = response.totalAmount
+                if (req.body.payment == "Cash On Delivery") {
+                    res.json({ codStatus: true })
+
+                } else if (req.body.payment == "Online Payment") {
+                    userHelpers.generateRazorpay(orderId, totalAmount).then((response) => {
+                        console.log('hello');
+                        res.json(response)
+                    })
+                } else {
+
+                }
+
             }).catch((data) => {
                 res.redirect('/view-checkout')
             })
 
     },
-    getViewOrders: (req, res) => {
-        if (req.session.user) {
-            userId = req.session.user._id
-            userHelpers.getOrderProducts(userId).then((data) => {
-                // console.log(data);
-                // let products = data.products
-                // console.log(products);
-                res.render('user/view-orders-user', { data })
-            }).catch(() => {
-                res.render('user/view-orders-user')
-            })
 
-        } else {
-            res.redirect('/user-login')
-        }
+    // order Session starting
+    getViewOrders: (req, res) => {
+        userId = req.session.user._id
+        userHelpers.getOrderProducts(userId).then((data) => {
+            // console.log(data);
+            // let products = data.products
+            // console.log(products);               
+            res.render('user/view-orders-user', { data })
+        }).catch(() => {
+            res.render('user/view-orders-user')
+        })
+
+
 
     },
     getMoreAboutOrder: (req, res) => {
         let orderId = req.params.orderId
-        if (req.session.user) {
-            userHelpers.getMoreOrderDetailes(orderId).then((data) => {
-                let userData = data[0]
-                let products = data[0].orders.products
-                // console.log(userData);
-                res.render('user/more-about-order', { userData, products })
-            })
-        } else {
-            res.redirect('/uder-login')
-        }
+        userHelpers.getMoreOrderDetailes(orderId).then((data) => {
+            let userData = data[0]
+            let products = data[0].orders.products
+            // console.log(userData);
+            res.render('user/more-about-order', { userData, products })
+        })
 
 
+
+    },
+    getUserOrderCancel: (req, res) => {
+        let userId = req.session.user._id
+        let orderId = req.params.orderId
+        userHelpers.userOrderCanceling(orderId, userId).then((data) => {
+            res.json({ status: true })
+        })
+
+    },
+    postVerifyPayment: (req, res) => {
+        console.log(req.body);
+        let userId = req.session.user._id
+        userHelpers.verifyPayment(req.body).then(() => {
+            userHelpers.changeOrderStatus(req.body['order[receipt]'], userId)
+                .then(() => {
+                    console.log('payment success');
+                    res.json({ status: true })
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.json({ status: false })
+
+                })
+
+        })
     }
+
+
 
 
 }

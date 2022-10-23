@@ -4,6 +4,7 @@ const controller = require ('../controllers/admin')
 const multer = require('multer')
 const { Router } = require('express')
 const upload = multer({ dest: 'uploads/' })
+//multer
 const store = require('../multer/multer')
 
 
@@ -49,5 +50,10 @@ router.get("/remove-categury/:id",controller.getRemoveCategury)
 router.get("/view-orders",controller.getViewOrderse)
 
 router.get('/view-order-more/:userId',controller.getViewOrderMore)
+
+router.post('/change-status/:orderId/:userId',controller.getChangeStatus)
+
+router.post('/cancel-admin-order/:orderId/:userId',controller.getAdminOrderCancel)
+
 
 module.exports = router

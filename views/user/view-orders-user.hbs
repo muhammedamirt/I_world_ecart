@@ -8,7 +8,7 @@
                     <div class="tp-breadcrumb">
                         <h2 class="tp-breadcrumb__title" style="color: palevioletred ;">Your Orders</h2>
                     </div>
-                    
+                    <h4 class="text-warning">latest order is first...!</h4>
                 </div>
             </div>
         </div>
@@ -22,7 +22,7 @@
                 <div class="col-12">
                     <form action="#">
                         <div class="table-content table-responsive">
-                            <table class="table" style="background-color:pink ; font-weight: bold;">
+                            <table class="table" style="background-color:rgb(255, 235, 238) ; font-weight: bold;">
                                 <thead>
                                     <tr>
                                         <th>
@@ -47,8 +47,9 @@
                                         </td>
 
                                         <td class="product-name">
-                                           
-                                    <span class="amount">{{this.userName}}</span>   </td>
+
+                                            <span class="amount">{{this.userName}}</span>
+                                        </td>
                                         <td class="product-price">
                                             <span class="amount">{{this.date}}</span>
                                         </td>
@@ -58,16 +59,52 @@
                                         <td class="product-quantity">
                                             {{this.totalAmount}}
                                         </td>
-                                        <td class="product-subtotal">
+                                        {{#ifEquals this.paymentStatus "canceld"}}
+
+                                        <td><label class="badge badge-danger">Canceld</label></td>
+
+                                        {{else ifEquals this.paymentStatus "Packed" }}
+
+                                        <td><label class="badge badge-primary">Packed</label></td>
+
+                                        {{else ifEquals this.paymentStatus "Success" }}
+
+                                       <td><label class="badge badge-success">Success</label></td>
+
+                                        {{else ifEquals this.paymentStatus "Shipped" }}
+
+                                        <td><label class="badge badge-warning">Shiped</label></td>
+
+                                        {{else}}
+                                       <td><label class="badge badge-info">Pending</label></td>
+                                        {{/ifEquals}}
+                                        {{!-- <td class="product-subtotal">
                                             <span class="amount" style="color:red ;">{{this.paymentStatus}}</span>
-                                        </td>
+                                        </td> --}}
+
+                                        {{#ifEquals this.paymentStatus "canceld"}}
+
                                         <td class="product-remove">
-                                            <a href=""><i class="fa fa-times"></i></a>
+                                            <button class="btn btn-inverse-secondary btn-fw" disabled><i
+                                                    class="bi bi-x-square-fill"></i>Cancel</button>
                                         </td>
+
+                                        {{else }}
+
                                         <td class="product-remove">
-                                            <a href="/more-about-order/{{this._id}}" class="btn btn-primary"><i class="bi bi-eye-fill"></i></a>
+                                            <button class="btn btn-inverse-danger btn-fw"
+                                                onclick="confermOrderCancel('{{this._id}}')"><i
+                                                    class="bi bi-x-square-fill"></i>Cancel</button>
+                                        </td>
+
+                                        {{/ifEquals}}
+
+                                        <td class="product-remove">
+                                            <a href="/more-about-order/{{this._id}}"
+                                                class="btn btn-inverse-info btn-fw"><i class="bi bi-eye-fill"></i></a>
                                         </td>
                                     </tr>
+
                                     {{/each}}
                                 </tbody>
                             </table>
@@ -80,3 +117,38 @@
     <!-- cart area end-->
 
 </main>
+
+<script>
+    function confermOrderCancel(orderId) {
+        console.log(orderId)
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, Cancel Order!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/cancel-user-order/' + orderId,
+                    method: 'post',
+                    success: (response) => {
+                        Swal.fire({
+
+                            icon: 'success',
+                            title: 'Order Canceld Successfully',
+                            showConfirmButton: false,
+                        })
+                        setTimeout(() => {
+                            location.reload()
+                        }, 800)
+                    }
+                })
+            }
+
+        })
+    }
+
+</script>

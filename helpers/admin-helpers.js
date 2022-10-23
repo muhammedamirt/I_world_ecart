@@ -128,11 +128,58 @@ module.exports = {
                     }
                 }
             ]).then((data) => {
-                console.log(data);
+                // console.log(data);
                 res(data)
             })
         })
 
+    },
+
+    changeOrderStatus:(orderId,userId,status)=>{
+        return new Promise(async (res,rej)=>{
+            let response={}
+            let userOrder =await orderCollection.findOne({userId:userId})
+            if(userOrder){
+                let orderIndex = userOrder.orders.findIndex(p=> p._id == orderId)
+                if(orderIndex>=0){
+                    let changeStatusOrder = userOrder.orders[orderIndex]
+                    changeStatusOrder.paymentStatus = status
+                    userOrder.orders[orderIndex] = changeStatusOrder
+                    userOrder.save()
+                    
+                    console.log(status,"+++++++++++++++++++++");
+                    res()
+                }else{
+                    rej()
+                }               
+            }else{
+                console.log("No orders");
+                rej()
+            }
+        })
+    },
+    orderCanceleAdmin:(orderId,userId)=>{
+        return new Promise(async (res,rej)=>{
+            let response={}
+            let userOrder =await orderCollection.findOne({userId:userId})
+            if(userOrder){
+                let orderIndex = userOrder.orders.findIndex(p=> p._id == orderId)
+                if(orderIndex>=0){
+                    let cancelOrder = userOrder.orders[orderIndex]
+                    cancelOrder.paymentStatus = 'Canceld'
+                    userOrder.orders[orderIndex] = cancelOrder
+                    userOrder.save()
+                    console.log("cancel");
+                    res()
+                }else{
+                    rej()
+                }               
+            }else{
+                console.log("No orders");
+                rej()
+            }
+        })
     }
+
 
 }

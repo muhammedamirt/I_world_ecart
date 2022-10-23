@@ -10,7 +10,18 @@ const { Promise } = require('mongoose')
 const order = require('../models/schema/order')
 const { TodayInstance } = require('twilio/lib/rest/api/v2010/account/usage/record/today')
 const mongoose = require('mongoose')
+
 // const orderCollection = require('../models/schema/order')/
+
+const Razorpay = require('razorpay');
+
+// rzp_test_XRAcAd05q4QasW
+// nq72hxHx3dkRXzWb61rU6cWN
+
+let instance = new Razorpay({
+    key_id: 'rzp_test_XRAcAd05q4QasW',
+    key_secret: 'nq72hxHx3dkRXzWb61rU6cWN',
+});
 
 const regExp = /^[a-zA-Z]*$/
 
@@ -183,12 +194,10 @@ module.exports = {
     },
     incCartProductQuantity: (productId, userId) => {
         return new Promise(async (res, rej) => {
-            console.log(productId);
-            console.log(userId);
+
             let cart = await cartCollection.findOne({ userId: userId })
             let productData = await productCollection.findOne({ _id: productId })
-            console.log(cart);
-            console.log(productData);
+
             let price = productData.Price
             if (cart) {
                 let itemIndex = cart.cartItems.findIndex(p => p.productId == productId);
@@ -218,16 +227,16 @@ module.exports = {
     },
     decCartProductQuantity: (productId, userId) => {
         return new Promise(async (res, rej) => {
-            console.log(productId);
-            console.log(userId);
+
             let cart = await cartCollection.findOne({ userId: userId })
             let productData = await productCollection.findOne({ _id: productId })
-            console.log(cart);
-            console.log(productData);
+            console.log("new cart", cart);
+            console.log("product data", productData);
             let price = productData.Price
             if (cart) {
                 let itemIndex = cart.cartItems.findIndex(p => p.productId == productId);
-                if (itemIndex >= 0) {
+                console.log(itemIndex);
+                if (itemIndex != -1) {
                     let productItem = cart.cartItems[itemIndex]
                     productItem.ProductQuantity = Number(productItem.ProductQuantity) - 1;
                     productItem.TotalPrice = Number(productItem.ProductQuantity) * Number(productItem.productPrice)
@@ -301,8 +310,6 @@ module.exports = {
         return new Promise(async (res, rej) => {
             let cart = await cartCollection.find({ userId: userId }).lean()
             console.log(cart.cartItems, "==========================");
-            // console.log(productData,"==========");
-            // let itemIndex = cart.cartItems.findIndex(p => p.productId==productId) 
             console.log(cart);
             res(cart)
         })
@@ -310,35 +317,40 @@ module.exports = {
     },
     addProductToOrders: (orderDocument, userAddress, userId) => {
         return new Promise(async (res, rej) => {
+
+            let response = {
+                orderId: null,
+                totalAmount: null
+            }
+
             let user = await userCollection.findOne({ _id: userId })
             let cart = await cartCollection.findOne({ userId: userId })
-            
             let order = await orderCollection.findOne({ userId: userId })
-
             let paymentType = orderDocument.payment
-
+            let status = orderDocument.payment === "Cash On Delivery" ? "pending" : "Shipped"
             let today = new Date()
             let date = new Date().toJSON().slice(0, 10);
             // let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-
             let products = cart.cartItems
             console.log(products);
             let totalAmount = cart.totalAmount
-
-
-
             let userFullName = user.FirstName + user.LastName
-            console.log(userFullName);
             let userMobile = user.Mobile
-            // console.log(order)
             if (cart) {
                 if (order) {
-                    
+
                     console.log("already have order");
-                   
 
-                    console.log(order);
-
+                    userCollection.updateOne(
+                        { _id: userId },
+                        {
+                            $set: {
+                                address: userAddress
+                            }
+                        }
+                    ).then((data) => {
+                        console.log(data, "++++++++++++++++++++++++")
+                    })
                     order.orders.push({
                         date: date,
                         userName: userFullName,
@@ -347,19 +359,24 @@ module.exports = {
                         userMobile: userMobile,
                         products: products,
                         totalAmount: totalAmount,
-                        paymentStatus: "pending",
+                        paymentStatus: status,
                         paymentType: paymentType
                     })
-                    order.save()
-                    console.log("product push");
-                    cartCollection.deleteOne({ userId: userId }).then((data) => {
-                        console.log('cart cleared ==================', data);
+                    order.save(async (err, data) => {
+                        let orderLength = data.orders.length
+                        console.log(orderLength);
+                        let orderId = data.orders[orderLength - 1]._id
+                        console.log(orderId);
+                        response.orderId = orderId
+                        response.totalAmount = totalAmount
+                        // console.log(response);
+                        console.log("product push");
+                        cartCollection.deleteOne({ userId: userId }).then((data) => {
+                            console.log('cart cleared ==================', data);
+                        })
+                        res(response)
                     })
-
-                    res()
                 } else {
-                    // console.log(cart);
-                    // console.log(products)
                     userCollection.updateOne(
                         { _id: userId },
                         {
@@ -380,34 +397,23 @@ module.exports = {
                             userMobile: userMobile,
                             products: products,
                             totalAmount: totalAmount,
-                            paymentStatus: "pending",
+                            paymentStatus: status,
                             paymentType: paymentType
                         }]
 
+                    }).then((data) => {
+                        response.orderId = data.orders[0]._id
+                        response.totalAmount = totalAmount
+                        cartCollection.deleteOne({ userId: userId }).then((data) => {
+                            console.log('cart cleared ==================', data);
+                        })
+                        res(response)
                     })
-
-
-                    // order.numberOfOrders = "0"
-                    // order.save()
-
-                    cartCollection.deleteOne({ userId: userId }).then((data) => {
-                        console.log('cart cleared ==================', data);
-                    })
-                    res()
-
                 }
-                
-
-
             } else {
                 console.log("no cart");
                 rej()
             }
-
-
-
-
-
         })
     },
     getOrderProducts: (userId) => {
@@ -415,18 +421,16 @@ module.exports = {
         return new Promise(async (res, rej) => {
             orderCollection.aggregate([
                 {
-                    $match:{userId:userId}
+                    $match: { userId: userId }
                 },
-                
             ]).then((data) => {
-                console.log(data,"======================");
                 let userData = data[0]
                 let orders = userData.orders
-                console.log(orders);
-                res(orders)
+                // console.log(orders);
+                let latestOrders = orders.reverse()
+                res(latestOrders)
             })
         })
-
     },
     findFilterCategoryProduct: (category) => {
         return new Promise((res, rej) => {
@@ -438,7 +442,7 @@ module.exports = {
                 })
         })
     },
-    getMoreOrderDetailes:(orderId)=>{
+    getMoreOrderDetailes: (orderId) => {
         return new Promise(async (res, rej) => {
             let id = mongoose.Types.ObjectId(orderId)
             orderCollection.aggregate([
@@ -459,6 +463,96 @@ module.exports = {
                 console.log(data);
                 res(data)
             })
+        })
+    },
+    userOrderCanceling: (orderId, userId) => {
+        return new Promise(async (res, rej) => {
+            let response = {}
+            let userOrder = await orderCollection.findOne({ userId: userId })
+            if (userOrder) {
+                let orderIndex = userOrder.orders.findIndex(p => p._id == orderId)
+                if (orderIndex >= 0) {
+                    let cancelOrder = userOrder.orders[orderIndex]
+                    cancelOrder.paymentStatus = "canceld"
+                    userOrder.orders[orderIndex] = cancelOrder
+                    userOrder.save()
+
+                    console.log("canceld");
+                    res(response)
+                } else {
+                    rej()
+                }
+            } else {
+                console.log("No orders");
+                rej()
+            }
+        })
+
+    },
+    generateRazorpay: (orderId, totalPrice) => {
+        return new Promise((res, rej) => {
+            let id = orderId.toString()
+
+            console.log(id, totalPrice);
+
+            let options = {
+                amount: totalPrice*100,
+                currency: "INR",
+                receipt: id
+            }
+            instance.orders.create(options, function (err, order) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log("===========", order);
+                    res(order)
+                }
+
+            })
+        })
+    },
+    verifyPayment: (details) => {
+        return new Promise((res, rej) => {
+            try {
+                const crypto = require('crypto')
+                let hmac = crypto.createHmac('sha256', 'nq72hxHx3dkRXzWb61rU6cWN')
+
+                hmac.update(details['payment[razorpay_order_id]'] + '|' + details['payment[razorpay_payment_id]'])
+                hmac = hmac.digest('hex')
+
+                if (hmac === details['payment[razorpay_signature]']) {
+                    res()
+                } else {
+                    rej()
+                }
+
+            } catch (err) {
+                console.log(err);
+            }
+        })
+    },
+    changeOrderStatus:(orderId,userId)=>{
+        console.log(orderId,userId);
+        return new Promise(async (res, rej) => {
+            // let response = {}
+            let userOrder = await orderCollection.findOne({ userId: userId })
+            if (userOrder) {
+                let orderIndex = userOrder.orders.findIndex(p => p._id == orderId)
+                if (orderIndex >= 0) {
+                    let changeStatus = userOrder.orders[orderIndex]
+                    changeStatus.paymentStatus = "Placed"
+                    userOrder.orders[orderIndex] = changeStatus
+                    userOrder.save()
+
+                    console.log("Placed");
+                    res()
+                } else {
+                    rej()
+                }
+            } else {
+                console.log("No orders");
+                rej()
+            }
         })
     }
 }

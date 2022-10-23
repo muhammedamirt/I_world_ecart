@@ -53,145 +53,227 @@
    <!-- checkout-area start -->
    <section class="checkout-area pb-50 wow fadeInUp" data-wow-duration=".8s" data-wow-delay=".2s">
       <div class="container">
-         <form action="/order-placement" method="post">
-            <div class="row">
-               <div class="col-lg-6 col-md-12">
-                  <div class="checkbox-form">
-                     <h3>Billing Details</h3>
-                     <div class="row">
-                        <div class="col-md-6">
-                           <div class="checkout-form-list">
-                              <label>First Name <span class="required">*</span></label>
-                              <input type="text" placeholder="" name="firstName" value="{{userData.FirstName}}" required/>
+         {{!-- <form action="/order-placement" method="post"> --}}
+            <form action="" id="checkout-form-submit">
+               <div class="row">
+                  <div class="col-lg-6 col-md-12">
+                     <div class="checkbox-form">
+                        <h3>Billing Details</h3>
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="checkout-form-list">
+                                 <label>First Name <span class="required">*</span></label>
+                                 <input type="text" placeholder="" name="firstName" value="{{userData.FirstName}}"
+                                    required />
+                              </div>
                            </div>
-                        </div>
-                        <div class="col-md-6">
-                           <div class="checkout-form-list">
-                              <label>Last Name <span class="required">*</span></label>
-                              <input type="text" placeholder="" name="lastName" value="{{userData.LastName}}" required/>
+                           <div class="col-md-6">
+                              <div class="checkout-form-list">
+                                 <label>Last Name <span class="required">*</span></label>
+                                 <input type="text" placeholder="" name="lastName" value="{{userData.LastName}}"
+                                    required />
+                              </div>
                            </div>
-                        </div>
-                        {{!-- <div class="col-md-12">
-                           <div class="checkout-form-list">
-                              <label>Company Name</label>
-                              <input type="text" placeholder="" name="company" required/>
+                           {{!-- <div class="col-md-12">
+                              <div class="checkout-form-list">
+                                 <label>Company Name</label>
+                                 <input type="text" placeholder="" name="company" required />
+                              </div>
+                           </div> --}}
+                           <div class="col-md-12">
+                              <div class="checkout-form-list">
+                                 <label>Address <span class="required">*</span></label>
+                                 <input type="text" placeholder="Street address" name="address"
+                                    value="{{userData.address}}" required />
+                              </div>
                            </div>
-                        </div> --}}
-                        <div class="col-md-12">
-                           <div class="checkout-form-list">
-                              <label>Address <span class="required">*</span></label>
-                              <input type="text" placeholder="Street address" name="address" value="{{userData.address}}" required/>
+                           <div class="col-md-12">
+                              <div class="checkout-form-list">
+                                 <label>Town / City <span class="required">*</span></label>
+                                 <input type="text" placeholder="Town / City" name="Town" required />
+                              </div>
                            </div>
-                        </div>
-                        <div class="col-md-12">
-                           <div class="checkout-form-list">
-                              <label>Town / City <span class="required">*</span></label>
-                              <input type="text" placeholder="Town / City" name="Town" required/>
+                           {{!-- <div class="col-md-6">
+                              <div class="checkout-form-list">
+                                 <label>State / County <span class="required">*</span></label>
+                                 <input type="text" placeholder="" name="" />
+                              </div>
+                           </div> --}}
+                           <div class="col-md-6">
+                              <div class="checkout-form-list">
+                                 <label>Email Address <span class="required">*</span></label>
+                                 <input type="email" placeholder="" name="Email" value="{{userData.Email}}" required />
+                              </div>
                            </div>
-                        </div>
-                        {{!-- <div class="col-md-6">
-                           <div class="checkout-form-list">
-                              <label>State / County <span class="required">*</span></label>
-                              <input type="text" placeholder="" name="" />
-                           </div>
-                        </div> --}}
-                        <div class="col-md-6">
-                           <div class="checkout-form-list">
-                              <label>Email Address <span class="required">*</span></label>
-                              <input type="email" placeholder="" name="Email" value="{{userData.Email}}" required/>
-                           </div>
-                        </div>
-                        <div class="col-md-6">
-                           <div class="checkout-form-list">
-                              <label>Phone <span class="required">*</span></label>
-                              <input type="text" placeholder="+91" name="Mobile" value="{{userData.Mobile}}" required/>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-lg-6 col-md-12">
-                  <div class="your-order mb-30 ">
-                     <h3>Your order</h3>
-                     <div class="your-order-table table-responsive">
-                        <table>
-                           <thead>
-                              <tr>
-                                 <th class="product-name">Products</th>
-                                 <th class="product-total">Total</th>
-                              </tr>
-                           </thead>
-                           <tbody>
-                              {{#each productData}}
-                              <tr class="cart_item">
-                                 <td class="product-name">
-                                    {{this.productName}} <strong class="product-quantity"> ×
-                                       {{this.ProductQuantity}}</strong>
-                                 </td>
-                                 <td class="product-total">
-                                    <span class="amount"><i class="bi bi-currency-rupee"></i>{{this.TotalPrice}}</span>
-                                 </td>
-                              </tr>
-                              {{/each}}
-
-                           </tbody>
-                           <tfoot>
-
-                              <tr class="order-total">
-                                 <th>Order Total</th>
-                                 <td><strong><span class="amount"><i
-                                             class="bi bi-currency-rupee"></i>{{cartData.totalAmount}}</span></strong>
-                                 </td>
-                              </tr>
-                           </tfoot>
-                        </table>
-                     </div>
-                     <div class="payment-method">
-                        <div class="accordion" id="checkoutAccordion">
-                           <div class="accordion-item">
-                              <h2 class="accordion-header" id="checkoutOne">
-                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#bankOne" aria-expanded="true" aria-controls="bankOne">
-                                    Cash Payment
-                                 </button>
-                              </h2>
-                              <div id="bankOne" class="accordion-collapse collapse show" aria-labelledby="checkoutOne"
-                                 data-bs-parent="#checkoutAccordion">
-                                 <div class="accordion-body">
-                                    <label for=""
-                                       style="color:palevioletred ; font-weight:bold ; font-size: 1.3rem ;">Cash On
-                                       Delivery</label>
-                                    <input type="radio" name="payment" value="Cash On Delivery"><br>
-                                    <label for=""
-                                       style="color:palevioletred ; font-weight:bold ; font-size: 1.3rem ; ">Online
-                                       Payment</label>
-                                    <input type="radio" name="payment" value="Online Payment" ><br>
-                                    <hr>
-                                    {{!-- <label for="">
-                                       <div class="accordion-body">
-                                          <a href="#">
-                                             <h3
-                                                style="color:palevioletred ; text-align: center; text-decoration: none;">
-                                                <i class="bi bi-paypal"></i> <i class="bi bi-bank"></i> <i
-                                                   class="bi bi-google"></i> </h3>
-                                          </a>
-                                       </div>
-                                    </label> --}}
-
-                                 </div>
+                           <div class="col-md-6">
+                              <div class="checkout-form-list">
+                                 <label>Phone <span class="required">*</span></label>
+                                 <input type="text" placeholder="+91" name="Mobile" value="{{userData.Mobile}}"
+                                    required />
                               </div>
                            </div>
                         </div>
-                        <div class="order-button-payment mt-20">
-                           <button type="submit" class="tp-btn tp-color-btn w-100 banner-animation">Place order</button>
+                     </div>
+                  </div>
+                  <div class="col-lg-6 col-md-12">
+                     <div class="your-order mb-30 ">
+                        <h3>Your order</h3>
+                        <div class="your-order-table table-responsive">
+                           <table>
+                              <thead>
+                                 <tr>
+                                    <th class="product-name">Products</th>
+                                    <th class="product-total">Total</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 {{#each productData}}
+                                 <tr class="cart_item">
+                                    <td class="product-name">
+                                       {{this.productName}} <strong class="product-quantity"> ×
+                                          {{this.ProductQuantity}}</strong>
+                                    </td>
+                                    <td class="product-total">
+                                       <span class="amount"><i
+                                             class="bi bi-currency-rupee"></i>{{this.TotalPrice}}</span>
+                                    </td>
+                                 </tr>
+                                 {{/each}}
+
+                              </tbody>
+                              <tfoot>
+
+                                 <tr class="order-total">
+                                    <th>Order Total</th>
+                                    <td><strong><span class="amount"><i
+                                                class="bi bi-currency-rupee"></i>{{cartData.totalAmount}}</span></strong>
+                                    </td>
+                                 </tr>
+                              </tfoot>
+                           </table>
+                        </div>
+                        <div class="payment-method">
+                           <div class="accordion" id="checkoutAccordion">
+                              <div class="accordion-item">
+                                 <h2 class="accordion-header" id="checkoutOne">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                       data-bs-target="#bankOne" aria-expanded="true" aria-controls="bankOne">
+                                       Cash Payment
+                                    </button>
+                                 </h2>
+                                 <div id="bankOne" class="accordion-collapse collapse show"
+                                    aria-labelledby="checkoutOne" data-bs-parent="#checkoutAccordion">
+                                    <div class="accordion-body">
+                                       <label for=""
+                                          style="color:palevioletred ; font-weight:bold ; font-size: 1.3rem ;">Cash On
+                                          Delivery</label>
+                                       <input type="radio" name="payment" value="Cash On Delivery"><br>
+                                       <label for=""
+                                          style="color:palevioletred ; font-weight:bold ; font-size: 1.3rem ; ">Online
+                                          Payment</label>
+                                       <input type="radio" name="payment" value="Online Payment"><br>
+                                       <hr>
+                                       {{!-- <label for="">
+                                          <div class="accordion-body">
+                                             <a href="#">
+                                                <h3
+                                                   style="color:palevioletred ; text-align: center; text-decoration: none;">
+                                                   <i class="bi bi-paypal"></i> <i class="bi bi-bank"></i> <i
+                                                      class="bi bi-google"></i>
+                                                </h3>
+                                             </a>
+                                          </div>
+                                       </label> --}}
+
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="order-button-payment mt-20">
+                              <button type="submit" class="tp-btn tp-color-btn w-100 banner-animation">Place
+                                 order</button>
+                           </div>
                         </div>
                      </div>
                   </div>
                </div>
-            </div>
-         </form>
+            </form>
       </div>
    </section>
    <!-- checkout-area end -->
 
 </main>
+
+
+
+<script>
+   $("#checkout-form-submit").submit((e) => {
+      e.preventDefault()
+      console.log("iam gone")
+      $.ajax({
+         url: '/order-placement',
+         method: 'post',
+         data: $("#checkout-form-submit").serialize(),
+         success: (response) => {
+            //alert(response)
+            if (response.codStatus) {
+               location.href = '/viewUserOrders'
+            } else {
+               razorpayPayment(response)
+              // location.href ='/viewUserOrders'
+            }
+
+         }
+      })
+   })
+
+   function razorpayPayment(order) {
+      console.log(order)
+      var options = {
+         "key": "rzp_test_XRAcAd05q4QasW", // Enter the Key ID generated from the Dashboard
+         "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+         "currency": "INR",
+         "name": "iWorrd Ecart",
+         "description": "Test Transaction",
+         "image": "https://example.com/your_logo",
+         "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+         "handler": function (response) {
+            alert(response.razorpay_payment_id);
+            alert(response.razorpay_order_id);
+            alert(response.razorpay_signature)
+
+            verifyPayment(response,order)
+         },
+         "prefill": {
+            "name": "Gaurav Kumar",
+            "email": "gaurav.kumar@example.com",
+            "contact": "9999999999"
+         },
+         "notes": {
+            "address": "Razorpay Corporate Office"
+         },
+         "theme": {
+            "color": "#3399cc"
+         }
+      };
+      var rzp1 = new Razorpay(options);
+      rzp1.open();
+   }
+   function verifyPayment(payment,order){
+      $.ajax({
+         url:'/verify-payment',
+         data:{
+            payment,
+            order
+         },
+         method:'post',
+         success:(response)=>{
+            if(response.status){
+               location.href='/viewUserOrders'
+            }else{
+               alert('payment failed')
+            }
+         }
+      })
+   }
+</script>

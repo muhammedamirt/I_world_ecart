@@ -3,17 +3,115 @@
         <div class="row">
             <div class="col-lg-12 stretch-card">
                 <div class="card">
-                    <div class="card-body">
+                    
+                    <div class="card-body" style="background-color:rgb(238, 226, 230) ;">
+                         
                         <h2 class="">{{userOrder.[0].orders.userName}}</h2>
-                        <ul style="font: size 40px ; font-weight: bold;">
+                        <ul style="font: size 40px ; font-weight: bold; list-style: disc;">
                             <li>Mobile: {{userOrder.[0].orders.userMobile}}</li>
                             <li>Date: {{userOrder.[0].orders.date}}</li>
                             <li>Full Address: {{userOrder.[0].orders.address}}</li>
-                            <li>Status: {{userOrder.[0].orders.paymentStatus}}</li>
+                            <li>Status:
+
+                                {{#ifEquals userOrder.[0].orders.paymentStatus "canceld"}}
+
+                                <label class="badge badge-danger">Canceld</label>
+
+                                {{else ifEquals userOrder.[0].orders.paymentStatus "Packed" }}
+
+                                <label class="badge badge-primary">Packed</label>
+
+                                {{else ifEquals userOrder.[0].orders.paymentStatus "Success" }}
+
+                                <label class="badge badge-success">Success</label>
+
+                                {{else ifEquals userOrder.[0].orders.paymentStatus "Shipped" }}
+
+                                <label class="badge badge-warning">Shiped</label>
+
+                                {{else}}
+
+                                <label class="badge badge-info">Pending</label>
+                                {{/ifEquals}}
+
+                            </li>
                         </ul>
+
+
+                       
+
+
+
+                        <div style=" margin-top: 30px;">
+                            <h4 style="color:rgb(198, 75, 95) ;">Change order status</h4>
+                            <form class="form-inline"
+                                action="/admin/change-status/{{userOrder.[0].orders._id}}/{{userOrder.[0].orders.userId}}"
+                                method="post">
+
+
+                                <label class="sr-only" for="inlineFormInputName2"
+                                    style="background-color:pink ;">Name</label>
+                                {{!-- <input type="text" class="form-control mb-2 mr-sm-2" id="inlineFormInputName2"
+                                    placeholder="Change Order Status"> --}}
+                                <select name="paymentStatus" style="width:100px ; ">
+                                    {{#ifEquals userOrder.[0].orders.paymentStatus 'Success'}}
+                                    <option selected>Success</option>
+                                    {{else}}
+                                    <option>Success</option>
+                                    {{/ifEquals}}
+                                    {{#ifEquals userOrder.[0].orders.paymentStatus 'Shipped'}}
+                                    <option selected>Shipped</option>
+
+                                    {{else}}
+                                    <option>Shipped</option>
+
+                                    {{/ifEquals}}
+                                    {{#ifEquals userOrder.[0].orders.paymentStatus 'Pending'}}
+                                    <option selected>Pending</option>
+
+                                    {{else}}
+                                    <option>Pending</option>
+
+                                    {{/ifEquals}}
+                                    {{#ifEquals userOrder.[0].orders.paymentStatus 'Packed'}}
+                                    <option selected>Packed</option>
+
+                                    {{else}}
+                                    <option>Packed</option>
+
+                                    {{/ifEquals}}
+
+
+
+                                </select>
+                                <button type="submit" class="btn btn-outline-info btn-fw">Submit</button>
+                            </form>
+                        </div>
+                        <div style="margin-top:30px ;">
+                            {{#ifEquals userOrder.[0].orders.paymentStatus "canceld"}}
+
+
+                            <button class="btn btn-inverse-secondary btn-fw" disabled><i
+                                    class="bi bi-x-square-fill"></i>Remove</button>
+
+
+                            {{else}}
+                            <h4 style="color:rgb(198, 75, 95) ;">Cancel Order</h4>
+
+
+                            <button class="btn btn-inverse-danger btn-fw"
+                                onclick="cancel('{{userOrder.[0].orders._id}}','{{userOrder.[0].orders.userId}}')"><i
+                                    class="bi bi-x-square-fill"></i>Cancel</button>
+
+
+                            {{/ifEquals}}
+                        </div>
+
+
+
                         <h3 style="text-align:center ; color:blue ;">Ordered Products</h3>
                         <div class="table-responsive pt-3">
-                            <table class="table table-bordered" style="text-align:c ;">
+                            <table class="table table-bordered" style="">
 
                                 <thead>
                                     <tr>
@@ -35,9 +133,7 @@
                                         <th>
                                             Total Amount
                                         </th>
-                                        <th>
-                                            Cancel
-                                        </th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -61,13 +157,12 @@
                                         <td>
                                             {{this.TotalPrice}}
                                         </td>
-                                        <td>
-                                            Cancel
-                                        </td>
+                                        
                                     </tr>
                                     {{/each}}
                                 </tbody>
                             </table>
+                            <a href="/admin/view-orders" class="btn btn-outline-dark" style="margin-left: auto;margin-top: 20px;"><i class="bi bi-arrow-left-square">Back to list</i></a>
                         </div>
                     </div>
                 </div>
@@ -75,3 +170,38 @@
         </div>
     </div>
 </section>
+
+<script>
+
+    function cancel(orderId, userId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, Cancel Order!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/admin/cancel-admin-order/' + orderId + '/' + userId,
+                    method: 'post',
+                    success: (response) => {
+                        Swal.fire({
+
+                            icon: 'success',
+                            title: 'Order Canceld Successfully',
+                            showConfirmButton: false,
+                        })
+                        setTimeout(() => {
+                            location.reload()
+                        }, 800)
+                    }
+                })
+            }
+
+        })
+    }
+
+</script>

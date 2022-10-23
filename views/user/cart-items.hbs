@@ -137,7 +137,9 @@
 </script>
 <script>
    function cartquantitydec(product) {
-      console.log(product)
+        let quantity = document.getElementById(product+'quantityValue').value
+        if(quantity!=1){
+console.log(product)
       $.ajax({
          url: '/cartquantitydec/' + product,
          method: 'get',
@@ -145,7 +147,7 @@
       })
       let cartPrice = document.getElementById(product+"price").innerHTML
       //console.log(cartPrice)
-      let quantity = document.getElementById(product+'quantityValue').value
+    
       let exQuantity = Number(quantity) - 1
       //console.log(exQuantity)
       let totalAmount = Number(cartPrice) * Number(exQuantity)
@@ -155,4 +157,6 @@
       //console.log(allTotal)
       document.getElementById('allTotal').innerHTML = Number(allTotal) - Number(cartPrice)
    } 
+        }
+      
 </script>

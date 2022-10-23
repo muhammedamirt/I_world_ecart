@@ -5,6 +5,7 @@ const adminHelpers = require('../helpers/admin-helpers');
 const { response } = require("../app");
 const products = require("../models/schema/products");
 const categury = require("../models/schema/categury");
+const admin = require("../models/schema/admin");
 
 
 
@@ -25,9 +26,9 @@ module.exports = {
                 adminEmailErr = {}
             } else if (adminPasswordErr) {
 
-                let passwordMessage = adminPasswordErr.PasswordMessage
-                console.log(passwordMessage);
-                res.render('admin/admin-login', { admin: true, passwordMessage })
+                // let passwordMessage = adminPasswordErr.PasswordMessage
+                // console.log(passwordMessage,"+++++++++++++++++++++++");
+                res.render('admin/admin-login', { admin: true, adminPasswordErr})
                 adminPasswordErr = {}
 
             } else {
@@ -127,13 +128,11 @@ module.exports = {
         let files = req.files
         if (files) {
             const images = []
-            // console.log(req.file.length,"================================");
             for (i = 0; i < req.files.length; i++) {
                 images[i] = files[i].filename
             }
             req.body.img = images
             productHelpers.addProduct(req.body).then((data) => {
-                // console.log(data, 'ppppppppppppppppppppppppppp');
                 res.redirect("/admin/view-products")
             })
 
@@ -305,14 +304,45 @@ module.exports = {
     },
 
     getViewOrderMore: (req,res)=>{
+        if(req.session.admin){
+            let userId = req.params.userId
+            // console.log(userId);
+            adminHelpers.getOneUserOrder(userId).then((userOrder)=>{
+                // console.log(userOrder);
+                let products =userOrder[0].orders.products
+                // console.log(products);
+                res.render('admin/view-order-more',{admin:true,products,userOrder})
+            })
+        }else{
+            res.redirect('/admin')
+        }
+        
+        
+    },
+    getChangeStatus:(req,res)=>{
+        let orderId = req.params.orderId
         let userId = req.params.userId
-        console.log(userId);
-        adminHelpers.getOneUserOrder(userId).then((userOrder)=>{
-            console.log(userOrder);
-            let products =userOrder[0].orders.products
-            console.log(products);
-            res.render('admin/view-order-more',{admin:true,products,userOrder})
-        })
+        let status = req.body.paymentStatus
+        if(req.session.admin){
+            adminHelpers.changeOrderStatus(orderId,userId,status).then((data)=>{
+                res.redirect('/admin/view-order-more/'+orderId)
+            })
+        }else{
+            res.redirect('/admin')
+        }
+        
+       
+    },
+    getAdminOrderCancel:(req,res)=>{
+        let orderId = req.params.orderId
+        let userId = req.params.userId
+        if(req.session.admin){
+            adminHelpers.orderCanceleAdmin(orderId,userId).then((data)=>{
+                res.json({status:true})
+            })
+        }else{
+            res.redirect('/admin')
+        }
         
     }
 } 

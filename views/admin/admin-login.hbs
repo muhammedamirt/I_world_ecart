@@ -28,8 +28,8 @@
 
                                         <input type="password" id="form3Example4" class="form-control form-control-lg"
                                             placeholder="Password" name="Password" />
-                                            {{#if passwordMessage}}
-                                            <p class="text-danger" style="text-align: center;">{{passwordMessage}}</p>
+                                            {{#if adminPasswordErr}}
+                                            <p class="text-danger" style="text-align: center;">{{adminPasswordErr.PasswordMessage}}</p>
                                             {{/if}}
                                     </div>
                         
