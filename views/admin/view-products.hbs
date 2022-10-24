@@ -2,10 +2,10 @@
 
     <a href="/admin/add-products" class="btn btn-dark btn-lg btn-block ml-auto" style="width:20rem; ;">Add
         Poducts</a>
-    <div class="card-body">
+    <div class="card-body" style="background-color:rgb(255, 222, 227) ;">
         <h4 class="card-title">ALL PRRODUCTS</h4>
         <div class="table-responsive">
-            <table class="table table-striped">
+            <table class="table table-striped" style="font-weight: bold;">
                 <thead>
                     <tr>
                         <th>
@@ -19,6 +19,9 @@
                         </th>
                         <th>
                             Price
+                        </th>
+                        <th>
+                            Stock
                         </th>
                         <th>
                             Categury
@@ -48,17 +51,18 @@
                             {{this.Price}}
                         </td>
                         <td>
+                            {{this.stock}} - <span style="color:green ;"> Available</span>
+                        </td>
+                        <td>
                             {{this.Categury}}
                         </td>
                         <td>
-                            <button type="button" class="btn btn-social-icon btn-outline-facebook"><a
-                                    href="/admin/edit-product/{{this._id}}" style="color: #3b579d ;"><i
-                                        class="bi bi-pencil-square"></i></a></button>
+                            <a href="/admin/edit-product/{{this._id}}" class="btn btn-inverse-info btn-fw"><i
+                                    class="bi bi-pencil-square"></i></a>
                         </td>
                         <td>
-                            <button type="button" class="btn btn-social-icon btn-outline-youtube"><a
-                                    style="color:red ; " href="/admin/delete-product/{{this._id}}"
-                                    onclick="confirm()"><i class="bi bi-trash-fill"></i></a></button>
+                            <a class="btn btn-inverse-danger btn-fw"  onclick="askConferm('{{this._id}}')"><i
+                                    class="bi bi-trash-fill"></i></a>
 
                         </td>
                     </tr>
@@ -71,43 +75,24 @@
     </div>
 </div>
 <script>
-    const conferm = () => {
-        confirm("are you sure")
+    const askConferm = (productId) => {
+        Swal.fire({
+         title: 'Are you sure?',
+         text: "You won't be able to revert this!",
+         icon: 'warning',
+         showCancelButton: true,
+         confirmButtonColor: '#3085d6',
+         cancelButtonColor: '#d33',
+         confirmButtonText: 'Yes, Remove it!'
+      }).then((result) => {
+         if (result.isConfirmed) {
+            location.href = `/admin/delete-product/${productId}`
+            Swal.fire(
+               'Deleted!',
+               'Your file has been deleted.',
+               'success'
+            )
+         }
+      })
     }
 </script>
-
-{{!-- <style>
-    body {
-        font-family: "Open Sans",
-            -apple-system, BlinkMacSystemFont,
-            "Segoe UI",
-            Roboto, Oxygen-Sans,
-            Ubuntu,
-            Cantarell,
-            "Helvetica Neue",
-            Helvetica, Arial,
-            sans-serif;
-    }
-</style>
-<script>
-    const stAlert=( ) =>{
-Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire(
-                'Deleted!',
-                'Your file has been deleted.',
-                'success'
-            )
-        }
-    })
-    }
-    
-</script> --}}

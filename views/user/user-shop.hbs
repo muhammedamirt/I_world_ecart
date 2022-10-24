@@ -24,7 +24,8 @@
          <div class="row align-items-center">
             <div class="col-xl-7 col-lg-12 col-md-12 col-12">
                <div class="tp-breadcrumb">
-                  <h2 class="tp-breadcrumb__title">Shope Now</h2>
+                  <h2 class="tp-breadcrumb__title" style="color:rgb(255, 12, 93) ;"> <u> Shope Now <i
+                           class="bi bi-cart-fill"></i></u></h2>
                </div>
             </div>
          </div>
@@ -36,9 +37,9 @@
    <div class="product-filter-area pt-65 pb-80">
       <div class="container">
          <form action="/filter-product" method="post" style="text-align:center ;">
-         {{#each category}}
+            {{#each category}}
             <label for="">{{this.categuryName}}</label>
-            <input type="radio"  value="{{this.categuryName}}" name="filter">
+            <input type="radio" value="{{this.categuryName}}" name="filter">
             {{/each}}
             <br>
             <button class="btn btn-primary" type="submit">filter</button>
@@ -52,23 +53,28 @@
                   <div
                      class="row row-cols-xxl-5 row-cols-xl-4 row-cols-lg-3 row-cols-md-3 row-cols-sm-2 row-cols-1 tpproduct">
                      {{#each products}}
-                     <div class="col">
+                     <div class="col .mb-5, .my-5">
                         <div class="tpproduct tpproductitem mb-15 p-relative">
                            <div class="tpproduct__thumb">
                               <div class="tpproduct__thumbitem p-relative">
-                                 <a href="/product-detials/{{this._id}}">
-                                    <img src="/product-images/{{this.images.[0]}}" alt="image">
-                                    <img class="thumbitem-secondary" src="/product-images/{{this.images.[1]}}"
-                                       alt="image">
-                                       
 
-                                 </a>
+                                 <img src="/product-images/{{this.images.[0]}}" alt="image">
+                                 <img class="thumbitem-secondary" src="/product-images/{{this.images.[1]}}" alt="image">
+
+
+
                                  <div class="tpproduct__thumb-bg">
+
                                     <div class="tpproductactionbg">
-                                       <a  onclick="addToCart('{{this._id}}')"><i class="fal fa-shopping-basket"></i></a>
+                                       {{#ifEquals this.stock '0' }}
+                                       <i class="bi bi-cart-x" style="color:red ;"></i>
+                                       {{else}}
+                                       <a onclick="addToCart('{{this._id}}')"><i class="fal fa-shopping-basket"></i></a>
+                                       {{/ifEquals}}
+
                                        {{!-- <a href=""><i class="fal fa-exchange"></i></a> --}}
                                        <a href="/product-detials/{{this._id}}"><i class="fal fa-eye"></i></a>
-                                       <a href="/add-to-wishlist/{{this._id}}"><i class="fal fa-heart"></i></a>
+                                       <a onclick="addToWishlist('{{this._id}}')"><i class="fal fa-heart"></i></a>
                                     </div>
                                  </div>
                               </div>
@@ -77,6 +83,14 @@
                               <h2 class="tpproduct__title mb-5" style="font-size:large ; color:black;">
                                  {{this.ProductName}}</h2>
                               <div class="tpproduct__priceinfo p-relative">
+                                 {{!-- {{#ifEquals this.stock ''}}
+                                 <h5 style="color:rgb(128, 0, 0) ;">Out Of Stock</h5>
+                                 {{/ifEquals}} --}}
+                                 {{#ifEquals this.stock '0' }}
+                                 <h5 style="color:rgb(128, 0, 0) ;">Out Of Stock</h5>
+                                 {{else}}
+                                 <h5 style="color:green ;">On Stock</h5>
+                                 {{/ifEquals}}
                                  <div class="tpproduct__ammount">
                                     <span><i class="bi bi-currency-rupee"></i>{{this.Price}}</span>
                                  </div>
@@ -135,12 +149,73 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
 <script>
-   const addToCart = (productId)=>{
-      console.log(productId)
-      alert('Cart Added')
-       $.ajax({
-                url: `/add-to-cart/${productId}`,
-                method: "get"
-            })
+   const addToCart = (productId) => {
+      //console.log(productId)
+
+      $.ajax({
+         url: `/add-to-cart/${productId}`,
+         method: "get",
+         success: (response) => {
+            if (response.status) {
+               Swal.fire({
+                  position: 'top-end',
+                  icon: 'success',
+                  title: 'Product Added to Cart',
+                  showConfirmButton: false,
+                  timer: 1500
+               })
+            }else{
+               Swal.fire('Your Not Logged Any Account')
+            }
+         }
+      })
    }
 </script>
+<script>
+   const addToWishlist = (productId) => {
+
+
+      $.ajax({
+         url: `/add-to-wishlist/${productId}`,
+         method: "get",
+         success: (response) => {
+            console.log(response)
+            if (response.status) {
+               Swal.fire({
+                  position: 'top-end',
+                  icon: 'success',
+                  title: 'Product Added To Wishlist',
+                  showConfirmButton: false,
+                  timer: 1500
+               })
+            } else if (response === 'notLogged') {
+
+               Swal.fire('Your Not Logged Any Account')
+
+            } else {
+               Swal.fire('All Ready In wishlist')
+            }
+         }
+      })
+   }
+
+</script>
+<style>
+   body {
+      font-family: "Open Sans",
+         -apple-system,
+         BlinkMacSystemFont,
+         "Segoe UI",
+         Roboto,
+         Oxygen-Sans,
+         Ubuntu,
+         Cantarell,
+         "Helvetica Neue",
+         Helvetica, Arial, sans-serif;
+   }
+
+   .mb-5,
+   .my-5 {
+      margin-bottom: 1rem !important;
+   }
+</style>

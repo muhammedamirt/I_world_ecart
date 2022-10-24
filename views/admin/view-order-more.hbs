@@ -17,9 +17,9 @@
 
                                 <label class="badge badge-danger">Canceld</label>
 
-                                {{else ifEquals userOrder.[0].orders.paymentStatus "Packed" }}
+                                {{else ifEquals userOrder.[0].orders.paymentStatus "Placed" }}
 
-                                <label class="badge badge-primary">Packed</label>
+                                <label class="badge badge-primary">Placed</label>
 
                                 {{else ifEquals userOrder.[0].orders.paymentStatus "Success" }}
 
@@ -73,11 +73,11 @@
                                     <option>Pending</option>
 
                                     {{/ifEquals}}
-                                    {{#ifEquals userOrder.[0].orders.paymentStatus 'Packed'}}
-                                    <option selected>Packed</option>
+                                    {{#ifEquals userOrder.[0].orders.paymentStatus 'Placed'}}
+                                    <option selected>Placed</option>
 
                                     {{else}}
-                                    <option>Packed</option>
+                                    <option>Placed</option>
 
                                     {{/ifEquals}}
 
@@ -171,8 +171,7 @@
     </div>
 </section>
 
-<script>
-
+<script> 
     function cancel(orderId, userId) {
         Swal.fire({
             title: 'Are you sure?',
@@ -189,7 +188,6 @@
                     method: 'post',
                     success: (response) => {
                         Swal.fire({
-
                             icon: 'success',
                             title: 'Order Canceld Successfully',
                             showConfirmButton: false,

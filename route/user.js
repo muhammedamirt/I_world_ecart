@@ -31,7 +31,7 @@ router.post('/order-placement', loginChech, userControllers.postOrderDetailes)
 
 router.get('/product-detials/:id', userControllers.getProductDetails)
 
-router.get('/view-wishlist', loginChech, userControllers.getWishlist)
+router.get('/view-wishlist',loginChech,userControllers.getWishlist)
 
 router.get('/view-profile', loginChech, userControllers.getProfile)
 
@@ -59,7 +59,9 @@ router.get('/more-about-order/:orderId', loginChech, userControllers.getMoreAbou
 
 router.post('/cancel-user-order/:orderId', loginChech, userControllers.getUserOrderCancel)
 
-router.post('/verify-payment',userControllers.postVerifyPayment)
+router.post('/verify-payment',loginChech,userControllers.postVerifyPayment)
+
+router.get('/add-to-wishlist/:prodId',userControllers.getAddProductToWishlist)
 
 // router.get('/reorder-user-order/:orderId',userControllers.getUserReOrder)
 

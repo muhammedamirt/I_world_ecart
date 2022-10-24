@@ -11,8 +11,8 @@ module.exports = {
                     Price: productData.Price,
                     Categury: productData.Categury,
                     Description: productData.Description,
-                    images : productData.img
-                    
+                    images : productData.img,
+                    stock:productData.stock                  
                 })
             products.save().then((data) => {
                 console.log("product added");
@@ -39,8 +39,8 @@ module.exports = {
                     ProductName: productData.ProdName,
                     Price: productData.Price,
                     Categury: productData.Categury,
-                    Description: productData.Description
-                    
+                    Description: productData.Description,
+                    stock:productData.stock                  
                 }
             }).then((data) => {
                 console.log(data);

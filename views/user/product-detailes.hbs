@@ -65,6 +65,9 @@
                   <div class="tpproduct-details__pera">
                      <p>{{product.Description}}</p>
                   </div>
+                  {{#ifEquals product.stock '0' }}
+                  <h5 style="color:rgb(128, 0, 0) ;">Out Of Stock</h5>
+                  {{else}}
                   <form action="/add-to-cart/{{product._id}}" method="post">
                      <div class="tpproduct-details__count d-flex align-items-center flex-wrap mb-25">
                         <div class="tpproduct-details__quantity">
@@ -74,12 +77,17 @@
                         </div>
                         <div class="tpproduct-details__cart ml-20">
                            <button type="submit"><i class="fal fa-shopping-cart"></i> Add To
-                                 Cart</button>
+                              Cart</button>
                         </div>
                   </form>
-                  <div class="tpproduct-details__wishlist ml-20">
-                     <button><i class="fal fa-heart"></i></button>
+                  {{/ifEquals}}
+
+
+                  <div class=" ml-20">
+                     <button class="btn btn-social-icon btn-outline-dribbble" type="button"
+                        onclick="addToWishlist('{{product._id}}')"><i class="fal fa-heart"></i></button>
                   </div>
+
                </div>
                <div class="tpproductdot mb-30">
                   <a class="tpproductdot__variationitem" href="#">
@@ -160,3 +168,34 @@
 
 </main>
 
+<script>
+   const addToWishlist = (productId) => {
+      console.log(productId)
+      Swal.fire({
+         position: 'top-end',
+         icon: 'success',
+         title: 'Your work has been saved',
+         showConfirmButton: false,
+         timer: 1500
+      })
+      $.ajax({
+         url: `/add-to-wishlist/${productId}`,
+         method: "get"
+      })
+   }
+
+</script>
+<style>
+   body {
+      font-family: "Open Sans",
+         -apple-system,
+         BlinkMacSystemFont,
+         "Segoe UI",
+         Roboto,
+         Oxygen-Sans,
+         Ubuntu,
+         Cantarell,
+         "Helvetica Neue",
+         Helvetica, Arial, sans-serif;
+   }
+</style>

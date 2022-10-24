@@ -158,7 +158,7 @@ module.exports = {
 
     postProductDetailes: (req, res) => {
         let prodId = req.params.id
-        console.log(req.body);
+        console.log("=================",req.body);
         productHelpers.editProduuctDetailes(prodId, req.body).then((data) => {
             res.redirect('/admin/view-products')
         })

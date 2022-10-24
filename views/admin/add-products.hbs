@@ -2,13 +2,13 @@
     <div class="row">
         <div class="col-12 grid-margin stretch-card">
             <div class="card">
-                <div class="card-body">
+                <div class="card-body" style="background-color:rgb(246, 223, 227) ;">
                     <h4 class="card-title">Add Product</h4>
                     <p class="card-description">
                         Add a new product!
                     </p>
 
-                    <form class="forms-sample" action="/admin/add-products" method="post" enctype="multipart/form-data">
+                    <form class="forms-sample" action="/admin/add-products" method="post" enctype="multipart/form-data" style="font-weight:bold ;">
 
 
                         <div class="form-group">
@@ -22,7 +22,12 @@
                             <input type="number" class="form-control" id="productPrice" placeholder="Price" name="Price"
                                 required>
                         </div>
+                   <div class="form-outline">
+                                        <label class="form-group" for="form3Example6">Stock</label>
+                                        <input style="width:100px ;" type="number" id="form3Example6" class="form-control" name="stock"
+                                            placeholder="Stock" required />
 
+                                    </div>
                         <div class="form-group">
                             <label for="productCategury">Categury</label>
                             <select class="form-control" id="productCategury" name="Categury">

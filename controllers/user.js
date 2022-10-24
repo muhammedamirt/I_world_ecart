@@ -27,8 +27,18 @@ let otpErr = {}
 
 module.exports = {
     getHome: (req, res) => {
-        let user = req.session.user
-        res.render("user/index.hbs", { userHome: true, user })
+        if (req.session.user) {
+            let user = req.session.user
+            let userId = user._id
+            userHelpers.getWishlistProducts(userId).then((data) => {
+                console.log(data);
+                res.render("user/index.hbs", { userHome: true, user, data })
+            })
+        } else {
+            res.render("user/index.hbs", { userHome: true })
+        }
+
+
     },
 
     //autentication
@@ -178,10 +188,6 @@ module.exports = {
             }
         })
 
-        // } else {
-        // res.redirect('/user-login')
-        // }
-
     },
     getCeckout: (req, res) => {
         let userId = req.session.user._id
@@ -207,7 +213,8 @@ module.exports = {
         let productId = req.params.id
         productHelpers.getOneProduct(productId).then((data) => {
             let product = data
-            res.render('user/product-detailes', { product, user })
+            let images = data.images
+            res.render('user/product-detailes', { product, user ,images})
         })
 
     },
@@ -221,7 +228,10 @@ module.exports = {
     },
     getWishlist: (req, res) => {
         let user = req.session.user
-        res.render('user/wishlist', { user })
+        userHelpers.getWishlistProducts(user._id).then((data) => {
+            res.render('user/wishlist', { user, data })
+        })
+
 
     },
     getEditProfile: (req, res) => {
@@ -254,20 +264,24 @@ module.exports = {
     getUserLogout: (req, res) => {
         req.session.user = null
         req.session.loggedIn = false
-        res.redirect("/")
+        res.json({status:true})
     },
 
     //cart session starting
     getAddToCart: (req, res) => {
-
-        let user = req.session.user
-        let productId = req.params.prodId
-        let userId = user._id
-        console.log(productId, userId)
-        userHelpers.addProductToCart(productId, userId).then((data) => {
-            console.log('cart created');
-            res.redirect('/user-shop')
-        })
+        if(req.session.user){
+            let user = req.session.user
+            let productId = req.params.prodId
+            let userId = user._id
+            console.log(productId, userId)
+            userHelpers.addProductToCart(productId, userId).then((data) => {
+                // console.log('cart created');
+                res.json({status:true})
+            })
+        }else{
+            res.json({status:false})
+        }
+       
 
 
     },
@@ -304,7 +318,6 @@ module.exports = {
             res.redirect('/view-cart')
         })
 
-        // res.send({status:'ok'})
     },
     getdcrQuantity: (req, res) => {
         let user = req.session.user
@@ -346,9 +359,7 @@ module.exports = {
     getViewOrders: (req, res) => {
         userId = req.session.user._id
         userHelpers.getOrderProducts(userId).then((data) => {
-            // console.log(data);
-            // let products = data.products
-            // console.log(products);               
+
             res.render('user/view-orders-user', { data })
         }).catch(() => {
             res.render('user/view-orders-user')
@@ -393,9 +404,20 @@ module.exports = {
                 })
 
         })
+    },
+    getAddProductToWishlist: (req, res) => {
+        if(req.session.user){
+            let productId = req.params.prodId
+            let userId = req.session.user._id
+            userHelpers.addProductToWishlist(productId, userId)
+            .then((data) => {
+                res.json({ status: true })
+            }).catch((data)=>{
+                res.json({status:false})
+            })
+        }else{
+            res.json('notLogged')
+        }
+        
     }
-
-
-
-
 }

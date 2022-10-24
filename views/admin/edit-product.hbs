@@ -1,25 +1,32 @@
 <div class="content-wrapper">
-    <div class="row" >
-        <div class="col-12 grid-margin stretch-card" >
+    <div class="row">
+        <div class="col-12 grid-margin stretch-card">
             <div class="card">
-                <div class="card-body">
+                <div class="card-body" style="background-color:rgb(242, 220, 224) ;">
                     <h4 class="card-title">Edit Product Details</h4>
 
-                    <form class="forms-sample" action="/admin/edit-product/{{data._id}}" method="post" enctype="multipart/form-data">
+                    <form class="forms-sample" action="/admin/edit-product/{{data._id}}" method="post"
+                         style="font-weight:bold ;">
 
 
                         <div class="form-group">
                             <label for="productName">Product Name</label>
-                            <input type="text" class="form-control" id="productName" placeholder="Product Name" value="{{data.ProductName}}"
-                                name="ProdName" required>
+                            <input type="text" class="form-control" id="productName" placeholder="Product Name"
+                                value="{{data.ProductName}}" name="ProdName" required>
                         </div>
 
                         <div class="form-group">
                             <label for="productPrice">price</label>
                             <input type="text" class="form-control" id="productPrice" placeholder="Price" name="Price"
-                              value="{{data.Price}}"  required>
+                                value="{{data.Price}}" required>
                         </div>
 
+                        <div class="form-outline">
+                            <label class="form-group" for="form3Example6">Stock</label>
+                            <input style="width:100px ;" type="number" id="form3Example6" class="form-control"
+                                name="stock" placeholder="Stock" value="{{data.stock}}" required/>
+
+                        </div>
                         <div class="form-group">
                             <label for="productCategury">Categury</label>
                             <select class="form-control" id="productCategury" name="Categury" required>
@@ -35,15 +42,14 @@
                             <label>image upload</label>
                             {{!-- <input type="file" name="img" class="file-upload-default"> --}}
                             <div class="input-group col-xs-12">
-                                <input type="file" name="img" class="form-control file-upload-info" placeholder="Upload Image"
-                                    multiple>
-
+                                <input type="file" name="img" class="form-control file-upload-info"
+                                    placeholder="Upload Image" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="productDescription">description</label>
                             <textarea name="Description" placeholder="decsription" class="form-control"
-                                id="productDescription" rows="4"  required >{{data.Description}}</textarea>
+                                id="productDescription" rows="4" required>{{data.Description}}</textarea>
                         </div>
                         <button type="submit" class="btn btn-primary mr-2">Submit</button>
                     </form>

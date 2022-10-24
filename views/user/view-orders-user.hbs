@@ -63,9 +63,9 @@
 
                                         <td><label class="badge badge-danger">Canceld</label></td>
 
-                                        {{else ifEquals this.paymentStatus "Packed" }}
+                                        {{else ifEquals this.paymentStatus "Placed" }}
 
-                                        <td><label class="badge badge-primary">Packed</label></td>
+                                        <td><label class="badge badge-primary">Placed</label></td>
 
                                         {{else ifEquals this.paymentStatus "Success" }}
 
@@ -73,7 +73,7 @@
 
                                         {{else ifEquals this.paymentStatus "Shipped" }}
 
-                                        <td><label class="badge badge-warning">Shiped</label></td>
+                                        <td><label class="badge badge-warning">Shipped</label></td>
 
                                         {{else}}
                                        <td><label class="badge badge-info">Pending</label></td>

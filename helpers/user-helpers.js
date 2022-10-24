@@ -6,6 +6,7 @@ const cartCollection = require('../models/schema/cart')
 const productCollection = require('../models/schema/products')
 const orderCollection = require('../models/schema/order')
 const adminCollection = require('../models/schema/admin')
+const wishlistCollection = require('../models/schema/wishlist')
 const { Promise } = require('mongoose')
 const order = require('../models/schema/order')
 const { TodayInstance } = require('twilio/lib/rest/api/v2010/account/usage/record/today')
@@ -15,17 +16,12 @@ const mongoose = require('mongoose')
 
 const Razorpay = require('razorpay');
 
-// rzp_test_XRAcAd05q4QasW
-// nq72hxHx3dkRXzWb61rU6cWN
-
 let instance = new Razorpay({
     key_id: 'rzp_test_XRAcAd05q4QasW',
     key_secret: 'nq72hxHx3dkRXzWb61rU6cWN',
 });
 
 const regExp = /^[a-zA-Z]*$/
-
-// console.log("========="+regExp);
 
 module.exports = {
     doSignup: (userData) => {
@@ -159,9 +155,7 @@ module.exports = {
             cartCollection.findOne({ userId: userId })
                 .lean()
                 .then((data) => {
-                    // console.log(data);
                     if (data) {
-                        // console.log(data);
                         res(data)
                     } else {
                         console.log("no cart");
@@ -172,19 +166,22 @@ module.exports = {
 
     },
     removeCartProduct: (productId, userId) => {
-        console.log(productId);
-        console.log(userId);
+        // console.log(productId);
+        // console.log(userId);
         return new Promise(async (res, rej) => {
             let cart = await cartCollection.findOne({ userId: userId })
-            console.log(cart);
+            let items = await productCollection.findOne({_id:productId})
+            // console.log(cart);
+
             let itemIndex = cart.cartItems.findIndex(p => p.productId == productId);
             console.log(itemIndex);
             if (itemIndex >= 0) {
-                console.log("============here==========");
+                // console.log("============here==========");
                 let productItem = cart.cartItems[itemIndex]
                 cart.totalAmount = Number(cart.totalAmount) - Number(productItem.productPrice) * Number(productItem.ProductQuantity)
                 cart.cartItems.splice(itemIndex, 1)
                 cart.save()
+               
                 res()
             } else {
                 console.log("Error");
@@ -197,7 +194,6 @@ module.exports = {
 
             let cart = await cartCollection.findOne({ userId: userId })
             let productData = await productCollection.findOne({ _id: productId })
-
             let price = productData.Price
             if (cart) {
                 let itemIndex = cart.cartItems.findIndex(p => p.productId == productId);
@@ -208,12 +204,15 @@ module.exports = {
                     cart.cartItems[itemIndex] = productItem
 
                     cart.totalAmount = Number(cart.totalAmount) + Number(price)
+
                 } else {
                     console.log("No Product");
                     cart.totalAmount = Number(cart.totalAmount) + Number(price)
                 }
 
                 cart.save();
+                
+
                 res()
 
             } else {
@@ -249,6 +248,7 @@ module.exports = {
 
                 }
                 cart.save();
+               
                 res()
 
             } else {
@@ -287,6 +287,9 @@ module.exports = {
                     }
 
                     cart.save();
+
+                   
+                    
                     res()
                 } else {
                     console.log('Enter to else');
@@ -322,12 +325,11 @@ module.exports = {
                 orderId: null,
                 totalAmount: null
             }
-
             let user = await userCollection.findOne({ _id: userId })
             let cart = await cartCollection.findOne({ userId: userId })
             let order = await orderCollection.findOne({ userId: userId })
             let paymentType = orderDocument.payment
-            let status = orderDocument.payment === "Cash On Delivery" ? "pending" : "Shipped"
+            let status = orderDocument.payment === "pending"
             let today = new Date()
             let date = new Date().toJSON().slice(0, 10);
             // let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -496,7 +498,7 @@ module.exports = {
             console.log(id, totalPrice);
 
             let options = {
-                amount: totalPrice*100,
+                amount: totalPrice * 100,
                 currency: "INR",
                 receipt: id
             }
@@ -531,8 +533,8 @@ module.exports = {
             }
         })
     },
-    changeOrderStatus:(orderId,userId)=>{
-        console.log(orderId,userId);
+    changeOrderStatus: (orderId, userId) => {
+        console.log(orderId, userId);
         return new Promise(async (res, rej) => {
             // let response = {}
             let userOrder = await orderCollection.findOne({ userId: userId })
@@ -553,6 +555,78 @@ module.exports = {
                 console.log("No orders");
                 rej()
             }
+        })
+    },
+    addProductToWishlist: (productId, userId) => {
+        return new Promise(async (res, rej) => {
+            let wishlist = await wishlistCollection.findOne({ userId: userId })
+            let Existproduct = await wishlistCollection.findOne({"productId.item":mongoose.Types.ObjectId(productId)})
+            if(Existproduct) {
+                console.log("Exist");
+                rej()
+            }else{
+                if (wishlist) {
+                    console.log("already have wishlist");
+                    wishlist.productId.push({ item: mongoose.Types.ObjectId(productId) })
+                    wishlist.save().then((data) => {
+                        // console.log(data);
+                        res(data)
+                    })
+    
+                } else {
+                    wishlistCollection.create({
+                        userId: userId,
+                        productId: [{ item: mongoose.Types.ObjectId(productId) }]
+                    }).then((data) => {
+                        res(data)
+                    })
+                }
+            }
+            
+        })
+
+    },
+    getWishlistProducts: (userId) => {
+        return new Promise((res, rej) => {
+            wishlistCollection.aggregate([
+                {
+                    $match: { userId: userId }
+                },
+                {
+                    $project: {
+                        productId: 1
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$productId"
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        item: "$productId.item"
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "products",
+                        localField: "item",
+                        foreignField: "_id",
+                        as: "products"
+
+                    }
+                },
+                {
+                    $project: {
+                        item: 1,
+                        products: { $arrayElemAt: ["$products", 0] }
+                    }
+                },
+            ]).then((data) => {
+                // console.log(data);
+                res(data)
+            })
         })
     }
 }
