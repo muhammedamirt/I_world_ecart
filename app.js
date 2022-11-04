@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const Express = require('express');
 const path = require('path')
 const app = Express();
@@ -16,13 +18,12 @@ const Handilebars = require('handlebars')
 
 const Swal = require('sweetalert2')
 
-Handilebars.registerHelper('ifEquals', function(arg1, arg2, options) {
+Handilebars.registerHelper('ifEquals', function (arg1, arg2, options) {
   return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
 });
 
-Handilebars.registerHelper("inc", function(value, options)
-{
-    return parseInt(value) + 1;
+Handilebars.registerHelper("inc", function (value, options) {
+  return parseInt(value) + 1;
 });
 
 
@@ -57,7 +58,7 @@ app.use(cookieParser())
 app.use(session({
   secret: "keyIsHear",
   saveUninitialized: true,
-  cookie: { maxAge: 60000*30 },
+  cookie: { maxAge: 60000 * 30 },
   resave: false
 }))
 
@@ -75,7 +76,7 @@ app.use(error)
 
 //Connecting to database
 
-mongoose.connect("mongodb://localhost:27017/iworldDatas")
+mongoose.connect(process.env.ATLES_CONNECTION)
   .then(data => {
     console.log("Database Connected")
   }).catch(err => console.log(err))

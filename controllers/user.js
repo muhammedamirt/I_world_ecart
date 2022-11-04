@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const { getLogin } = require("./admin")
 const userCollection = require('../models/schema/user')
 const orderCollection = require('../models/schema/order')
@@ -8,15 +10,14 @@ const { body, validationResult } = require('express-validator');
 
 const regExp = /^[a-zA-Z]*$/
 
-const twillioDetailes = require('../twillio/twillio')
 
 const easyinvoice = require('easyinvoice')
 const fs = require('fs')
 
 
-const accountSid = twillioDetailes.accountSid
-const authToken = twillioDetailes.authToken
-const verifySid = twillioDetailes.verifySid
+const accountSid = process.env.ACCOUNT_SID
+const authToken = process.env.AUATH_TOKEN
+const verifySid = process.env.VERIFY_SID
 
 const client = require('twilio')(accountSid, authToken);
 
