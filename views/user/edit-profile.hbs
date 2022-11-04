@@ -1,74 +1,108 @@
-<section>
+<section >
+    <div class="container">
+        <div class="">
+            <div class="row">
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+                            alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+                        <h5 class="my-3">{{user.FirstName}} {{user.LastName}}</h5>
+                        <input type="file">
 
-
-
-    <div class="content-wrapper">
-        <div class="row">
-            <div class="card mb-4">
-                <div class="card-body text-center">
-                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
-                        class="rounded-circle img-fluid" style="width: 150px;">
-                    <h5 class="my-3">{{user.FirstName}}{{user.LastName}}</h5>
-                    <input type="file">
-
-                    <div class="d-flex justify-content-center mb-2">
+                        <div class="d-flex justify-content-center mb-2">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class=" grid-margin stretch-card">
-                
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Edit Your Profile</h4>
+                <div class=" grid-margin stretch-card">
 
-                        <form class="forms-sample" action="/edit-profile/{{user._id}}" method="post">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Edit Your Profile</h4>
 
-                            <div class="form-group row">
-                                <label for="editFirstName" class="col-sm-3 col-form-label">First Name</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="editFirstName"
-                                        value="{{user.FirstName}}" name="FirstName" required>
+                            <form class="forms-sample" action="/edit-profile/{{user._id}}" method="post">
+
+                                <div class="form-group row">
+                                    <label for="editFirstName" class="col-sm-3 col-form-label">First Name</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="editFirstName"
+                                            value="{{user.FirstName}}" name="FirstName" required>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="editLastName" class="col-sm-3 col-form-label">Last Name</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="editlastName"
-                                        value="{{user.LastName}}" name="LastName" required>
+                                <div class="form-group row">
+                                    <label for="editLastName" class="col-sm-3 col-form-label">Last Name</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="editlastName"
+                                            value="{{user.LastName}}" name="LastName" required>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="editUserName" class="col-sm-3 col-form-label">Username</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="editUserName"
-                                        value="{{user.UserName}}" name="UserName" required>
+                                <div class="form-group row">
+                                    <label for="editUserName" class="col-sm-3 col-form-label">Username</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="editUserName"
+                                            value="{{user.UserName}}" name="UserName" required>
+                                    </div>
                                 </div>
-                            </div>
-                             <div class="form-group row">
-                                <label for="editUserEmail" class="col-sm-3 col-form-label">Email</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="editUserEmail"
-                                        value="{{user.Email}}" name="Email" required>
+                                <div class="form-group row">
+                                    <label for="editUserEmail" class="col-sm-3 col-form-label">Email</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="editUserEmail"
+                                            value="{{user.Email}}" name="Email" required>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="editMobile" class="col-sm-3 col-form-label">Mobile</label>
-                                <div class="col-sm-9">
-                                    <input type="number" class="form-control" id="editMobile"
-                                        value="{{user.Mobile}}" name="Mobile" required>
+                                <div class="form-group row">
+                                    <label for="editMobile" class="col-sm-3 col-form-label">Mobile</label>
+                                    <div class="col-sm-9">
+                                        <input type="number" class="form-control" id="editMobile"
+                                            value="{{user.Mobile}}" name="Mobile" required>
+                                    </div>
                                 </div>
-                            </div>
-                            <button type="submit" class="btn btn-success mr-2 " style="">Save Updates</button>
-                            
-                        </form>
+                                <button type="submit" class="btn btn-success mr-2 " style="">Save Updates</button>
+
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            
+
+            </div>
         </div>
     </div>
+
+    
+</section>
+
+<section class="mb-5">
+    <div class="container">
+        <div class="card">
+            <div class="card-body" style="background-color:rgb(255, 220, 232) ;">
+                <h4 class="card-title">Mange Your Address</h4>
+                <p class="card-description">
+                    Change your address for new orders
+                </p>
+                <form class="forms-sample" action="/edit-address" method="post">
+                    <div class="form-group">
+                        <label for="addressLastName">First Name</label>
+                        <input type="text" class="form-control" id="addressLastName" name="firstName" value="{{user.address.firstName}}" placeholder="First Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="addessLastName">Last Name</label>
+                        <input type="text" class="form-control" id="addessLastName" name="lastName" value="{{user.address.lastName}}" placeholder="Last Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="addressArea">Address</label>
+                        <input type="text" class="form-control" id="addressArea" name="address" value="{{user.address.address}}" placeholder="Area Address">
+                    </div>
+                    <div class="form-group">
+                        <label for="addressEmail">Email</label>
+                        <input type="email" class="form-control" id="addressEmail" name="Email" value="{{user.address.Email}}" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="addressMobile">Mobile</label>
+                        <input type="text" class="form-control" id="addressMobile" name="Mobile" value="{{user.address.Mobile}}" placeholder="Mobile">
+                    </div>
+                    <button type="submit" class="btn btn-primary mr-2">Save Updates</button>
+                </form>
+            </div>
+        </div>
     </div>
-
-
 </section>

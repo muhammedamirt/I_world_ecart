@@ -10,15 +10,15 @@
                     </div>
                     <div style="padding-top:  10px; ">
                         <h3>Your Detailes</h3>
-                    <ul style="list-style-type: none;font-weight: bold;font-size: medium;">
+                        <ul style="list-style-type: none;font-weight: bold;font-size: medium;">
 
-                        <li>Name : {{userData.orders.userName}}</li>
-                        <li>Mobile : {{userData.orders.userMobile}}</li>
-                        <li>Delivery Address :{{userData.orders.address}}</li> 
-                        <a href="#"><label class="badge badge-primary">Update your details</label> </a>
-                    </ul>
+                            <li>Name : {{userData.orders.userName}}</li>
+                            <li>Mobile : {{userData.orders.userMobile}}</li>
+                            <li>Delivery Address :{{userData.orders.address}}</li>
+                            <a href="/download-invoice/{{userData.orders._id}}"><label class="badge badge-primary">Dowload Data</label> </a>
+                        </ul>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
@@ -52,7 +52,8 @@
                                             </a>
                                         </td>
                                         <td class="product-name">
-                                            <a href="/product-detials/{{this.orders.productId}}" style="color:red ;">{{this.productName}}</a>
+                                            <a href="/product-detials/{{this.orders.productId}}"
+                                                style="color:red ;">{{this.productName}}</a>
                                         </td>
                                         <td class="product-price">
                                             <span class="amount">{{this.productPrice}}</span>
@@ -63,7 +64,7 @@
                                         <td class="product-subtotal">
                                             <span class="amount">{{this.TotalPrice}}</span>
                                         </td>
-                                        
+
                                         {{!-- <td class="product-remove">
                                             <a href=""><i class="fa fa-times"></i></a>
                                         </td> --}}

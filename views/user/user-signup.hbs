@@ -14,7 +14,7 @@
             <div class="col-lg-6 col-sm-12" style="margin-top: 5rem;">
                 <div class="tptrack__product mb-40">
                     <div class="tptrack__thumb">
-                        <img src="/img/banner/sign-bg.jpg" alt="">
+                        <img src="https://wallpaperaccess.com/full/261945.jpg" alt="">
                     </div>
                     <div class="tptrack__content grey-bg-3">
                         <div class="tptrack__item d-flex mb-20">
@@ -30,69 +30,69 @@
                         </div>
 
 
-                        <form action="/user-signup" method="post">
-                            <div class="row">
-                                <div class="col-md-6 mb-4">
-                                    <div class="form-outline">
-                                        <label class="form-label" for="form3Example1"></label>
-                                        <input type="text" id="form3Example1" class="form-control" name="FirstName"
-                                            placeholder="First Name" {{#if errMessage}} value="{{balData.FirstName}}" {{/if}}required />
+                        {{!-- <form action="/user-signup" method="post"> --}}
+                            <form id="signupSubmission">
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label" for="firstName"></label>
+                                            <input type="text" id="firstName" class="form-control" name="FirstName"
+                                                placeholder="First Name" value="" required />
+                                            <p style=" text-align: center; " class="text-danger" id="firstNameErr"></p>
+                                        </div>
 
                                     </div>
-                                </div>
-                                <div class="col-md-6 mb-4">
-                                    <div class="form-outline">
-                                        <label class="form-label" for="form3Example2"></label>
-                                        <input type="text" id="form3Example2" class="form-control" name="LastName"
-                                            placeholder="Last Name" {{#if errMessage}} value="{{balData.LastName}}" {{/if}} required />
+
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label" for="lastName"></label>
+                                            <input type="text" id="lastName" class="form-control" name="LastName"
+                                                placeholder="Last Name" value="" required />
+                                            <p style="text-align: center; " class="text-danger" id="lastNameErr"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label" for="userName"></label>
+                                            <input type="text" id="userName" class="form-control" name="UserName"
+                                                placeholder="User Name" value="" required />
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label" for="userMobile"></label>
+                                            <input type="number" id="userMobile" class="form-control" name="Mobile"
+                                                placeholder="Mobile" value="" required />
+                                            <p style=" text-align: center; " class="text-danger" id="userMobileErr"></p>
+                                        </div>
+                                    </div>
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="userEmail"></label>
+                                        <input type="email" id="userEmail" class="form-control" name="Email"
+                                            placeholder="Email" required />
+
+                                        <p style="color:red ; text-align:center ; " id="emailErr"></p>
 
                                     </div>
-                                </div>
-                                <div class="col-md-6 mb-4">
-                                    <div class="form-outline">
-                                        <label class="form-label" for="form3Example6"></label>
-                                        <input type="text" id="form3Example6" class="form-control" name="UserName"
-                                            placeholder="User Name"{{#if errMessage}} value="{{balData.UserName}}" {{/if}}required />
 
+                                    <!-- Password input -->
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="passWord"></label>
+                                        <input type="password" id="passWord" class="form-control" name="Password"
+                                            placeholder="Password" value="" required />
+                                        <p style=" text-align: center; " class="text-danger" id="passwordErr"></p>
                                     </div>
-                                </div>
-                                <div class="col-md-6 mb-4">
-                                    <div class="form-outline">
-                                        <label class="form-label" for="form3Example6"></label>
-                                        <input type="number" id="form3Example6" class="form-control" name="Mobile"
-                                            placeholder="Mobile"{{#if errMessage}} value="{{balData.Mobile}}" {{/if}} required />
 
+
+                                    <div class="tpsign__account">
+                                        <a href="/user-login">Already Have Account?</a>
                                     </div>
-                                </div>
-                                <div class="form-outline mb-4">
-                                    <label class="form-label" for="form3Example3"></label>
-                                    <input type="email" id="form3Example3" class="form-control" name="Email"
-                                        placeholder="Email"  required />
-                                    {{#if errMessage}}
-                                    <p style="color:red ; text-align:center ;">{{errMessage}}</p>
-                                    {{/if}}
-
-                                </div>
-
-                                <!-- Password input -->
-                                <div class="form-outline mb-4">
-                                    <label class="form-label" for="form3Example4"></label>
-                                    <input type="password" id="form3Example4" class="form-control" name="Password"
-                                        placeholder="Password" {{#if errMessage}} value="{{balData.Password}}" {{/if}} required />
-
-                                </div>
-
-
-
-
-                                <div class="tpsign__account">
-                                    <a href="/user-login">Already Have Account?</a>
-                                </div>
-                                <div class="tptrack__btn">
-                                    <button type="submit" class="tptrack__submition tpsign__reg">Register Now<i
-                                            class="fal fa-long-arrow-right"></i></button>
-                                </div>
-                        </form>
+                                    <div class="tptrack__btn">
+                                        <button type="submit" class="tptrack__submition tpsign__reg">Register Now<i
+                                                class="fal fa-long-arrow-right"></i></button>
+                                    </div>
+                            </form>
                     </div>
                 </div>
             </div>
@@ -100,6 +100,97 @@
     </div>
 </section>
 
-<style>
+<script>
+    $("#signupSubmission").submit((e) => {
+        e.preventDefault()
 
-</style>
+        let specialCheck = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/
+
+        let nameCheck = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/
+
+        const validateEmail = (email) => {
+            return String(email)
+                .toLowerCase()
+                .match(
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                );
+        };
+
+        let firstName = document.getElementById('firstName').value
+        let lastName = document.getElementById('lastName').value
+        let userName = document.getElementById('userName').value
+        let userMobile = document.getElementById('userMobile').value
+        let userEmail = document.getElementById('userEmail').value
+        let passWord = document.getElementById('passWord').value
+        let mobile = userMobile.toString()
+
+        let flag = 0
+
+        if (!nameCheck.test(firstName)) {
+            document.getElementById('firstNameErr').innerHTML = ""
+            flag++
+        }
+        else {
+            document.getElementById('firstNameErr').innerHTML = "Reject Special Carecterse&Numbers"
+            // console.log('fist name sp')
+            flag = 0
+
+        }
+        if (!nameCheck.test(lastName)) {
+            document.getElementById('lastNameErr').innerHTML = ""
+            flag++
+        }
+        else {
+            document.getElementById('lastNameErr').innerHTML = "Reject Special Carecterse&Numbers"
+            // console.log('last name sp')
+            flag = 0
+
+        }
+        if (mobile.length == 10) {
+            document.getElementById('userMobileErr').innerHTML = ""
+            flag++
+        } else {
+            //console.log('mobile wrong')
+            document.getElementById('userMobileErr').innerHTML = "Maximum 10 carecters"
+            flag = 0
+        }
+        if (validateEmail(userEmail)) {
+            document.getElementById('emailErr').innerHTML = ""
+            //console.log("email is valid")
+            flag++
+        } else {
+            //console.log('not valid')
+            document.getElementById('emailErr').innerHTML = "Enter A valid Email Adress"
+            flag = 0
+        }
+        if (passWord.length >= 8) {
+            document.getElementById('passwordErr').innerHTML = ""
+            //console.log("everything is ok")
+            flag++
+
+
+        } else {
+            // console.log('password max length')
+            document.getElementById('passwordErr').innerHTML = "Password Must be 8 carecters"
+            flag = 0
+        }
+
+
+        if (flag == 5) {
+            $.ajax({
+
+                url: '/user-signup',
+                method: 'post',
+                data: $("#signupSubmission").serialize(),
+                success: (response) => {
+                    console.log(response)
+                    if (response.status) {
+                        location.href = '/OTP-confermation'
+                    } else if (response.emailExist) {
+                        document.getElementById('emailErr').innerHTML = "This Email Already Exist..!"
+                    }
+                }
+            })
+        }
+    })
+</script>

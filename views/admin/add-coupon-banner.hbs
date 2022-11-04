@@ -1,0 +1,123 @@
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 grid-margin stretch-card">
+                <div class="card" style="background-color:rgb(255, 240, 242) ; font-weight: bold;">
+                    <div class="card-body">
+                        <h4 class="card-title">Add Banners</h4>
+                        <p class="card-description text-primary">
+                            Add advertisement & New Offer Banners
+                        </p>
+                        <form class="forms-sample" action="/admin/add-banners" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="categori">Categories</label>
+                                <input type="text" class="form-control" name="category" id="categori" placeholder="Category" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="Description">Description</label>
+                                <input type="text" class="form-control" name="Description" id="Description" placeholder="Description" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Banner File</label>
+                                <input type="file" class="form-control" name="img" id="exampleInputPassword1"
+                                    placeholder="add banner file" multiple required>
+                            </div>
+                            <button type="submit" class="btn btn-inverse-info btn-fw">Add Banner</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="col-md-6 grid-margin stretch-card">
+                <div class="card" style="background-color:rgb(255, 240, 242) ; font-weight: bold;">
+                    <div class="card-body">
+                        <h4 class="card-title">Add New Coupons</h4>
+                        <p class="card-description text-primary">
+                            Add New Offer Coupens and Discount
+                        </p>
+                        <form class="forms-sample" id="coupen-form-submission">
+                            <div class="form-group row">
+                                <label for="exampleInputUsername2" class="col-sm-3 col-form-label">Coupon Name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="exampleInputUsername2"
+                                        placeholder="Coupon Name" name="couponName" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="exampleInputEmail2" class="col-sm-3 col-form-label">Discount %</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="exampleInputEmail2"
+                                        placeholder="Discount" name="discount" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="exampleInputPassword2" class="col-sm-3 col-form-label">Quantity</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control" id="exampleInputPassword2"
+                                        placeholder="Quantity" name="Quantity" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="exampleInputPassword2" class="col-sm-3 col-form-label">Maximum
+                                    Purchase</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control" id="exampleInputPassword2"
+                                        placeholder="Maximum Purchase" name="maximumAmount" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="exampleInputConfirmPassword2"
+                                    class="col-sm-3 col-form-label">Validity</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="exampleInputConfirmPassword2"
+                                        placeholder="YYYY-MM-DD" name="validity" required>
+                                </div>
+                            </div>
+                            <button type="submit" onclick="couponFormSubmission()"
+                                class="btn btn-inverse-info btn-fw">Add Coupon</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $("#coupen-form-submission").submit((e) => {
+        e.preventDefault()
+        Swal.fire({
+            title: 'Do you want to save the changes?',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Save',
+            denyButtonText: `Don't save`,
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/admin/add-new-coupon',
+                    method: 'post',
+                    data: $("#coupen-form-submission").serialize(),
+                    success: (response) => {
+
+                        if (response.status) {
+                            Swal.fire('Saved!', '', 'success').then((result) => {
+                                if (result.isConfirmed) {
+                                    location.href = '/admin/view-coupons'
+                                }
+                            })
+
+                        }
+                    }
+                })
+                //Swal.fire('Saved!', '', 'success')
+            } else if (result.isDenied) {
+                Swal.fire('Changes are not saved', '', 'info')
+            }
+        })
+
+    })
+</script>

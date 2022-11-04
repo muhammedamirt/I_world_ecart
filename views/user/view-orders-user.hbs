@@ -43,7 +43,7 @@
                                     {{#each data}}
                                     <tr>
                                         <td class="product-name">
-                                            {{@index}}
+                                            {{inc @index}}
                                         </td>
 
                                         <td class="product-name">
@@ -59,7 +59,7 @@
                                         <td class="product-quantity">
                                             {{this.totalAmount}}
                                         </td>
-                                        {{#ifEquals this.paymentStatus "canceld"}}
+                                        {{#ifEquals this.paymentStatus "Canceld"}}
 
                                         <td><label class="badge badge-danger">Canceld</label></td>
 
@@ -82,7 +82,7 @@
                                             <span class="amount" style="color:red ;">{{this.paymentStatus}}</span>
                                         </td> --}}
 
-                                        {{#ifEquals this.paymentStatus "canceld"}}
+                                        {{#ifEquals this.paymentStatus "Canceld"}}
 
                                         <td class="product-remove">
                                             <button class="btn btn-inverse-secondary btn-fw" disabled><i

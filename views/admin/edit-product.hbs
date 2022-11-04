@@ -2,11 +2,11 @@
     <div class="row">
         <div class="col-12 grid-margin stretch-card">
             <div class="card">
-                <div class="card-body" style="background-color:rgb(242, 220, 224) ;">
+                <div class="card-body" style="background-color:rgb(255, 240, 243) ;">
                     <h4 class="card-title">Edit Product Details</h4>
 
                     <form class="forms-sample" action="/admin/edit-product/{{data._id}}" method="post"
-                         style="font-weight:bold ;">
+                         style="font-weight:bold ;" enctype="multipart/form-data">
 
 
                         <div class="form-group">
@@ -43,7 +43,7 @@
                             {{!-- <input type="file" name="img" class="file-upload-default"> --}}
                             <div class="input-group col-xs-12">
                                 <input type="file" name="img" class="form-control file-upload-info"
-                                    placeholder="Upload Image" required>
+                                    placeholder="Upload Image" multiple>
                             </div>
                         </div>
                         <div class="form-group">

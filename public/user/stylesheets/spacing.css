@@ -523,9 +523,9 @@
 .pt-75{
     padding-top:75px
 }
-/* .pt-80{
-    padding-top:80px
-} */
+.pt-80{
+    padding-top:40px
+}
 .pt-85{
     padding-top:85px
 }
@@ -631,9 +631,9 @@
 .pb-55{
     padding-bottom:55px
 }
-/* .pb-60{
-    padding-bottom:60px
-} */
+.pb-60{
+    padding-bottom:30px
+}
 .pb-65{
     padding-bottom:65px
 }

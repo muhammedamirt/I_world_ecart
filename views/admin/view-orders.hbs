@@ -1,4 +1,3 @@
-
 <main>
 
     <!-- breadcrumb-area -->
@@ -23,7 +22,7 @@
                 <div class="col-12">
                     <form action="#">
                         <div class="table-content table-responsive">
-                            <table class="table" style="background-color:pink ; font-weight: bold;">
+                            <table class="table" style="background-color:rgb(254, 235, 238) ; font-weight: bold;">
                                 <thead>
                                     <tr>
                                         <th class="product-thumbnail">No.</th>
@@ -39,27 +38,28 @@
                                     {{#each orderData}}
                                     <tr>
                                         <td class="product-name">
-                                            <a style="color:red ;">{{@index}}</a>
+                                            <a style="color:red ;">{{inc @index}}</a>
                                         </td>
                                         <td class="product-price">
                                             <span class="amount">{{this.orders.userName}}</span>
                                         </td>
                                         <td class="product-quantity">
-                                           {{this.orders.userMobile}}
+                                            {{this.orders.userMobile}}
                                         </td>
                                         <td class="product-quantity">
                                             <i class="bi bi-currency-rupee"></i>{{this.orders.totalAmount}}
                                         </td>
-                                        
+
                                         <td>
                                             {{this.orders.date}}
                                         </td>
                                         <td class="product-remove">
-                                            {{this.orders.paymentType}}   
+                                            {{this.orders.paymentType}}
                                         </td>
                                         <td class="product-more">
-                                            <a href="/admin/view-order-more/{{this.orders._id}}">
-                                                <p ><i class="bi bi-eye-fill" style="font-size:20px;"></i></p>
+                                            <a href="/admin/view-order-more/{{this.orders._id}}"
+                                                class="btn btn-outline-info btn-fw">
+                                                <i class="bi bi-eye-fill"></i>
                                             </a>
                                         </td>
                                     </tr>
@@ -73,5 +73,46 @@
         </div>
     </div>
     <!-- cart area end-->
+    <section class="mb-5">
+        <div class="container">
+            <div class="d-flex justify-content-center">
+                <div class="pagination">
+                    <a href="#">&laquo;</a>
+                    <a href="#">1</a>
+                    <a href="#" class="active">2</a>
+                    <a href="#">3</a>
+                    <a href="#">4</a>
+                    <a href="#">5</a>
+                    <a href="#">6</a>
+                    <a href="#">&raquo;</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
 </main>
+
+<style>
+    .pagination {
+        display: inline-block;
+    }
+
+    .pagination a {
+        color: black;
+        float: left;
+        padding: 8px 16px;
+        text-decoration: none;
+        transition: background-color .3s;
+        border: 1px solid #ddd;
+    }
+
+    .pagination a.active {
+        background-color: pink;
+        color: white;
+        border: 1px solid rgb(255, 0, 43);
+    }
+
+    .pagination a:hover:not(.active) {
+        background-color: #ddd;
+    }
+</style>

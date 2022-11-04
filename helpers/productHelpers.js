@@ -11,8 +11,9 @@ module.exports = {
                     Price: productData.Price,
                     Categury: productData.Categury,
                     Description: productData.Description,
-                    images : productData.img,
-                    stock:productData.stock                  
+                    images: productData.img,
+                    stock: productData.stock,
+                    softRemove: true
                 })
             products.save().then((data) => {
                 console.log("product added");
@@ -40,7 +41,7 @@ module.exports = {
                     Price: productData.Price,
                     Categury: productData.Categury,
                     Description: productData.Description,
-                    stock:productData.stock                  
+                    stock: productData.stock
                 }
             }).then((data) => {
                 console.log(data);
@@ -50,7 +51,33 @@ module.exports = {
     },
     deleteProduct: (prodId) => {
         return new Promise((res, rej) => {
-            productCollection.deleteOne({ _id: prodId }).then((data) => {
+            productCollection.updateOne({ _id: prodId }, {
+                $set: {
+                    softRemove: false
+                }
+            }).then((data) => {
+                res(data)
+            })
+        })
+    },
+    recoverProduct: (prodId) => {
+        return new Promise((res, rej) => {
+            productCollection.updateOne({ _id: prodId }, {
+                $set: {
+                    softRemove: true
+                }
+            }).then((data) => {
+                res(data)
+            })
+        })
+    },
+    recoverDeleteProduct: (prodId) => {
+        return new Promise((res, rej) => {
+            productCollection.updateOne({ _id: prodId }, {
+                $set: {
+                    softRemove: true
+                }
+            }).then((data) => {
                 res(data)
             })
         })
@@ -69,7 +96,7 @@ module.exports = {
     getProductDetails: () => {
         return new Promise((res, rej) => {
             productCollection
-                .find()
+                .find({ softRemove: true })
                 .lean()
                 .then((data) => {
                     res(data)
@@ -79,16 +106,16 @@ module.exports = {
     getCateguryList: () => {
         return new Promise((res, rej) => {
             categuryCollection.find({}).lean().then((data) => {
-                    // console.log(data);
-                    res(data)
-                })
+                // console.log(data);
+                res(data)
+            })
         })
 
     },
     addNewCategury: (categuryData) => {
         return new Promise((res, rej) => {
-            categuryCollection.findOne({categuryName:categuryData.Name}).then((data)=>{
-                if(!data){
+            categuryCollection.findOne({ categuryName: categuryData.Name }).then((data) => {
+                if (!data) {
                     const categury = new categuryCollection({
                         categuryName: categuryData.Name
                     })
@@ -96,11 +123,11 @@ module.exports = {
                         console.log(data);
                         res(data)
                     })
-                }else{ 
-                    rej({categuryExist:true})
+                } else {
+                    rej({ categuryExist: true })
                 }
             })
-            
+
         })
 
     },
@@ -108,6 +135,14 @@ module.exports = {
         return new Promise((res, rej) => {
             categuryCollection.deleteOne({ _id: categuryId }).then((data) => {
                 res()
+            })
+        })
+
+    },
+    getRelatedProducts: (categoryName) => {
+        return new Promise((res, rej) => {
+            productCollection.find().lean().then((data) => {
+                res(data)
             })
         })
 

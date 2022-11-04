@@ -24,31 +24,37 @@
    </section>
    <!-- breadcrumb-area-end -->
 
-   <!-- coupon-area start -->
-   <section class="coupon-area pt-80 pb-30 wow fadeInUp" data-wow-duration=".8s" data-wow-delay=".2s">
+   <section class="services-area pt-70">
       <div class="container">
-         <div class="row">
-            <div class="col-md-6">
-               <div class="coupon-accordion">
-                  <!-- ACCORDION START -->
-                  <h3>Have a coupon? <span id="showcoupon">Click here to enter your code</span></h3>
-                  <div id="checkout_coupon" class="coupon-checkout-content">
-                     <div class="coupon-info">
-                        <form action="#">
-                           <p class="checkout-coupon">
-                              <input type="text" placeholder="Coupon Code" />
-                              <button class="tp-btn tp-color-btn" type="submit">Apply Coupon</button>
-                           </p>
-                        </form>
+         <div class="row services-gx-item">
+            {{#each addressList}}
+            <div class="col-lg-3 col-sm-6">
+               <a href="/select-address/{{this._id}}" style="text-decoration: none;">
+
+                  <div class="tpservicesitem d-flex align-items-center mb-30">
+                     <div class="tpservicesitem__content">
+
+                        <h4 class="tpservicesitem__title">Select Address</h4>
+
+                        <hr>
+
+                        <p>
+                           FullName : {{this.firstName}} {{this.lastName}}<br>
+                           Email:{{this.Email}} <br>
+                           Mobile : {{this.Mobile}}
+                        </p>
+                        <p>{{this.address}}</p>
                      </div>
                   </div>
-                  <!-- ACCORDION END -->
-               </div>
+                  
+               </a> 
+
             </div>
+            {{/each}}
          </div>
       </div>
    </section>
-   <!-- coupon-area end -->
+
 
    <!-- checkout-area start -->
    <section class="checkout-area pb-50 wow fadeInUp" data-wow-duration=".8s" data-wow-delay=".2s">
@@ -63,58 +69,43 @@
                            <div class="col-md-6">
                               <div class="checkout-form-list">
                                  <label>First Name <span class="required">*</span></label>
-                                 <input type="text" placeholder="" name="firstName" value="{{userData.FirstName}}"
+                                 <input type="text" placeholder="" name="firstName" value="{{selectAddress.firstName}}"
                                     required />
                               </div>
                            </div>
                            <div class="col-md-6">
                               <div class="checkout-form-list">
                                  <label>Last Name <span class="required">*</span></label>
-                                 <input type="text" placeholder="" name="lastName" value="{{userData.LastName}}"
+                                 <input type="text" placeholder="" name="lastName" value="{{selectAddress.lastName}}"
                                     required />
                               </div>
                            </div>
-                           {{!-- <div class="col-md-12">
-                              <div class="checkout-form-list">
-                                 <label>Company Name</label>
-                                 <input type="text" placeholder="" name="company" required />
-                              </div>
-                           </div> --}}
                            <div class="col-md-12">
                               <div class="checkout-form-list">
                                  <label>Address <span class="required">*</span></label>
                                  <input type="text" placeholder="Street address" name="address"
-                                    value="{{userData.address}}" required />
+                                    value="{{selectAddress.address}}" required />
                               </div>
                            </div>
-                           {{!-- <div class="col-md-12">
-                              <div class="checkout-form-list">
-                                 <label>Town / City <span class="required">*</span></label>
-                                 <input type="text" placeholder="Town / City" name="Town" required />
-                              </div>
-                           </div> --}}
-                           {{!-- <div class="col-md-6">
-                              <div class="checkout-form-list">
-                                 <label>State / County <span class="required">*</span></label>
-                                 <input type="text" placeholder="" name="" />
-                              </div>
-                           </div> --}}
                            <div class="col-md-6">
                               <div class="checkout-form-list">
                                  <label>Email Address <span class="required">*</span></label>
-                                 <input type="email" placeholder="" name="Email" value="{{userData.Email}}" required />
+                                 <input type="email" placeholder="" name="Email" value="{{selectAddress.Email}}"
+                                    required />
                               </div>
                            </div>
                            <div class="col-md-6">
                               <div class="checkout-form-list">
                                  <label>Phone <span class="required">*</span></label>
-                                 <input type="text" placeholder="+91" name="Mobile" value="{{userData.Mobile}}"
+                                 <input type="text" placeholder="+91" name="Mobile" value="{{selectAddress.Mobile}}"
                                     required />
                               </div>
+                              <input type="text" name="addressId" value="{{selectAddress._id}}" hidden>
                            </div>
                         </div>
                      </div>
                   </div>
+
                   <div class="col-lg-6 col-md-12">
                      <div class="your-order mb-30 ">
                         <h3>Your order</h3>
@@ -142,15 +133,29 @@
 
                               </tbody>
                               <tfoot>
-
                                  <tr class="order-total">
                                     <th>Order Total</th>
                                     <td><strong><span class="amount"><i
                                                 class="bi bi-currency-rupee"></i>{{cartData.totalAmount}}</span></strong>
                                     </td>
                                  </tr>
+
+                                 {{#if response}}
+                                 <tr class="order-total">
+                                    <th>%of</th>
+                                    <td><strong><span class="amount">{{response.offPercentage}} %</span></strong>
+                                    </td>
+                                 </tr>
+                                 <tr class="order-total">
+                                    <th>Off Amount</th>
+                                    <td><strong><span class="amount"><i
+                                                class="bi bi-currency-rupee"></i>{{response.offAmount}}</span></strong>
+                                    </td>
+                                 </tr>
+                                 {{/if}}
                               </tfoot>
                            </table>
+
                         </div>
                         <div class="payment-method">
                            <div class="accordion" id="checkoutAccordion">
@@ -173,23 +178,13 @@
                                           Payment</label>
                                        <input type="radio" name="payment" value="Online Payment"><br>
                                        <hr>
-                                       {{!-- <label for="">
-                                          <div class="accordion-body">
-                                             <a href="#">
-                                                <h3
-                                                   style="color:palevioletred ; text-align: center; text-decoration: none;">
-                                                   <i class="bi bi-paypal"></i> <i class="bi bi-bank"></i> <i
-                                                      class="bi bi-google"></i>
-                                                </h3>
-                                             </a>
-                                          </div>
-                                       </label> --}}
 
                                     </div>
                                  </div>
                               </div>
                            </div>
                            <div class="order-button-payment mt-20">
+                              <p id="limitErr"></p>
                               <button type="submit" class="tp-btn tp-color-btn w-100 banner-animation">Place
                                  order</button>
                            </div>
@@ -202,6 +197,7 @@
    </section>
    <!-- checkout-area end -->
 
+
 </main>
 
 
@@ -209,7 +205,7 @@
 <script>
    $("#checkout-form-submit").submit((e) => {
       e.preventDefault()
-      console.log("iam gone")
+
       $.ajax({
          url: '/order-placement',
          method: 'post',
@@ -218,9 +214,12 @@
             //alert(response)
             if (response.codStatus) {
                location.href = '/viewUserOrders'
+            } else if (response.limitErr) {
+               document.getElementById('limitErr').innerHTML = "Maximum Limit 9,99,999"
+               location.href = '/viewUserOrders'
             } else {
                razorpayPayment(response)
-              // location.href ='/viewUserOrders'
+               // location.href ='/viewUserOrders'
             }
 
          }
@@ -238,11 +237,8 @@
          "image": "https://example.com/your_logo",
          "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
          "handler": function (response) {
-            alert(response.razorpay_payment_id);
-            alert(response.razorpay_order_id);
-            alert(response.razorpay_signature)
 
-            verifyPayment(response,order)
+            verifyPayment(response, order)
          },
          "prefill": {
             "name": "Gaurav Kumar",
@@ -259,18 +255,18 @@
       var rzp1 = new Razorpay(options);
       rzp1.open();
    }
-   function verifyPayment(payment,order){
+   function verifyPayment(payment, order) {
       $.ajax({
-         url:'/verify-payment',
-         data:{
+         url: '/verify-payment',
+         data: {
             payment,
             order
          },
-         method:'post',
-         success:(response)=>{
-            if(response.status){
-               location.href='/viewUserOrders'
-            }else{
+         method: 'post',
+         success: (response) => {
+            if (response.status) {
+               location.href = '/viewUserOrders'
+            } else {
                alert('payment failed')
             }
          }

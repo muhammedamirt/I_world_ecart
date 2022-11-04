@@ -45,7 +45,7 @@
                                  </a>
                               </td>
                               <td class="product-name">
-                                 <a href="shop-details.html">{{this.products.ProductName}}</a>
+                                 <a>{{this.products.ProductName}}</a>
                               </td>
                               <td class="product-price">
                                  <span class="amount">{{this.products.Price}}</span>
@@ -59,7 +59,8 @@
                                  {{/ifEquals}}
                               </td>
                               <td class="product-remove">
-                                 <a href="#"><i class="fa fa-times"></i></a>
+                                 <a onclick="removeFromeWishlist('{{this.products._id}}')"><i
+                                       class="fa fa-times"></i></a>
                               </td>
                            </tr>
                            {{/each}}
@@ -89,8 +90,43 @@
       $.ajax({
          url: `/add-to-cart/${productId}`,
          method: "get",
-         
+
 
       })
+   }
+</script>
+
+<script>
+   const removeFromeWishlist = (productId) => {
+      //console.log(productId)
+      Swal.fire({
+         title: 'Are you sure?',
+         text: "You won't be able to revert this!",
+         icon: 'warning',
+         showCancelButton: true,
+         confirmButtonColor: '#3085d6',
+         cancelButtonColor: '#d33',
+         confirmButtonText: 'Yes, Remove it!'
+      }).then((result) => {
+         if (result.isConfirmed) {
+            $.ajax({
+               url: `/remove-frome-wishlist/${productId}`,
+               method: "get",
+               success: (response) => {
+                  if (response.status) {
+                     Swal.fire(
+                        'Removed!',
+                        'Your Product has been Removed.',
+                        'success'
+
+                     )
+                     location.reload()
+                  }
+               }
+            })
+
+         }
+      })
+
    }
 </script>

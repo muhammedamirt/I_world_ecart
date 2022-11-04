@@ -26,8 +26,10 @@ const productSchema = new Schema({
     stock:{
         type:String,
         required :true
+    },
+    softRemove:{
+        type:Boolean
     }
-
 })
 
 module.exports = mongoose.model('product',productSchema)

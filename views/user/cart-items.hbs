@@ -29,12 +29,13 @@
       <div class="container">
          <div class="row">
             <div class="col-12">
-               <form action="#">
+               {{!-- <form action="#"> --}}
                   <div class="table-content table-responsive">
                      <table class="table">
-                          {{#if productData}}
+                        {{#if productData}}
                         <thead>
                            <tr>
+                              <th class="">No.</th>
                               <th class="product-thumbnail">Images</th>
                               <th class="cart-product-name">Product Name</th>
                               <th class="product-price">Unit Price</th>
@@ -43,21 +44,23 @@
                               <th class="product-remove">Remove</th>
                            </tr>
                         </thead>
-                      
+
                         <tbody>
 
                            {{#each productData}}
                            <tr>
+                              <td id="cartInc">{{inc @index}}</td>
                               <td class="product-thumbnail">
                                  <a href="/product-detials/{{this.productId}}"><img
                                        src="/product-images/{{this.productImages.[0]}}" alt="">
                                  </a>
                               </td>
                               <td class="product-name">
-                                 <a href="/product-detials/{{this.productId}}">{{this.productName}}</a>
+                                 <a>{{this.productName}}</a>
                               </td>
                               <td class="product-price">
-                                 <span class="amount" id="{{this.productId}}price">{{this.productPrice}}</span>
+                                 <span><i class="bi bi-currency-rupee"></i><span class="amount"
+                                       id="{{this.productId}}price">{{this.productPrice}}</span>
                               </td>
 
                               <td class="product-quantity">
@@ -67,7 +70,8 @@
                                  <span class="cart-plus" onclick="cartquantityinc('{{this.productId}}')">+</span>
                               </td>
                               <td class="product-subtotal">
-                                 <span class="amount" id="{{this.productId}}totalPrice">{{this.TotalPrice}}</span>
+                                 <span><i class="bi bi-currency-rupee"></i></span><span class="amount"
+                                    id="{{this.productId}}totalPrice">{{this.TotalPrice}}</span>
                               </td>
                               <td class="product-remove">
                                  <a onclick="removeConfermation('{{this.productId}}')" style="color:red ;"><i
@@ -84,32 +88,74 @@
                         {{/if}}
                      </table>
                   </div>
-                  <div class="row">
-                     <div class="col-12">
-                        <div class="coupon-all">
-                           <div class="coupon">
-                              <input id="coupon_code" class="input-text" name="coupon_code" value=""
-                                 placeholder="Coupon code" type="text">
-                              <button class="tp-btn tp-color-btn banner-animation" name="apply_coupon"
-                                 type="submit">Apply
-                                 Coupon</button>
+                  
+
+                  <section class="coupon-area pt-80 pb-30 wow fadeInUp" data-wow-duration=".8s" data-wow-delay=".2s"
+                     style="margin-top:50px ;">
+                     <div class="container">
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="coupon-accordion">
+                                 <!-- ACCORDION START -->
+                                 <h3>Have a coupon? <span id="showcoupon">Click here to enter your code</span></h3>
+                                 <div id="checkout_coupon" class="coupon-checkout-content">
+                                    <div class="coupon-info">
+
+                                       <p class="checkout-coupon">
+                                          <input type="text" id="couponCode" placeholder="Coupon Code" />
+                                          <button class="tp-btn tp-color-btn" onclick="discount()" type="submit">Apply
+                                             Coupon</button>
+                                       </p>
+
+                                    </div>
+                                 </div>
+                                 <!-- ACCORDION END -->
+                              </div>
                            </div>
                         </div>
                      </div>
-                  </div>
+                  </section>
+                  {{!-- <section class="mt-5">
+                     <div class="container">
+                        <div class="row services-gx-item">
+                           <div class="col-lg-3 col-sm-6">
+                              <div class="tpservicesitem d-flex align-items-center mb-30" style="background-color:rgb(255, 255, 255) ;">
+                                 <div class="tpservicesitem__icon mr-20">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                       width="36" height="36" viewBox="0 0 36 36">
+                                       <image id="services-icon-03.svg" width="36" height="36"
+                                          xlink:href="data:img/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAACnklEQVRYhcWYTYhOYRTHf02KrDTEAtOgfJQwFjK+S7FSIjaGmWGaSamZiAXiXbHwbWNB2IiShSxYYAwhSiSRSb1D2dGrLBSa0dG5ddyee+97733u9a/prfOce57fPfecc587FKiNwGvgJ/AMmFfkZknqBEaA28BO4B1QA1r+B8xWhTlpbKOBJ8C3sqECmHOOtXEK9aWsxycwv4BLMT4C9bIMqPWaGQszEbgFfNXf5hBUoTXVBxwO2a4DH4EKUAX6zdoY4GkRNbXE3HlYn4CDauvQDDYaH8nUfYXy9vieA3sj1vo1M23AK+C9w8dbTTXpb0OMj2RuUDMzBMyJ8LNQ87PAbNdNWuv0HxVh3xIqdIG+kRYmmDMn0l4YUkXjbDbma8DjNEG2xQy9LDC2K5s1QxfrDeIaepO0S9o8wFT1L6pj/1GnY+gJzFstxBllwojTD+CMI4ikeFqZMKINGmiWsc0FBjzCTK4XRrRGg61M8JO2XQVMSQlTd2asXujFsyPWd+iLUjb+DexR+4IiYERTgQ8RQXbrpqeARcAxYBgYb6C8wsRBHVKYIyE/sa0OXR/ADPqACSSF/V0DX3HAYGrGbuo1M4FWaJsHL8o3wP4IGFfNiL3XF8xarYtHwNIInySYcNYyq9Gc9qLe2kmt/Rm46wNG1JFwdxXTZS6YZbre7gvoTugsbNWim9V083V62B8yBXxAv1zH+gISmKsx6wt14wFTKw9MRqsJn0WpJBN4RIdfPZoJTDd+yyNmUib1aLDzOWJc1gx5gRlOc3pzqE9vqDsvTJfCZH3uE3R6C8zZvDDtGR5Tg34sHgcemq7blxemxzFP4rQJuGmOHTX9aujWs1EudaWsmV2mvY8Ci/MChCX/FLiQwv8ecNo3xF8BfwD4tdQxtW0vigAAAABJRU5ErkJggg==" />
+                                    </svg>
+                                 </div>
+                                 <div class="tpservicesitem__content">
+                                    <h4 class="tpservicesitem__title">Available Coupons</h4>
+                                    <p>copy the code</p>
+                                    <input type="text" value="bm3xigd1" class="form-control" style="border-radius:10px ; border:none ; background-color:rgb(255, 232, 243) ; font-weight: bold;"  id="codeCopy" readonly><button class="btn btn-inverse-info btn-icon" onclick="copyCode()"><i class="bi bi-clipboard"></i></button>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </section> --}}
                   <div class="row justify-content-end">
                      <div class="col-md-5 ">
                         <div class="cart-page-total">
                            <h2>Cart totals</h2>
                            <ul class="mb-20">
-                              <li>Total<span id="allTotal">{{cartData.totalAmount}}</span><i
-                                    class="bi bi-currency-rupee"></i></li>
+                              <li>%off<span><i class="bi bi-currency-rupee"></i><span
+                                       id="discountedPercentage">0%</span></span></li>
+                              <li>Total<span><i class="bi bi-currency-rupee"></i><span
+                                       id="offTotal">{{cartData.totalAmount}}</span></span></li>
+                              <li>Off Total<span><i class="bi bi-currency-rupee"></i><span
+                                       id="allTotal">{{cartData.totalAmount}}</span></span></li>
+
                            </ul>
                            <a href="/view-checkout" class="tp-btn tp-color-btn banner-animation">Proceed to Checkout</a>
                         </div>
                      </div>
                   </div>
-               </form>
+                  {{!--
+               </form> --}}
             </div>
          </div>
       </div>
@@ -133,6 +179,8 @@
       document.getElementById(product + "totalPrice").innerHTML = totalAmount
       let allTotal = document.getElementById('allTotal').innerHTML
       document.getElementById('allTotal').innerHTML = Number(allTotal) + Number(cartPrice)
+      document.getElementById('offTotal').innerHTML = Number(allTotal) + Number(cartPrice)
+
 
    } 
 </script>
@@ -152,6 +200,7 @@
          document.getElementById(product + "totalPrice").innerHTML = totalAmount
          let allTotal = document.getElementById('allTotal').innerHTML
          document.getElementById('allTotal').innerHTML = Number(allTotal) - Number(cartPrice)
+         document.getElementById('offTotal').innerHTML = Number(allTotal) - Number(cartPrice)
       }
    }
 
@@ -191,3 +240,82 @@
          sans-serif;
    }
 </style>
+
+
+{{!--
+<script>
+   $('#coupenSubmission').submit((e) => {
+      e.preventDefault()
+
+   })
+</script> --}}
+
+<script>
+   const discount = () => {
+      let coupenCode = document.getElementById('couponCode').value
+      let totalAmount = document.getElementById('allTotal').innerHTML
+      console.log(totalAmount)
+      $.ajax({
+         url: "/coupon-submission",
+         method: "post",
+         data: {
+            coupenCode,
+            totalAmount
+         },
+         success: (response) => {
+            if (response.status) {
+               Swal.fire(`${response.couponData.discount}% Discounted your Total Amount`)
+               document.getElementById('discountedPercentage').innerHTML = response.couponData.discount + "%"
+               document.getElementById('allTotal').innerHTML = `${Number(totalAmount) * Number(response.couponData.discount) / 100}`
+            } else if (response.noCoupon) {
+               Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Wrong Coupon',
+               })
+            } else if (response.noUser) {
+               Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Not Logged',
+               })
+            } else if (response.alreadyUsed) {
+               Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'This Coupon Already used',
+               })
+            } else if (response.validityExpired) {
+               Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'validity expired',
+               })
+            } else if (response.NeedMaximumPurchase) {
+               Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Need More Purchases for use this Coupon',
+               })
+            }
+
+
+         }
+      })
+   }
+
+</script>
+
+{{!-- <script>
+function copyCode() {
+  // Get the text field
+  let copyText = document.getElementById("codeCopy");
+
+  // Select the text field
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); 
+  navigator.clipboard.writeText(copyText.value);
+  
+  alert("Copied the text: " + copyText.value);
+}
+</script> --}}

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const { type } = require('os')
-const { array } = require('../../multer/multer')
+const { array } = require('../../middlewares/multer')
 
 const Schema = mongoose.Schema
 
@@ -30,7 +30,7 @@ const orderDetailes = new Schema({
         require: true
     },
     totalAmount: {
-        type: String,
+        type: Number,
         require: true
     },
     paymentType:{

@@ -5,9 +5,8 @@ const multer = require('multer')
 const { Router } = require('express')
 const upload = multer({ dest: 'uploads/' })
 //multer
-const store = require('../multer/multer')
-
-
+const store = require('../middlewares/multer')
+const bannerStore = require('../middlewares/bannerImages')
 
 router.get('/',controller.getAdminHome)
 
@@ -27,9 +26,11 @@ router.route('/add-products')
 
 router.route('/edit-product/:id')
 .get(controller.getEditProduct)
-.post(controller.postProductDetailes)
+.post(store.array("img",3),controller.postProductDetailes)
 
 router.get('/delete-product/:id',controller.getDeleteProduct)
+
+router.get('/recover-product/:id',controller.getRecoverProduct)
 
 router.get('/view-categury/:categury',controller.getProductCategury)
 
@@ -55,5 +56,18 @@ router.post('/change-status/:orderId/:userId',controller.getChangeStatus)
 
 router.post('/cancel-admin-order/:orderId/:userId',controller.getAdminOrderCancel)
 
+router.get('/add-coupon-banner',controller.getAddCouponBanner)
+
+router.post('/add-new-coupon',controller.postAddCoupon)
+
+router.get('/view-coupons',controller.getViewCoupens)
+
+router.get('/remove-coupon/:couponId',controller.getRemoveCoupon)
+
+router.post('/add-banners',bannerStore.array("img",1), controller.postAddBanners)
+
+router.get('/view-banners',controller.getViewBanners)
+
+// router.post('/add-new-banner',store.array("img",3),controller.postAddBanner)
 
 module.exports = router

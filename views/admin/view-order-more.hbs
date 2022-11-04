@@ -13,7 +13,7 @@
                             <li>Full Address: {{userOrder.[0].orders.address}}</li>
                             <li>Status:
 
-                                {{#ifEquals userOrder.[0].orders.paymentStatus "canceld"}}
+                                {{#ifEquals userOrder.[0].orders.paymentStatus "Canceld"}}
 
                                 <label class="badge badge-danger">Canceld</label>
 
@@ -140,7 +140,7 @@
                                     {{#each products}}
                                     <tr class="table-info">
                                         <td>
-                                            {{@index}}
+                                            {{inc @index}}
                                         </td>
                                         <td>
                                             <img src="/product-images/{{this.productImages.[0]}}" alt="image">

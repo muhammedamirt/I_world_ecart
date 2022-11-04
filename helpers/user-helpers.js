@@ -7,6 +7,8 @@ const productCollection = require('../models/schema/products')
 const orderCollection = require('../models/schema/order')
 const adminCollection = require('../models/schema/admin')
 const wishlistCollection = require('../models/schema/wishlist')
+const couponCollection = require('../models/schema/coupon')
+const bannerCollection = require('../models/schema/banners')
 const { Promise } = require('mongoose')
 const order = require('../models/schema/order')
 const { TodayInstance } = require('twilio/lib/rest/api/v2010/account/usage/record/today')
@@ -62,6 +64,14 @@ module.exports = {
             })
 
 
+        })
+
+    },
+    emailExistCheck: (userEmail) => {
+        return new Promise((res, rej) => {
+            userCollection.findOne({ Email: userEmail }).then((data) => {
+                res(data)
+            })
         })
 
     },
@@ -134,7 +144,7 @@ module.exports = {
                     cart.save();
                     res()
                 } else {
-                    console.log('Enter to else');
+                    // console.log('Enter to else');
                     cartCollection.create({
                         userId: userId,
                         cartItems: [{ productId, productName, ProductQuantity: 1, productPrice, TotalPrice, productImages }],
@@ -170,7 +180,7 @@ module.exports = {
         // console.log(userId);
         return new Promise(async (res, rej) => {
             let cart = await cartCollection.findOne({ userId: userId })
-            let items = await productCollection.findOne({_id:productId})
+            let items = await productCollection.findOne({ _id: productId })
             // console.log(cart);
 
             let itemIndex = cart.cartItems.findIndex(p => p.productId == productId);
@@ -181,7 +191,7 @@ module.exports = {
                 cart.totalAmount = Number(cart.totalAmount) - Number(productItem.productPrice) * Number(productItem.ProductQuantity)
                 cart.cartItems.splice(itemIndex, 1)
                 cart.save()
-               
+
                 res()
             } else {
                 console.log("Error");
@@ -211,7 +221,7 @@ module.exports = {
                 }
 
                 cart.save();
-                
+
 
                 res()
 
@@ -248,7 +258,7 @@ module.exports = {
 
                 }
                 cart.save();
-               
+
                 res()
 
             } else {
@@ -288,8 +298,8 @@ module.exports = {
 
                     cart.save();
 
-                   
-                    
+
+
                     res()
                 } else {
                     console.log('Enter to else');
@@ -318,9 +328,9 @@ module.exports = {
         })
 
     },
-    addProductToOrders: (orderDocument, userAddress, userId) => {
+    addProductToOrders: (orderDocument, userAddress, userId, userCoupon) => {
         return new Promise(async (res, rej) => {
-
+            console.log(orderDocument);
             let response = {
                 orderId: null,
                 totalAmount: null
@@ -329,30 +339,43 @@ module.exports = {
             let cart = await cartCollection.findOne({ userId: userId })
             let order = await orderCollection.findOne({ userId: userId })
             let paymentType = orderDocument.payment
-            let status = orderDocument.payment === "pending"
+            let status = "pending"
             let today = new Date()
             let date = new Date().toJSON().slice(0, 10);
             // let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
             let products = cart.cartItems
             console.log(products);
             let totalAmount = cart.totalAmount
-            let userFullName = user.FirstName + user.LastName
-            let userMobile = user.Mobile
+            if (userCoupon.couponStatus) {
+                let percentage = userCoupon.couponData.discount
+                totalAmount = Number(cart.totalAmount) * Number(percentage) / 100
+                user.coupon.push({
+                    couponId: userCoupon.couponData._id
+                })
+                user.save()
+            } else {
+                totalAmount = cart.totalAmount
+            }
+            console.log(totalAmount);
+            let userFullName = orderDocument.firstName + " " + orderDocument.lastName
+            let userMobile = orderDocument.Mobile
             if (cart) {
                 if (order) {
-
                     console.log("already have order");
+                    let addressIndex = user.address.findIndex(p => p._id == orderDocument.addressId)
+                    console.log(addressIndex);
+                    if (addressIndex == -1) {
+                        user.address.push({
+                            firstName: orderDocument.firstName,
+                            lastName: orderDocument.lastName,
+                            address: orderDocument.address,
+                            Email: orderDocument.Email,
+                            Mobile: userMobile
+                        })
+                        user.save()
+                    }
 
-                    userCollection.updateOne(
-                        { _id: userId },
-                        {
-                            $set: {
-                                address: userAddress
-                            }
-                        }
-                    ).then((data) => {
-                        console.log(data, "++++++++++++++++++++++++")
-                    })
+
                     order.orders.push({
                         date: date,
                         userName: userFullName,
@@ -371,24 +394,32 @@ module.exports = {
                         console.log(orderId);
                         response.orderId = orderId
                         response.totalAmount = totalAmount
-                        // console.log(response);
-                        console.log("product push");
+
+
                         cartCollection.deleteOne({ userId: userId }).then((data) => {
                             console.log('cart cleared ==================', data);
                         })
+
+
                         res(response)
                     })
+
+
+
+
+
+
+
+
                 } else {
-                    userCollection.updateOne(
-                        { _id: userId },
-                        {
-                            $set: {
-                                address: userAddress
-                            }
-                        }
-                    ).then((data) => {
-                        console.log(data, "++++++++++++++++++++++++")
+                    user.address.push({
+                        firstName: orderDocument.firstName,
+                        lastName: orderDocument.lastName,
+                        address: orderDocument.address,
+                        Email: orderDocument.Email,
+                        Mobile: userMobile
                     })
+                    user.save()
                     orderCollection.create({
                         userId: userId,
                         orders: [{
@@ -411,6 +442,7 @@ module.exports = {
                         })
                         res(response)
                     })
+
                 }
             } else {
                 console.log("no cart");
@@ -426,11 +458,16 @@ module.exports = {
                     $match: { userId: userId }
                 },
             ]).then((data) => {
-                let userData = data[0]
-                let orders = userData.orders
-                // console.log(orders);
-                let latestOrders = orders.reverse()
-                res(latestOrders)
+                console.log(data.length);
+                if (data.length !== 0) {
+                    let userData = data[0]
+                    let orders = userData.orders
+                    // console.log(orders);
+                    let latestOrders = orders.reverse()
+                    res(latestOrders)
+                } else {
+                    rej()
+                }
             })
         })
     },
@@ -475,7 +512,7 @@ module.exports = {
                 let orderIndex = userOrder.orders.findIndex(p => p._id == orderId)
                 if (orderIndex >= 0) {
                     let cancelOrder = userOrder.orders[orderIndex]
-                    cancelOrder.paymentStatus = "canceld"
+                    cancelOrder.paymentStatus = "Canceld"
                     userOrder.orders[orderIndex] = cancelOrder
                     userOrder.save()
 
@@ -505,6 +542,7 @@ module.exports = {
             instance.orders.create(options, function (err, order) {
                 if (err) {
                     console.log(err);
+                    rej()
                 } else {
                     console.log("===========", order);
                     res(order)
@@ -560,11 +598,11 @@ module.exports = {
     addProductToWishlist: (productId, userId) => {
         return new Promise(async (res, rej) => {
             let wishlist = await wishlistCollection.findOne({ userId: userId })
-            let Existproduct = await wishlistCollection.findOne({"productId.item":mongoose.Types.ObjectId(productId)})
-            if(Existproduct) {
+            let Existproduct = await wishlistCollection.findOne({ "productId.item": mongoose.Types.ObjectId(productId) })
+            if (Existproduct) {
                 console.log("Exist");
                 rej()
-            }else{
+            } else {
                 if (wishlist) {
                     console.log("already have wishlist");
                     wishlist.productId.push({ item: mongoose.Types.ObjectId(productId) })
@@ -572,7 +610,7 @@ module.exports = {
                         // console.log(data);
                         res(data)
                     })
-    
+
                 } else {
                     wishlistCollection.create({
                         userId: userId,
@@ -582,7 +620,7 @@ module.exports = {
                     })
                 }
             }
-            
+
         })
 
     },
@@ -624,9 +662,108 @@ module.exports = {
                     }
                 },
             ]).then((data) => {
-                // console.log(data);
                 res(data)
             })
         })
+    },
+    applayCouponChecking: (userId, couponCode, totalAmount) => {
+        return new Promise((res, rej) => {
+            let response = {}
+            couponCollection.findOne({ couponCode: couponCode }).then((coupon) => {
+                if (coupon) {
+                    userCollection.findOne({ _id: userId }).then((user) => {
+                        if (user) {
+                            let couponExist = user.coupon.findIndex(p => p.couponId == coupon._id)
+                            console.log(couponExist);
+                            if (couponExist == -1) {
+                                let currentDate = new Date().toJSON().slice(0, 10)
+                                if (currentDate <= coupon.validity) {
+                                    if (Number(totalAmount) >= Number(coupon.maximumPurchase)) {
+                                        response.couponData = coupon
+                                        response.status = true
+                                        res(response)
+                                    } else {
+                                        console.log("need maximum limit");
+                                        rej({ NeedMaximumPurchase: true })
+                                    }
+                                } else {
+                                    console.log("validity expired");
+                                    rej({ validityExpired: true })
+                                }
+                            } else {
+                                console.log("already use");
+                                rej({ alreadyUsed: true })
+                            }
+                        } else {
+                            console.log("no user");
+                            rej({ noUser: true })
+                        }
+                    })
+                } else {
+                    console.log("no coupon");
+                    rej({ noCoupon: true })
+                }
+            })
+        })
+    },
+    editUserAddress: (userId, updateData) => {
+        return new Promise((res, rej) => {
+            userCollection.updateOne(
+                { _id: userId },
+                {
+                    $set: {
+                        address: updateData
+                    }
+                }
+            ).then((data) => {
+                res(data)
+            })
+        })
+
+    },
+    getBannersData: () => {
+        return new Promise((res, rej) => {
+            bannerCollection.find().lean().then((data) => {
+                console.log(data);
+                res(data)
+            })
+        })
+
+    },
+    removeWishlistProduct: (userId, prodId) => {
+        return new Promise(async (res, rej) => {
+            let wishlist = await wishlistCollection.findOne({ userId: userId })
+            // let items = await productCollection.findOne({ _id: productId })
+            // console.log(cart);
+
+            let itemIndex = wishlist.productId.findIndex(p => p.item == prodId);
+            console.log(itemIndex);
+            if (itemIndex >= 0) {
+                wishlist.productId.splice(itemIndex, 1)
+                wishlist.save()
+                res()
+            } else {
+                console.log("Error");
+            }
+
+        })
+
+    },
+    selectAddress: (userId, addressId) => {
+        try {
+            return new Promise(async (res, rej) => {
+                let user = await userCollection.findById(userId).lean()
+                let addressIndex = user.address.findIndex(p => p._id == addressId)
+                console.log(addressIndex);
+                if (addressIndex !== -1) {
+                    let addressData = user.address[addressIndex]
+                    res(addressData)
+                }
+            })
+        } catch (err) {
+            console.log(err);
+        }
+
+
     }
 }

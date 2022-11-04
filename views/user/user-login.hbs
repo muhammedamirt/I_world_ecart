@@ -1,11 +1,10 @@
-
 <section>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-6 col-sm-12" style="margin-top: 5rem;">
                 <div class="tptrack__product mb-40">
                     <div class="tptrack__thumb">
-                        <img src="/img/banner/login-bg.jpg" alt="">
+                        <img src="https://wallpaperaccess.com/full/261945.jpg" alt="">
                     </div>
                     <div class="tptrack__content grey-bg-3">
                         <div class="tptrack__item d-flex mb-20">
@@ -19,42 +18,72 @@
                                     manage access to your account.</p>
                             </div>
                         </div>
-                        <form action="/user-login" method="post">
-                           <div class="form-outline mb-4">
-                                        <label class="form-label" for="form3Example3"></label>
-                                        <input type="email" id="form3Example3" class="form-control form-control-lg"
-                                            placeholder="Email" name="Email"{{#if errEmail}} value="{{errEmail}}" {{/if}} required/>
-                                            {{#if emailMessage}}
-                                            <p class="text-danger" style="text-align:center ;">{{emailMessage}}</p>
-                                            {{/if}}
+                        {{!-- <form action="/user-login" method="post">
+                            --}}
+                            <form id="loginFormSubmission">
+                                <div class="form-outline mb-4">
+                                    <label class="form-label" for="form3Example3"></label>
+                                    <input type="email" id="form3Example3" class="form-control form-control-lg"
+                                        placeholder="Email" name="Email" {{#if errEmail}} value="{{errEmail}}" {{/if}}
+                                        required />
 
-                                    </div>
-                            <div class="form-outline mb-3">
-                                        <label class="form-label" for="form3Example4"></label>
+                                    <p class="text-danger" style="text-align:center ;" id='emailErr'></p>
 
-                                        <input type="password" id="form3Example4" class="form-control form-control-lg"
-                                            placeholder="Password" name="Password" {{#if errPass}} value="{{errPass}}" {{/if}} required />
-                                             {{#if passwordMessage}}
-                                           <p class="text-danger" style="text-align:center ;">{{passwordMessage}}</p>
-                                            {{/if}}
+
+                                </div>
+                                <div class="form-outline mb-3">
+                                    <label class="form-label" for="form3Example4"></label>
+
+                                    <input type="password" id="form3Example4" class="form-control form-control-lg"
+                                        placeholder="Password" name="Password" {{#if errPass}} value="{{errPass}}"
+                                        {{/if}} required />
+                                    <p class="text-danger" id="passwordErr" style="text-align:center ;"></p>
+
+                                </div>
+
+                                <div class="tpsign__remember d-flex align-items-center justify-content-between mb-15">
+                                    <div class="tpsign__pass">
+                                        <a href="/user-signup">Register</a>
                                     </div>
-                        
-                        <div class="tpsign__remember d-flex align-items-center justify-content-between mb-15">
-                           <div class="tpsign__pass">
-                                <a href="/user-signup">Register</a>
-                            </div>
-                            <div class="tpsign__pass">
-                                <a href="#">Forget Password</a>
-                            </div>
-                        </div>
-                        <div class="tptrack__btn">
-                            <button class="tptrack__submition" type="submit">Login Now</a><i
-                                    class="fal fa-long-arrow-right"></i></button>
-                        </div>
-                         </form>
+                                    <div class="tpsign__pass">
+                                        <a href="#">Forget Password</a>
+                                    </div>
+                                </div>
+                                <div class="tptrack__btn">
+                                    <button class="tptrack__submition" type="submit">Login Now</a><i
+                                            class="fal fa-long-arrow-right"></i></button>
+                                </div>
+                            </form>
                     </div>
                 </div>
             </div>
-        </div>  
+        </div>
     </div>
 </section>
+
+<script>
+    $("#loginFormSubmission").submit((e) => {
+        e.preventDefault()
+        $.ajax({
+            url: '/user-login',
+            method: 'post',
+            data: $("#loginFormSubmission").serialize(),
+            success: (response) => {
+                if (response.loginStatus) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Login success',
+                        showConfirmButton: false,
+                        timer: 500
+                    })
+                    location.href = "/"
+                } else if (response.emailErr) {
+                    document.getElementById('emailErr').innerHTML = "This Email Don't Have Any Account"
+                } else if (response.passwordErr) {
+                    document.getElementById('passwordErr').innerHTML = "Wrong Password Try Another Password"
+                }
+            }
+        })
+    })
+
+</script>
