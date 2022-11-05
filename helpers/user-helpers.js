@@ -78,25 +78,20 @@ module.exports = {
     doLogin: (userData) => {
         return new Promise(async (res, rej) => {
             let userDocument = await userCollection.findOne(({ Email: userData.Email }))
-            // // console.log(userDocument);
             let response = {}
             if (userDocument) {
                 bcrypt.compare(userData.Password, userDocument.Password).then((data) => {
-                    // // console.log("data is======="+data);
                     response.user = userDocument
                     response.status = true
                     if (data) {
-                        // console.log('login seccess');
                         res(response)
                     } else {
-                        // console.log('password wrong');
                         response.Email = userDocument.Email
                         response.passwordErr = true
                         rej(response)
                     }
                 })
             } else {
-                // console.log('email Error');
                 response.Password = userData.Password
                 response.emailErr = true
                 rej(response)
@@ -124,10 +119,9 @@ module.exports = {
             try {
                 let cart = await cartCollection.findOne({ userId: userId })
                 let items = await productCollection.findOne({ _id: productId })
-                const productName = items.ProductName
-                const productPrice = items.Price
+                const { productName, Price: productPrice, images: productImages } = items
                 const TotalPrice = productPrice
-                const productImages = items.images
+
                 if (cart) {
                     let itemIndex = cart.cartItems.findIndex(p => p.productId == productId);
                     if (itemIndex >= 0) {
@@ -155,7 +149,7 @@ module.exports = {
 
 
             } catch (err) {
-                // console.log(err);
+                console.log(err);
             }
         })
 
@@ -179,13 +173,13 @@ module.exports = {
         // // console.log(productId);
         // // console.log(userId);
         return new Promise(async (res, rej) => {
-            let cart = await cartCollection.findOne({ userId: userId })
-            let items = await productCollection.findOne({ _id: productId })
+            let cart = await cartCollection.findOne({ userId })
             // // console.log(cart);
 
             let itemIndex = cart.cartItems.findIndex(p => p.productId == productId);
             // console.log(itemIndex);
             if (itemIndex >= 0) {
+
                 // // console.log("============here==========");
                 let productItem = cart.cartItems[itemIndex]
                 cart.totalAmount = Number(cart.totalAmount) - Number(productItem.productPrice) * Number(productItem.ProductQuantity)
@@ -201,7 +195,6 @@ module.exports = {
     },
     incCartProductQuantity: (productId, userId) => {
         return new Promise(async (res, rej) => {
-
             let cart = await cartCollection.findOne({ userId: userId })
             let productData = await productCollection.findOne({ _id: productId })
             let price = productData.Price
@@ -225,8 +218,6 @@ module.exports = {
 
                 res()
 
-            } else {
-                // console.log("No Product");
             }
 
 
@@ -321,7 +312,7 @@ module.exports = {
     },
     addProductsToCheckout: (userId) => {
         return new Promise(async (res, rej) => {
-            let cart = await cartCollection.find({ userId: userId }).lean()
+            let cart = await cartCollection.find({ userId }).lean()
             // console.log(cart.cartItems, "==========================");
             // console.log(cart);
             res(cart)
@@ -337,29 +328,29 @@ module.exports = {
             }
             let user = await userCollection.findOne({ _id: userId })
             let cart = await cartCollection.findOne({ userId: userId })
-            let order = await orderCollection.findOne({ userId: userId })
-            let paymentType = orderDocument.payment
-            let status = "pending"
-            let today = new Date()
-            let date = new Date().toJSON().slice(0, 10);
-            // let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-            let products = cart.cartItems
-            // console.log(products);
-            let totalAmount = cart.totalAmount
-            if (userCoupon.couponStatus) {
-                let percentage = userCoupon.couponData.discount
-                totalAmount = Number(cart.totalAmount) * Number(percentage) / 100
-                user.coupon.push({
-                    couponId: userCoupon.couponData._id
-                })
-                user.save()
-            } else {
-                totalAmount = cart.totalAmount
-            }
-            // console.log(totalAmount);
-            let userFullName = orderDocument.firstName + " " + orderDocument.lastName
-            let userMobile = orderDocument.Mobile
             if (cart) {
+                let order = await orderCollection.findOne({ userId: userId })
+                let paymentType = orderDocument.payment
+                let status = "pending"
+                let date = new Date().toJSON().slice(0, 10);
+                // let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                let products = cart.cartItems
+                // console.log(products);
+                let totalAmount = cart.totalAmount
+                if (userCoupon.couponStatus) {
+                    let percentage = userCoupon.couponData.discount
+                    totalAmount = Number(cart.totalAmount) * Number(percentage) / 100
+                    user.coupon.push({
+                        couponId: userCoupon.couponData._id
+                    })
+                    user.save()
+                } else {
+                    totalAmount = cart.totalAmount
+                }
+                // console.log(totalAmount);
+                let userFullName = orderDocument.firstName + " " + orderDocument.lastName
+                let userMobile = orderDocument.Mobile
+
                 if (order) {
                     // console.log("already have order");
                     let addressIndex = user.address.findIndex(p => p._id == orderDocument.addressId)
@@ -374,8 +365,6 @@ module.exports = {
                         })
                         user.save()
                     }
-
-
                     order.orders.push({
                         date: date,
                         userName: userFullName,
@@ -399,18 +388,8 @@ module.exports = {
                         cartCollection.deleteOne({ userId: userId }).then((data) => {
                             // console.log('cart cleared ==================', data);
                         })
-
-
                         res(response)
                     })
-
-
-
-
-
-
-
-
                 } else {
                     user.address.push({
                         firstName: orderDocument.firstName,
@@ -437,9 +416,7 @@ module.exports = {
                     }).then((data) => {
                         response.orderId = data.orders[0]._id
                         response.totalAmount = totalAmount
-                        cartCollection.deleteOne({ userId: userId }).then((data) => {
-                            // console.log('cart cleared ==================', data);
-                        })
+                        cartCollection.deleteOne({ userId: userId })
                         res(response)
                     })
 
@@ -646,7 +623,7 @@ module.exports = {
                 {
                     $lookup: {
                         from: "products",
-                        localField: "item", 
+                        localField: "item",
                         foreignField: "_id",
                         as: "products"
 
@@ -680,24 +657,19 @@ module.exports = {
                                         response.status = true
                                         res(response)
                                     } else {
-                                        // console.log("need maximum limit");
                                         rej({ NeedMaximumPurchase: true })
                                     }
                                 } else {
-                                    // console.log("validity expired");
                                     rej({ validityExpired: true })
                                 }
                             } else {
-                                // console.log("already use");
                                 rej({ alreadyUsed: true })
                             }
                         } else {
-                            // console.log("no user");
                             rej({ noUser: true })
                         }
                     })
                 } else {
-                    // console.log("no coupon");
                     rej({ noCoupon: true })
                 }
             })
@@ -783,24 +755,24 @@ module.exports = {
             let user = await userCollection.findById(userId)
             let addressIndex = user.address.findIndex(p => p._id == addressId)
             // console.log(addressIndex);
-            user.address.splice(addressIndex,1)
+            user.address.splice(addressIndex, 1)
             user.save()
             res()
         })
     },
-    addNewAddress:(userId,addressData)=>{
-        return new Promise(async (res,rej)=>{
-            let user =await userCollection.findById(userId)
+    addNewAddress: (userId, addressData) => {
+        return new Promise(async (res, rej) => {
+            let user = await userCollection.findById(userId)
             user.address.push({
-                firstName:addressData.firstName,
-                lastName:addressData.lastName,
-                address:addressData.address,
-                Email:addressData.Email,
-                Mobile:addressData.Mobile
+                firstName: addressData.firstName,
+                lastName: addressData.lastName,
+                address: addressData.address,
+                Email: addressData.Email,
+                Mobile: addressData.Mobile
             })
             user.save()
             res()
         })
-      
+
     }
 }

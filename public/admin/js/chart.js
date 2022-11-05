@@ -237,4 +237,4 @@ $(function() {
       options: scatterChartOptions
     });
   }
-});
+}); 

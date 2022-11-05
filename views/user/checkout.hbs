@@ -46,8 +46,8 @@
                         <p>{{this.address}}</p>
                      </div>
                   </div>
-                  
-               </a> 
+
+               </a>
 
             </div>
             {{/each}}
@@ -60,14 +60,14 @@
    <section class="checkout-area pb-50 wow fadeInUp" data-wow-duration=".8s" data-wow-delay=".2s">
       <div class="container">
          {{!-- <form action="/order-placement" method="post"> --}}
-        
+
             <form action="" id="checkout-form-submit">
                <div class="row">
                   <div class="col-lg-6 col-md-12">
                      <div class="checkbox-form">
                         <h3>Billing Details</h3>
                         <div class="row">
-                            {{#if selectAddress}}
+                           {{#if selectAddress}}
                            <div class="col-md-6">
                               <div class="checkout-form-list">
                                  <label>First Name <span class="required">*</span></label>
@@ -105,39 +105,34 @@
                               <input type="text" name="addressId" value="{{selectAddress._id}}" hidden>
                            </div>
                            {{else}}
-                            <div class="col-md-6">
+                           <div class="col-md-6">
                               <div class="checkout-form-list">
                                  <label>First Name <span class="required">*</span></label>
-                                 <input type="text" placeholder="" name="firstName" value=""
-                                    required />
+                                 <input type="text" placeholder="" name="firstName" value="" required />
                               </div>
                            </div>
                            <div class="col-md-6">
                               <div class="checkout-form-list">
                                  <label>Last Name <span class="required">*</span></label>
-                                 <input type="text" placeholder="" name="lastName" value=""
-                                    required />
+                                 <input type="text" placeholder="" name="lastName" value="" required />
                               </div>
                            </div>
                            <div class="col-md-12">
                               <div class="checkout-form-list">
                                  <label>Address <span class="required">*</span></label>
-                                 <input type="text" placeholder="Street address" name="address"
-                                    value="" required />
+                                 <input type="text" placeholder="Street address" name="address" value="" required />
                               </div>
                            </div>
                            <div class="col-md-6">
                               <div class="checkout-form-list">
                                  <label>Email Address <span class="required">*</span></label>
-                                 <input type="email" placeholder="" name="Email" value=""
-                                    required />
+                                 <input type="email" placeholder="" name="Email" value="" required />
                               </div>
                            </div>
                            <div class="col-md-6">
                               <div class="checkout-form-list">
                                  <label>Phone <span class="required">*</span></label>
-                                 <input type="text" placeholder="+91" name="Mobile" value=""
-                                    required />
+                                 <input type="text" placeholder="+91" name="Mobile" value="" required />
                               </div>
                            </div>
                            {{/if}}
@@ -255,6 +250,8 @@
                location.href = '/viewUserOrders'
             } else if (response.limitErr) {
                document.getElementById('limitErr').innerHTML = "Maximum Limit 9,99,999"
+               location.href = '/viewUserOrders'
+            } else if (response.issue) {
                location.href = '/viewUserOrders'
             } else {
                razorpayPayment(response)

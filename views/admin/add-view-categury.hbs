@@ -17,9 +17,9 @@
               <tbody>
                 {{#each categury}}
                 <tr>
-                  <td>{{@index}}</td>
+                  <td>{{inc @index}}</td>
                   <td>{{this.categuryName}}</td>
-                  <td><a class="text-danger" href="/admin/remove-categury/{{this._id}}" onclick="conferm()">remove</a>
+                  <td><a class="text-danger" href="/admin/remove-categury/{{this._id}}" >remove</a>
                   </td>
                 </tr>
                 {{/each}}
@@ -32,11 +32,11 @@
     <div class="col-md-6 grid-margin stretch-card">
       <div class="card" style="height:14rem ;">
         <div class="card-body">
-          <h4 class="card-title">Add categury</h4>
+          <h4 class="card-title">Add Category</h4>
           <form action="/admin/add-categury" method="post">
             <div class="form-group">
               <label>Categury Name</label>
-              <input type="text" class="form-control form-control-lg" placeholder="Username" aria-label="Username"
+              <input type="text" class="form-control form-control-lg" placeholder="Category" aria-label="Username"
                 name="Name">
                 {{#if message}}
                 <p class="text-danger" style="text-align:center ;">{{message}}</p>
@@ -49,8 +49,3 @@
     </div>
   </div>
 </div>
-<script>
-  const conferm = () => {
-    confirm("are you sure")
-  }
-</script>

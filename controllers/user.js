@@ -1,19 +1,11 @@
 require('dotenv').config();
 
-const { getLogin } = require("./admin")
 const userCollection = require('../models/schema/user')
 const orderCollection = require('../models/schema/order')
 const userHelpers = require('../helpers/user-helpers')
 const productHelpers = require("../helpers/productHelpers")
-
-const { body, validationResult } = require('express-validator');
-
-const regExp = /^[a-zA-Z]*$/
-
-
 const easyinvoice = require('easyinvoice')
 const fs = require('fs')
-
 
 const accountSid = process.env.ACCOUNT_SID
 const authToken = process.env.AUATH_TOKEN
@@ -21,16 +13,7 @@ const verifySid = process.env.VERIFY_SID
 
 const client = require('twilio')(accountSid, authToken);
 
-
-
-const otpGenerator = require('otp-generator');
-const categury = require("../models/schema/categury");
-const products = require("../models/schema/products")
-
-// const otpgen = otpGenerator.generate(4, { upperCaseAlphabets: false, specialChars: false });
 let selectAdressData = null
-let emailErrVal = {}
-let passwordErrVal = {}
 let signupErr = {}
 let otpErr = {}
 
@@ -61,8 +44,8 @@ let invoiceData = {
 
 module.exports = {
     getHome: async (req, res) => {
-        await userHelpers.getBannersData().then((data) => {
 
+        await userHelpers.getBannersData().then((data) => {
             bannerData = data
         })
         if (req.session.user) {
@@ -70,10 +53,8 @@ module.exports = {
             let userId = user._id
             let bannerData;
             await userHelpers.getBannersData().then((data) => {
-
                 bannerData = data
             })
-            console.log("++++++++++++++++++++", bannerData);
             userHelpers.getWishlistProducts(userId).then((data) => {
                 console.log(data);
                 res.render("user/index.hbs", { userHome: true, user, data, bannerData })
@@ -81,8 +62,6 @@ module.exports = {
         } else {
             res.render("user/index.hbs", { userHome: true, bannerData })
         }
-
-
     },
 
     //autentication
@@ -93,24 +72,27 @@ module.exports = {
         } else {
             res.render('user/user-login')
         }
-
     },
     postLogin: (req, res) => {
+        try {
 
+            userHelpers.doLogin(req.body)
+                .then((response) => {
+                    req.session.user = response.user
+                    req.session.loggedIn = true
+                    res.json({ loginStatus: true })
+                }).catch((response) => {
+                    if (response.emailErr) {
+                        res.json({ emailErr: true })
+                    } else if (response.passwordErr) {
+                        res.json({ passwordErr: true })
+                    }
+                })
+        } catch {
+            res.redirect('*')
+        }
         // console.log(req.body);
 
-        userHelpers.doLogin(req.body)
-            .then((response) => {
-                req.session.user = response.user
-                req.session.loggedIn = true
-                res.json({ loginStatus: true })
-            }).catch((response) => {
-                if (response.emailErr) {
-                    res.json({ emailErr: true })
-                } else if (response.passwordErr) {
-                    res.json({ passwordErr: true })
-                }
-            })
     },
     getSignup: (req, res) => {
         if (req.session.user) {
@@ -207,136 +189,148 @@ module.exports = {
         })
     },
     getCart: (req, res) => {
-        // if (req.session.user) {
-        let userId = req.session.user._id
-        req.session.couponStatus = false
-        userHelpers.getCartProducts(userId).then((cartData) => {
-            if (cartData) {
-                console.log(cartData);
-                let productData = cartData.cartItems
-                console.log(productData, "=======================");
-                res.render('user/cart-items', { productData, cartData })
+        try {
+            // if (req.session.user) {
+            let userId = req.session.user._id
+            req.session.couponStatus = false
+            userHelpers.getCartProducts(userId).then((cartData) => {
+                if (cartData) {
+                    console.log(cartData);
+                    let productData = cartData.cartItems
+                    console.log(productData, "=======================");
+                    res.render('user/cart-items', { productData, cartData })
 
-            } else {
-                console.log("===========================");
-                res.render('user/cart-items')
-                // console.log("no cart");
-            }
-        })
-
+                } else {
+                    console.log("===========================");
+                    res.render('user/cart-items')
+                    // console.log("no cart");
+                }
+            })
+        } catch {
+            res.redirect('*')
+        }
     },
     getCeckout: async (req, res) => {
-        let userId = req.session.user._id
-        let userData;
-        let addressList;
-        console.log(selectAdressData);
-        if (selectAdressData) {
-            let selectAddress = selectAdressData
-            await userCollection.findOne({ _id: req.session.user._id })
-                .lean()
-                .then((data) => {
-                    userData = data
-                    addressList = data.address
-                })
-            let offData = {
-                dataStatus: false
-            }
-            if (req.session.couponStatus) {
-                offData = req.session.couponData
-                offData.dataStatus = true
+        try {
+            let userId = req.session.user._id
+            let userData;
+            let addressList;
+            console.log(selectAdressData);
+            if (selectAdressData) {
+                let selectAddress = selectAdressData
+                await userCollection.findOne({ _id: req.session.user._id })
+                    .lean()
+                    .then((data) => {
+                        userData = data
+                        addressList = data.address
+                    })
+                let offData = {
+                    dataStatus: false
+                }
+                if (req.session.couponStatus) {
+                    offData = req.session.couponData
+                    offData.dataStatus = true
+                } else {
+                    offData.dataStatus = false
+                }
+                // console.log(offData.status);
+                if (offData.dataStatus) {
+                    console.log(offData);
+                    let response = {}
+                    response.offPercentage = offData.discount
+                    // console.log(offPercentage);
+                    userHelpers.getCartProducts(userId).then((cartData) => {
+                        if (cartData) {
+                            response.offAmount = Number(cartData.totalAmount) * Number(response.offPercentage) / 100;
+                            let productData = cartData.cartItems
+                            res.render('user/checkout', { productData, cartData, userData, response, addressList, selectAddress })
+                            selectAdressData = null
+                        } else {
+                            res.render('user/cart-items')
+                        }
+                    })
+                } else {
+                    console.log("no coupon");
+                    userHelpers.getCartProducts(userId).then((cartData) => {
+                        if (cartData) {
+                            let productData = cartData.cartItems
+                            res.render('user/checkout', { productData, cartData, userData, addressList, selectAddress })
+                            selectAdressData = null
+                        } else {
+                            res.render('user/cart-items')
+                        }
+                    })
+                }
             } else {
-                offData.dataStatus = false
+                await userCollection.findOne({ _id: req.session.user._id })
+                    .lean()
+                    .then((data) => {
+                        userData = data
+                        // console.log(data);
+                        // if (data.address.length !== 0) {
+                        addressList = data.address
+                        // }
+                    })
+                let offData = {
+                    dataStatus: false
+                }
+                if (req.session.couponStatus) {
+                    offData = req.session.couponData
+                    offData.dataStatus = true
+                } else {
+                    offData.dataStatus = false
+                }
+                // console.log(offData.status);
+                if (offData.dataStatus) {
+                    console.log(offData);
+                    let response = {}
+                    response.offPercentage = offData.discount
+                    // console.log(offPercentage);
+                    userHelpers.getCartProducts(userId).then((cartData) => {
+                        if (cartData) {
+                            response.offAmount = Number(cartData.totalAmount) * Number(response.offPercentage) / 100;
+                            let productData = cartData.cartItems
+                            res.render('user/checkout', { productData, cartData, userData, response, addressList })
+                        } else {
+                            res.render('user/cart-items')
+                        }
+                    })
+                } else {
+                    console.log("no coupon");
+                    userHelpers.getCartProducts(userId).then((cartData) => {
+                        if (cartData) {
+                            let productData = cartData.cartItems
+                            res.render('user/checkout', { productData, cartData, userData, addressList })
+                        } else {
+                            res.render('user/cart-items')
+                        }
+                    })
+                }
             }
-            // console.log(offData.status);
-            if (offData.dataStatus) {
-                console.log(offData);
-                let response = {}
-                response.offPercentage = offData.discount
-                // console.log(offPercentage);
-                userHelpers.getCartProducts(userId).then((cartData) => {
-                    if (cartData) {
-                        response.offAmount = Number(cartData.totalAmount) * Number(response.offPercentage) / 100;
-                        let productData = cartData.cartItems
-                        res.render('user/checkout', { productData, cartData, userData, response, addressList, selectAddress })
-                        selectAdressData = null
-                    } else {
-                        res.render('user/cart-items')
-                    }
-                })
-            } else {
-                console.log("no coupon");
-                userHelpers.getCartProducts(userId).then((cartData) => {
-                    if (cartData) {
-                        let productData = cartData.cartItems
-                        res.render('user/checkout', { productData, cartData, userData, addressList, selectAddress })
-                        selectAdressData = null
-                    } else {
-                        res.render('user/cart-items')
-                    }
-                })
-            }
-        } else {
-            await userCollection.findOne({ _id: req.session.user._id })
-                .lean()
-                .then((data) => {
-                    userData = data
-                    // console.log(data);
-                    // if (data.address.length !== 0) {
-                    addressList = data.address
-                    // }
-                })
-            let offData = {
-                dataStatus: false
-            }
-            if (req.session.couponStatus) {
-                offData = req.session.couponData
-                offData.dataStatus = true
-            } else {
-                offData.dataStatus = false
-            }
-            // console.log(offData.status);
-            if (offData.dataStatus) {
-                console.log(offData);
-                let response = {}
-                response.offPercentage = offData.discount
-                // console.log(offPercentage);
-                userHelpers.getCartProducts(userId).then((cartData) => {
-                    if (cartData) {
-                        response.offAmount = Number(cartData.totalAmount) * Number(response.offPercentage) / 100;
-                        let productData = cartData.cartItems
-                        res.render('user/checkout', { productData, cartData, userData, response, addressList })
-                    } else {
-                        res.render('user/cart-items')
-                    }
-                })
-            } else {
-                console.log("no coupon");
-                userHelpers.getCartProducts(userId).then((cartData) => {
-                    if (cartData) {
-                        let productData = cartData.cartItems
-                        res.render('user/checkout', { productData, cartData, userData, addressList })
-                    } else {
-                        res.render('user/cart-items')
-                    }
-                })
-            }
+        } catch {
+            res.redirect('*')
         }
+
 
     },
     getProductDetails: (req, res) => {
-        let user = req.session.user
-        let productId = req.params.id
-        productHelpers.getOneProduct(productId).then((data) => {
-            let product = data
-            let images = data.images
-            productHelpers.getRelatedProducts(req.params.category).then((data) => {
-                res.render('user/product-detailes', { product, user, images, data })
+        try {
+            let user = req.session.user
+            let productId = req.params.id
+            productHelpers.getOneProduct(productId).then((data) => {
+                let product = data
+                let images = data.images
+                productHelpers.getRelatedProducts(req.params.category).then((data) => {
+                    res.render('user/product-detailes', { product, user, images, data })
+                })
+
             })
-
-        })
-
+        } catch {
+            res.redirect('*')
+        }
     },
     getProfile: (req, res) => {
+        
         // if (req.session.user) {
         let userData = req.session.user
         userCollection.findOne({ _id: userData._id })
@@ -479,7 +473,7 @@ module.exports = {
                 }
 
             }).catch((data) => {
-                res.redirect('/view-checkout')
+                res.json({ issue: true })
             })
 
     },
@@ -652,7 +646,7 @@ module.exports = {
         console.log(req.body);
         let userId = req.session.user._id
 
-        userHelpers.addNewAddress(userId,req.body).then((data) => {
+        userHelpers.addNewAddress(userId, req.body).then((data) => {
             res.redirect('/manage-address')
         })
     }
