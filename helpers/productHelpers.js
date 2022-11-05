@@ -16,9 +16,9 @@ module.exports = {
                     softRemove: true
                 })
             products.save().then((data) => {
-                console.log("product added");
-                console.log(data);
-                console.log("====================");
+               // console.log("product added");
+               // console.log(data);
+               // console.log("====================");
                 res(data)
             })
         })
@@ -28,7 +28,7 @@ module.exports = {
     getOneProduct: (prodId) => {
         return new Promise((res, rej) => {
             productCollection.findOne({ _id: prodId }).lean().then((data) => {
-                // console.log(data); 
+                //// console.log(data); 
                 res(data)
             })
         })
@@ -44,7 +44,7 @@ module.exports = {
                     stock: productData.stock
                 }
             }).then((data) => {
-                console.log(data);
+               // console.log(data);
                 res(data)
             })
         })
@@ -87,7 +87,7 @@ module.exports = {
             productCollection.find({ Categury: productCategury })
                 .lean()
                 .then((data) => {
-                    console.log(data);
+                   // console.log(data);
                     res(data)
                 })
         })
@@ -106,7 +106,7 @@ module.exports = {
     getCateguryList: () => {
         return new Promise((res, rej) => {
             categuryCollection.find({}).lean().then((data) => {
-                // console.log(data);
+                //// console.log(data);
                 res(data)
             })
         })
@@ -120,7 +120,7 @@ module.exports = {
                         categuryName: categuryData.Name
                     })
                     categury.save().then((data) => {
-                        console.log(data);
+                       // console.log(data);
                         res(data)
                     })
                 } else {

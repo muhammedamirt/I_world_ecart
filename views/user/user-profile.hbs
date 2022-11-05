@@ -68,19 +68,20 @@
                             </div>
                         </div>
                         <hr>
-                         <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">address</p>
-                            </div>
-                            <div class="col-sm-9">
-                                <p class=" mb-0">{{user.address.firstName}} {{user.address.lastName}},{{user.address.address}}u</p>
-                            </div>
+                        <div>
+                            
+                            <a class=" btn btn-outline-primary btn-fw" href="/manage-address"><i class="bi bi-journal"></i>Manage Address</a>
+                            <a onclick="askConfirm()" style="font-weight: bold ; "
+                                class="btn btn-outline-danger btn-fw"><i class="bi bi-box-arrow-left"></i>Logout your
+                                account
+                                ?</a><br>
+                            <a href="/chande-password" style="font-weight: bold; margin-top: 10px;"
+                                class="btn btn-outline-info btn-fw"><i class="bi bi-key-fill"></i>Change your Password
+                                ?</a><br>
+                            <a href="/viewUserOrders" style="font-weight: bold; margin-top: 10px;"
+                                class="btn btn-outline-success btn-fw"><i class="bi bi-basket2-fill"></i>View
+                                Orders</a><br>
                         </div>
-                        <hr>
-                        <a onclick="askConfirm()" style="font-weight: bold ; " class="btn btn-outline-danger btn-fw"><i class="bi bi-box-arrow-left"></i>Logout your account
-                            ?</a><br>
-                        <a href="/chande-password" style="font-weight: bold; margin-top: 10px;" class="btn btn-outline-info btn-fw"><i class="bi bi-key-fill"></i>Change your Password ?</a><br>
-                        <a href="/viewUserOrders" style="font-weight: bold; margin-top: 10px;" class="btn btn-outline-success btn-fw"><i class="bi bi-basket2-fill"></i>View Orders</a><br>
                     </div>
                 </div>
             </div>
@@ -114,7 +115,7 @@
                         }
                     }
                 })
-                
+
             }
         })
     }

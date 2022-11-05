@@ -72,7 +72,15 @@ router.get('/remove-frome-wishlist/:productId',loginCheck,accessCheck,userContro
 
 router.get('/download-invoice/:orderId',loginCheck,accessCheck,userControllers.downloadInvoce)
 
-router.get('/select-address/:addressId',userControllers.getSelectAddress)
+router.get('/select-address/:addressId',loginCheck,accessCheck,userControllers.getSelectAddress)
+
+router.get('/manage-address',loginCheck,accessCheck,userControllers.getManageAddress)
+
+router.route('/add-new-address')
+.get(userControllers.getAddAdress)
+.post(userControllers.postAddAddress)
+
+router.get('/remove-address/:addressId',userControllers.getRemoveAddress)
 
 router.get('*', function(req, res){
     res.status(404).render('user/404-error-page',{error:true})

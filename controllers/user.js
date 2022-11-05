@@ -225,17 +225,17 @@ module.exports = {
         })
 
     },
-    getCeckout: async (req, res) => {  
+    getCeckout: async (req, res) => {
         let userId = req.session.user._id
         let userData;
         let addressList;
         console.log(selectAdressData);
         if (selectAdressData) {
-           let selectAddress = selectAdressData
+            let selectAddress = selectAdressData
             await userCollection.findOne({ _id: req.session.user._id })
                 .lean()
                 .then((data) => {
-                    userData = data                   
+                    userData = data
                     addressList = data.address
                 })
             let offData = {
@@ -257,7 +257,7 @@ module.exports = {
                     if (cartData) {
                         response.offAmount = Number(cartData.totalAmount) * Number(response.offPercentage) / 100;
                         let productData = cartData.cartItems
-                        res.render('user/checkout', { productData, cartData, userData, response, addressList ,selectAddress})
+                        res.render('user/checkout', { productData, cartData, userData, response, addressList, selectAddress })
                         selectAdressData = null
                     } else {
                         res.render('user/cart-items')
@@ -268,7 +268,7 @@ module.exports = {
                 userHelpers.getCartProducts(userId).then((cartData) => {
                     if (cartData) {
                         let productData = cartData.cartItems
-                        res.render('user/checkout', { productData, cartData, userData, addressList ,selectAddress})
+                        res.render('user/checkout', { productData, cartData, userData, addressList, selectAddress })
                         selectAdressData = null
                     } else {
                         res.render('user/cart-items')
@@ -467,7 +467,7 @@ module.exports = {
                     res.json({ codStatus: true })
 
                 } else if (req.body.payment == "Online Payment") {
-                    console.log("hello");
+                    // console.log("hello");
                     userHelpers.generateRazorpay(orderId, totalAmount).then((response) => {
                         console.log('hello');
                         res.json(response)
@@ -626,6 +626,34 @@ module.exports = {
             console.log(data);
             selectAdressData = data
             res.redirect('/view-checkout')
+        })
+    },
+    getManageAddress: (req, res) => {
+        let userId = req.session.user._id
+        userHelpers.getAddressList(userId).then((data) => {
+            console.log(data);
+            res.render('user/manage-address', { data })
+        })
+
+    },
+    getAddAdress: (req, res) => {
+
+        res.render('user/add-new-address')
+
+    },
+    getRemoveAddress: (req, res) => {
+        let userId = req.session.user._id
+        let addressId = req.params.addressId
+        userHelpers.removeAddress(userId, addressId).then((data) => {
+            res.redirect('/manage-address')
+        })
+    },
+    postAddAddress: (req, res) => {
+        console.log(req.body);
+        let userId = req.session.user._id
+
+        userHelpers.addNewAddress(userId,req.body).then((data) => {
+            res.redirect('/manage-address')
         })
     }
 }

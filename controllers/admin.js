@@ -19,7 +19,7 @@ module.exports = {
 
     getAdminHome: (req, res) => {
         if (req.session.admin) {
-            // console.log(list);
+            //// console.log(list);
             res.redirect('/admin/dashbord')
         } else {
             if (adminEmailErr) {
@@ -29,7 +29,7 @@ module.exports = {
             } else if (adminPasswordErr) {
 
                 // let passwordMessage = adminPasswordErr.PasswordMessage
-                // console.log(passwordMessage,"+++++++++++++++++++++++");
+                //// console.log(passwordMessage,"+++++++++++++++++++++++");
                 res.render('admin/admin-login', { admin: true, adminPasswordErr })
                 adminPasswordErr = {}
 
@@ -42,10 +42,10 @@ module.exports = {
 
 
     postAdminLogin: (req, res) => {
-        // console.log(req.body);
+        //// console.log(req.body);
         adminHelpers.doAdminLogin(req.body)
             .then((response) => {
-                // console.log(response);
+                //// console.log(response);
                 req.session.admin = response.adminData
                 req.session.adminLoggedIN = true
                 res.json({status:true})
@@ -53,7 +53,7 @@ module.exports = {
             })
             .catch((response) => {
                 if (response.emailErr) {
-                    // console.log(response.emailErr)
+                    //// console.log(response.emailErr)
                     adminEmailErr.EmailMessage = "This Email Don't Have Any Account"
                     adminEmailErr.status = true
                     res.json({emailErr:true})
@@ -61,11 +61,11 @@ module.exports = {
                 } else {
                     adminPasswordErr.PasswordMessage = 'Your Password is Wrong'
                     adminPasswordErr.status = true
-                    // console.log(adminPasswordErr.PasswordMessage);
+                    //// console.log(adminPasswordErr.PasswordMessage);
                     res.json({passwordErr:true})
                     // res.redirect('/admin')
                 }
-                // console.log(response);
+                //// console.log(response);
             })
     },
 
@@ -110,7 +110,7 @@ module.exports = {
                 data[i].profit = Number(data[i].totalPrice) * 50 / 100
                 data[i].proggress = Number(data[i].totalPrice) - Number(data[i].profit)
             }
-            // console.log(data);
+            //// console.log(data);
             salesReport = data
         })
 
@@ -128,7 +128,7 @@ module.exports = {
         if (req.session.admin) {
             adminHelpers.getProducts().then((data) => {
                 let products = data
-                // console.log(products);
+                //// console.log(products);
                 res.render('admin/view-products', { admin: true, products })
             })
         } else {
@@ -166,9 +166,9 @@ module.exports = {
 
 
     postAddProduct: (req, res) => {
-        console.log(req.body);
-        // console.log("========================");
-        // console.log(req.files);
+       // console.log(req.body);
+        //// console.log("========================");
+        //// console.log(req.files);
         let files = req.files
         if (files) {
             const images = []
@@ -190,7 +190,7 @@ module.exports = {
         if (req.session.admin) {
             let productId = req.params.id
             productHelpers.getOneProduct(productId).then((data) => {
-                // console.log("===================" + data);
+                //// console.log("===================" + data);
                 res.render('admin/edit-product', { admin: true, data })
             })
         } else {
@@ -202,7 +202,7 @@ module.exports = {
 
     postProductDetailes: async (req, res) => {
         let prodId = req.params.id
-        console.log(req.files);
+       // console.log(req.files);
         let images = []
         if (req.files.length !== 0) {
             for (file of req.files) {
@@ -210,10 +210,10 @@ module.exports = {
             }
             // remove old
             let product = await productCollection.findById(prodId)
-            console.log(__dirname)
+           // console.log(__dirname)
             let imagePath = path.join(__dirname, '../', '/public', '/product-images')
-            console.log(imagePath);
-            console.log(product);
+           // console.log(imagePath);
+           // console.log(product);
 
             for (let i=0 ; i < product.images.length; i++) {
                 fs.unlinkSync(`${imagePath}/${product.images[i]}`);
@@ -222,7 +222,7 @@ module.exports = {
             product.images = images
             product.save()
         }
-        console.log("=================", req.body);
+       // console.log("=================", req.body);
         productHelpers.editProduuctDetailes(prodId, req.body).then((data) => {
             res.redirect('/admin/view-products')
         })
@@ -272,7 +272,7 @@ module.exports = {
             let userId = req.params.id
             adminHelpers.blockUserAccount(userId)
                 .then((data) => {
-                    console.log("User Blocked");
+                   // console.log("User Blocked");
                     res.redirect('/admin/view-users')
                 })
         } else {
@@ -288,7 +288,7 @@ module.exports = {
             let userId = req.params.id
             adminHelpers.unblockUserAccount(userId)
                 .then((data) => {
-                    console.log("User Unblocked");
+                   // console.log("User Unblocked");
                     res.redirect('/admin/view-users')
                 })
         } else {
@@ -322,7 +322,7 @@ module.exports = {
     getViewCategury: (req, res) => {
         productHelpers.getCateguryList().then((data) => {
             let categury = data
-            console.log(categury);
+           // console.log(categury);
             if (availableCategury.status) {
                 let message = availableCategury.message
                 res.render('admin/add-view-categury', { admin: true, categury, message })
@@ -338,12 +338,12 @@ module.exports = {
 
     postAddCategury: (req, res) => {
         if (req.session.admin) {
-            console.log(req.body);
+           // console.log(req.body);
             let categury = req.body
             productHelpers.addNewCategury(categury).then((data) => {
                 res.redirect('/admin/view-categury')
             }).catch((categuryExist) => {
-                // console.log(categuryExist);
+                //// console.log(categuryExist);
                 availableCategury.message = "Category Is Alredy Available"
                 availableCategury.status = true
                 res.redirect('/admin/view-categury')
@@ -366,7 +366,7 @@ module.exports = {
     getViewOrderse: (req, res) => {
         if (req.session.admin) {
             adminHelpers.getAllOrders().then((orderData) => {
-                // console.log(orderData);
+                //// console.log(orderData);
                 res.render('admin/view-orders', { admin: true, orderData })
             })
 
@@ -379,11 +379,11 @@ module.exports = {
     getViewOrderMore: (req, res) => {
         if (req.session.admin) {
             let userId = req.params.userId
-            // console.log(userId);
+            //// console.log(userId);
             adminHelpers.getOneUserOrder(userId).then((userOrder) => {
-                // console.log(userOrder);
+                //// console.log(userOrder);
                 let products = userOrder[0].orders.products
-                // console.log(products);
+                //// console.log(products);
                 res.render('admin/view-order-more', { admin: true, products, userOrder })
             })
         } else {
@@ -422,7 +422,7 @@ module.exports = {
         res.render('admin/add-coupon-banner', { admin: true })
     },
     postAddCoupon: (req, res) => {
-        console.log(req.body);
+       // console.log(req.body);
         adminHelpers.addCouponToCollection(req.body).then((data) => {
             res.json({ status: true })
         })
@@ -435,17 +435,17 @@ module.exports = {
     },
     getRemoveCoupon: (req, res) => {
         adminHelpers.removeCoupon(req.params.couponId).then((data) => {
-            console.log(data);
+           // console.log(data);
             res.json({ status: true })
         })
     },
     postAddBanners: (req, res) => {
-        console.log(req.files);
-        console.log(req.body);
+       // console.log(req.files);
+       // console.log(req.body);
         let image = req.files[0].filename
         req.body.img = image
         adminHelpers.addBanner(req.body).then((data) => {
-            console.log(data);
+           // console.log(data);
             res.redirect('/admin/view-banners')
         })
         // for(let i;i<=req.files.length;i++){
@@ -454,7 +454,7 @@ module.exports = {
     },
     getViewBanners: (req, res) => {
         adminHelpers.getBannerList().then((data) => {
-            console.log("heloo");
+           // console.log("heloo");
             res.render('admin/view-banners', { data, admin: true })
         })
 

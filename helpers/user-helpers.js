@@ -30,7 +30,7 @@ module.exports = {
         return new Promise(async (res, rej) => {
             userCollection.findOne({ Email: userData.Email }).then(async (data) => {
                 // if(userData.OTP == ){
-                console.log(userData);
+                // console.log(userData);
                 // }else{
 
                 // }
@@ -50,7 +50,7 @@ module.exports = {
                         })
 
                     user.save().then((data) => {
-                        // console.log(data);
+                        // // console.log(data);
                         response.user = data
                         response.status = true
                         res(response)
@@ -78,25 +78,25 @@ module.exports = {
     doLogin: (userData) => {
         return new Promise(async (res, rej) => {
             let userDocument = await userCollection.findOne(({ Email: userData.Email }))
-            // console.log(userDocument);
+            // // console.log(userDocument);
             let response = {}
             if (userDocument) {
                 bcrypt.compare(userData.Password, userDocument.Password).then((data) => {
-                    // console.log("data is======="+data);
+                    // // console.log("data is======="+data);
                     response.user = userDocument
                     response.status = true
                     if (data) {
-                        console.log('login seccess');
+                        // console.log('login seccess');
                         res(response)
                     } else {
-                        console.log('password wrong');
+                        // console.log('password wrong');
                         response.Email = userDocument.Email
                         response.passwordErr = true
                         rej(response)
                     }
                 })
             } else {
-                console.log('email Error');
+                // console.log('email Error');
                 response.Password = userData.Password
                 response.emailErr = true
                 rej(response)
@@ -144,7 +144,7 @@ module.exports = {
                     cart.save();
                     res()
                 } else {
-                    // console.log('Enter to else');
+                    // // console.log('Enter to else');
                     cartCollection.create({
                         userId: userId,
                         cartItems: [{ productId, productName, ProductQuantity: 1, productPrice, TotalPrice, productImages }],
@@ -155,7 +155,7 @@ module.exports = {
 
 
             } catch (err) {
-                console.log(err);
+                // console.log(err);
             }
         })
 
@@ -168,7 +168,7 @@ module.exports = {
                     if (data) {
                         res(data)
                     } else {
-                        console.log("no cart");
+                        // console.log("no cart");
                         res()
                     }
                 })
@@ -176,17 +176,17 @@ module.exports = {
 
     },
     removeCartProduct: (productId, userId) => {
-        // console.log(productId);
-        // console.log(userId);
+        // // console.log(productId);
+        // // console.log(userId);
         return new Promise(async (res, rej) => {
             let cart = await cartCollection.findOne({ userId: userId })
             let items = await productCollection.findOne({ _id: productId })
-            // console.log(cart);
+            // // console.log(cart);
 
             let itemIndex = cart.cartItems.findIndex(p => p.productId == productId);
-            console.log(itemIndex);
+            // console.log(itemIndex);
             if (itemIndex >= 0) {
-                // console.log("============here==========");
+                // // console.log("============here==========");
                 let productItem = cart.cartItems[itemIndex]
                 cart.totalAmount = Number(cart.totalAmount) - Number(productItem.productPrice) * Number(productItem.ProductQuantity)
                 cart.cartItems.splice(itemIndex, 1)
@@ -194,7 +194,7 @@ module.exports = {
 
                 res()
             } else {
-                console.log("Error");
+                // console.log("Error");
             }
 
         })
@@ -216,7 +216,7 @@ module.exports = {
                     cart.totalAmount = Number(cart.totalAmount) + Number(price)
 
                 } else {
-                    console.log("No Product");
+                    // console.log("No Product");
                     cart.totalAmount = Number(cart.totalAmount) + Number(price)
                 }
 
@@ -226,7 +226,7 @@ module.exports = {
                 res()
 
             } else {
-                console.log("No Product");
+                // console.log("No Product");
             }
 
 
@@ -239,12 +239,12 @@ module.exports = {
 
             let cart = await cartCollection.findOne({ userId: userId })
             let productData = await productCollection.findOne({ _id: productId })
-            console.log("new cart", cart);
-            console.log("product data", productData);
+            // console.log("new cart", cart);
+            // console.log("product data", productData);
             let price = productData.Price
             if (cart) {
                 let itemIndex = cart.cartItems.findIndex(p => p.productId == productId);
-                console.log(itemIndex);
+                // console.log(itemIndex);
                 if (itemIndex != -1) {
                     let productItem = cart.cartItems[itemIndex]
                     productItem.ProductQuantity = Number(productItem.ProductQuantity) - 1;
@@ -253,7 +253,7 @@ module.exports = {
 
                     cart.totalAmount = Number(cart.totalAmount) - Number(price)
                 } else {
-                    console.log("No Product");
+                    // console.log("No Product");
                     cart.totalAmount = Number(cart.totalAmount) - Number(price)
 
                 }
@@ -262,7 +262,7 @@ module.exports = {
                 res()
 
             } else {
-                console.log("No Product");
+                // console.log("No Product");
             }
 
 
@@ -280,17 +280,17 @@ module.exports = {
                 let TotalPrice = productPrice
                 const productImages = items.images
                 if (cart) {
-                    console.log("++=================++");
+                    // console.log("++=================++");
                     let itemIndex = cart.cartItems.findIndex(p => p.productId == productId);
                     if (itemIndex >= 0) {
                         let productItem = cart.cartItems[itemIndex]
-                        console.log(quantity);
+                        // console.log(quantity);
                         productItem.ProductQuantity = Number(productItem.ProductQuantity) + Number(quantity);
                         productItem.TotalPrice = Number(productItem.ProductQuantity) * Number(productItem.productPrice)
                         cart.cartItems[itemIndex] = productItem
                         cart.totalAmount = Number(cart.totalAmount) + Number(productItem.productPrice) * Number(quantity)
                     } else {
-                        console.log("here");
+                        // console.log("here");
                         TotalPrice = Number(items.Price) * Number(quantity)
                         cart.cartItems.push({ productId, productName, ProductQuantity: Number(quantity), productPrice, TotalPrice, productImages })
                         cart.totalAmount = Number(cart.totalAmount) + Number(TotalPrice)
@@ -302,7 +302,7 @@ module.exports = {
 
                     res()
                 } else {
-                    console.log('Enter to else');
+                    // console.log('Enter to else');
 
                     cartCollection.create({
                         userId: userId,
@@ -315,22 +315,22 @@ module.exports = {
 
 
             } catch (err) {
-                console.log(err);
+                // console.log(err);
             }
         })
     },
     addProductsToCheckout: (userId) => {
         return new Promise(async (res, rej) => {
             let cart = await cartCollection.find({ userId: userId }).lean()
-            console.log(cart.cartItems, "==========================");
-            console.log(cart);
+            // console.log(cart.cartItems, "==========================");
+            // console.log(cart);
             res(cart)
         })
 
     },
     addProductToOrders: (orderDocument, userAddress, userId, userCoupon) => {
         return new Promise(async (res, rej) => {
-            console.log(orderDocument);
+            // console.log(orderDocument);
             let response = {
                 orderId: null,
                 totalAmount: null
@@ -344,7 +344,7 @@ module.exports = {
             let date = new Date().toJSON().slice(0, 10);
             // let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
             let products = cart.cartItems
-            console.log(products);
+            // console.log(products);
             let totalAmount = cart.totalAmount
             if (userCoupon.couponStatus) {
                 let percentage = userCoupon.couponData.discount
@@ -356,14 +356,14 @@ module.exports = {
             } else {
                 totalAmount = cart.totalAmount
             }
-            console.log(totalAmount);
+            // console.log(totalAmount);
             let userFullName = orderDocument.firstName + " " + orderDocument.lastName
             let userMobile = orderDocument.Mobile
             if (cart) {
                 if (order) {
-                    console.log("already have order");
+                    // console.log("already have order");
                     let addressIndex = user.address.findIndex(p => p._id == orderDocument.addressId)
-                    console.log(addressIndex);
+                    // console.log(addressIndex);
                     if (addressIndex == -1) {
                         user.address.push({
                             firstName: orderDocument.firstName,
@@ -389,15 +389,15 @@ module.exports = {
                     })
                     order.save(async (err, data) => {
                         let orderLength = data.orders.length
-                        console.log(orderLength);
+                        // console.log(orderLength);
                         let orderId = data.orders[orderLength - 1]._id
-                        console.log(orderId);
+                        // console.log(orderId);
                         response.orderId = orderId
                         response.totalAmount = totalAmount
 
 
                         cartCollection.deleteOne({ userId: userId }).then((data) => {
-                            console.log('cart cleared ==================', data);
+                            // console.log('cart cleared ==================', data);
                         })
 
 
@@ -438,31 +438,31 @@ module.exports = {
                         response.orderId = data.orders[0]._id
                         response.totalAmount = totalAmount
                         cartCollection.deleteOne({ userId: userId }).then((data) => {
-                            console.log('cart cleared ==================', data);
+                            // console.log('cart cleared ==================', data);
                         })
                         res(response)
                     })
 
                 }
             } else {
-                console.log("no cart");
+                // console.log("no cart");
                 rej()
             }
         })
     },
     getOrderProducts: (userId) => {
-        console.log(userId);
+        // console.log(userId);
         return new Promise(async (res, rej) => {
             orderCollection.aggregate([
                 {
                     $match: { userId: userId }
                 },
             ]).then((data) => {
-                console.log(data.length);
+                // console.log(data.length);
                 if (data.length !== 0) {
                     let userData = data[0]
                     let orders = userData.orders
-                    // console.log(orders);
+                    // // console.log(orders);
                     let latestOrders = orders.reverse()
                     res(latestOrders)
                 } else {
@@ -476,7 +476,7 @@ module.exports = {
             productCollection.find({ Categury: category })
                 .lean()
                 .then((data) => {
-                    // console.log(data);
+                    // // console.log(data);
                     res(data)
                 })
         })
@@ -499,7 +499,7 @@ module.exports = {
                     }
                 }
             ]).then((data) => {
-                console.log(data);
+                // console.log(data);
                 res(data)
             })
         })
@@ -516,13 +516,13 @@ module.exports = {
                     userOrder.orders[orderIndex] = cancelOrder
                     userOrder.save()
 
-                    console.log("canceld");
+                    // console.log("canceld");
                     res(response)
                 } else {
                     rej()
                 }
             } else {
-                console.log("No orders");
+                // console.log("No orders");
                 rej()
             }
         })
@@ -531,9 +531,6 @@ module.exports = {
     generateRazorpay: (orderId, totalPrice) => {
         return new Promise((res, rej) => {
             let id = orderId.toString()
-
-            console.log(id, totalPrice);
-
             let options = {
                 amount: totalPrice * 100,
                 currency: "INR",
@@ -541,10 +538,10 @@ module.exports = {
             }
             instance.orders.create(options, function (err, order) {
                 if (err) {
-                    console.log(err);
+                    // console.log(err);
                     rej()
                 } else {
-                    console.log("===========", order);
+                    // console.log("===========", order);
                     res(order)
                 }
 
@@ -567,12 +564,12 @@ module.exports = {
                 }
 
             } catch (err) {
-                console.log(err);
+                // console.log(err);
             }
         })
     },
     changeOrderStatus: (orderId, userId) => {
-        console.log(orderId, userId);
+        // console.log(orderId, userId);
         return new Promise(async (res, rej) => {
             // let response = {}
             let userOrder = await orderCollection.findOne({ userId: userId })
@@ -584,13 +581,13 @@ module.exports = {
                     userOrder.orders[orderIndex] = changeStatus
                     userOrder.save()
 
-                    console.log("Placed");
+                    // console.log("Placed");
                     res()
                 } else {
                     rej()
                 }
             } else {
-                console.log("No orders");
+                // console.log("No orders");
                 rej()
             }
         })
@@ -600,14 +597,14 @@ module.exports = {
             let wishlist = await wishlistCollection.findOne({ userId: userId })
             let Existproduct = await wishlistCollection.findOne({ "productId.item": mongoose.Types.ObjectId(productId) })
             if (Existproduct) {
-                console.log("Exist");
+                // console.log("Exist");
                 rej()
             } else {
                 if (wishlist) {
-                    console.log("already have wishlist");
+                    // console.log("already have wishlist");
                     wishlist.productId.push({ item: mongoose.Types.ObjectId(productId) })
                     wishlist.save().then((data) => {
-                        // console.log(data);
+                        // // console.log(data);
                         res(data)
                     })
 
@@ -649,7 +646,7 @@ module.exports = {
                 {
                     $lookup: {
                         from: "products",
-                        localField: "item",
+                        localField: "item", 
                         foreignField: "_id",
                         as: "products"
 
@@ -674,7 +671,7 @@ module.exports = {
                     userCollection.findOne({ _id: userId }).then((user) => {
                         if (user) {
                             let couponExist = user.coupon.findIndex(p => p.couponId == coupon._id)
-                            console.log(couponExist);
+                            // console.log(couponExist);
                             if (couponExist == -1) {
                                 let currentDate = new Date().toJSON().slice(0, 10)
                                 if (currentDate <= coupon.validity) {
@@ -683,24 +680,24 @@ module.exports = {
                                         response.status = true
                                         res(response)
                                     } else {
-                                        console.log("need maximum limit");
+                                        // console.log("need maximum limit");
                                         rej({ NeedMaximumPurchase: true })
                                     }
                                 } else {
-                                    console.log("validity expired");
+                                    // console.log("validity expired");
                                     rej({ validityExpired: true })
                                 }
                             } else {
-                                console.log("already use");
+                                // console.log("already use");
                                 rej({ alreadyUsed: true })
                             }
                         } else {
-                            console.log("no user");
+                            // console.log("no user");
                             rej({ noUser: true })
                         }
                     })
                 } else {
-                    console.log("no coupon");
+                    // console.log("no coupon");
                     rej({ noCoupon: true })
                 }
             })
@@ -724,7 +721,7 @@ module.exports = {
     getBannersData: () => {
         return new Promise((res, rej) => {
             bannerCollection.find().lean().then((data) => {
-                console.log(data);
+                // console.log(data);
                 res(data)
             })
         })
@@ -734,16 +731,16 @@ module.exports = {
         return new Promise(async (res, rej) => {
             let wishlist = await wishlistCollection.findOne({ userId: userId })
             // let items = await productCollection.findOne({ _id: productId })
-            // console.log(cart);
+            // // console.log(cart);
 
             let itemIndex = wishlist.productId.findIndex(p => p.item == prodId);
-            console.log(itemIndex);
+            // console.log(itemIndex);
             if (itemIndex >= 0) {
                 wishlist.productId.splice(itemIndex, 1)
                 wishlist.save()
                 res()
             } else {
-                console.log("Error");
+                // console.log("Error");
             }
 
         })
@@ -754,16 +751,56 @@ module.exports = {
             return new Promise(async (res, rej) => {
                 let user = await userCollection.findById(userId).lean()
                 let addressIndex = user.address.findIndex(p => p._id == addressId)
-                console.log(addressIndex);
+                // console.log(addressIndex);
                 if (addressIndex !== -1) {
                     let addressData = user.address[addressIndex]
                     res(addressData)
                 }
             })
         } catch (err) {
-            console.log(err);
+            // console.log(err);
         }
 
 
+    },
+    getAddressList: (userId) => {
+        return new Promise((res, rej) => {
+            userCollection.findOne({ _id: userId })
+                .lean()
+                .then((data) => {
+                    // console.log(data);
+                    if (data) {
+                        let address = data.address
+                        // console.log(address);
+                        res(address)
+                    }
+                })
+        })
+
+    },
+    removeAddress: (userId, addressId) => {
+        return new Promise(async (res, rej) => {
+            let user = await userCollection.findById(userId)
+            let addressIndex = user.address.findIndex(p => p._id == addressId)
+            // console.log(addressIndex);
+            user.address.splice(addressIndex,1)
+            user.save()
+            res()
+        })
+    },
+    addNewAddress:(userId,addressData)=>{
+        return new Promise(async (res,rej)=>{
+            let user =await userCollection.findById(userId)
+            user.address.push({
+                firstName:addressData.firstName,
+                lastName:addressData.lastName,
+                address:addressData.address,
+                Email:addressData.Email,
+                Mobile:addressData.Mobile
+            })
+            user.save()
+            res()
+        })
+      
     }
 }
