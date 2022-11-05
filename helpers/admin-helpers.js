@@ -23,8 +23,6 @@ module.exports = {
             }).lean()
         })
     },
-
-
     getProducts: () => {
         return new Promise((res, rej) => {
             productCollection.find((err, data) => {
@@ -36,8 +34,6 @@ module.exports = {
             }).lean()
         })
     },
-
-
     doAdminLogin: (loginData) => {
         //// console.log(loginData);
         Email = loginData.Email
@@ -68,8 +64,6 @@ module.exports = {
         })
 
     },
-
-
     blockUserAccount: (userId) => {
         return new Promise((res, rej) => {
             userCollection.updateOne({ _id: userId }, {
@@ -81,8 +75,6 @@ module.exports = {
             })
         })
     },
-
-
     unblockUserAccount: (userId) => {
         return new Promise((res, rej) => {
             userCollection.updateOne({ _id: userId }, {
@@ -94,8 +86,6 @@ module.exports = {
             })
         })
     },
-
-
     getAllOrders: () => {
         return new Promise((res, rej) => {
             orderCollection.aggregate([
@@ -115,7 +105,6 @@ module.exports = {
         })
 
     },
-
     getOneUserOrder: (orderId) => {
         return new Promise(async (res, rej) => {
             let id = mongoose.Types.ObjectId(orderId)
@@ -140,7 +129,6 @@ module.exports = {
         })
 
     },
-
     changeOrderStatus: (orderId, userId, status) => {
         return new Promise(async (res, rej) => {
             let response = {}
@@ -164,7 +152,6 @@ module.exports = {
             }
         })
     },
-
     orderCanceleAdmin: (orderId, userId) => {
         return new Promise(async (res, rej) => {
             let response = {}
@@ -187,7 +174,6 @@ module.exports = {
             }
         })
     },
-
     addCouponToCollection: (couponDetailes) => {
         return new Promise((res, rej) => {
             couponCollection.create({
@@ -326,7 +312,6 @@ module.exports = {
             })
         })
     },
-
     getDashbordIncome: () => {
         return new Promise((res, rej) => {
             orderCollection.aggregate([

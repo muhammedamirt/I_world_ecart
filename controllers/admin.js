@@ -39,8 +39,6 @@ module.exports = {
             }
         }
     },
-
-
     postAdminLogin: (req, res) => {
         //// console.log(req.body);
         adminHelpers.doAdminLogin(req.body)
@@ -68,13 +66,9 @@ module.exports = {
                 //// console.log(response);
             })
     },
-
-
     getHome: (req, res) => {
         res.render('admin/index.hbs', { admin: true })
     },
-
-
     getDashbord: async (req, res) => {
         if (req.session.admin) {
         let codAndOp;
@@ -122,8 +116,6 @@ module.exports = {
         }
 
     },
-
-
     getProducts: (req, res) => {
         if (req.session.admin) {
             adminHelpers.getProducts().then((data) => {
@@ -137,8 +129,6 @@ module.exports = {
 
 
     },
-
-
     getUsers: (req, res) => {
         if (req.session.admin) {
             adminHelpers.getUserDetailes().then((data) => {
@@ -150,8 +140,6 @@ module.exports = {
 
 
     },
-
-
     getAddProduct: (req, res) => {
         if (req.session.admin) {
             // let categury = productHelpers.getCateguryList().then((data)=>{
@@ -163,8 +151,6 @@ module.exports = {
         }
 
     },
-
-
     postAddProduct: (req, res) => {
        // console.log(req.body);
         //// console.log("========================");
@@ -184,8 +170,6 @@ module.exports = {
 
 
     },
-
-
     getEditProduct: (req, res) => {
         if (req.session.admin) {
             let productId = req.params.id
@@ -198,8 +182,6 @@ module.exports = {
         }
 
     },
-
-
     postProductDetailes: async (req, res) => {
         let prodId = req.params.id
        // console.log(req.files);
@@ -227,8 +209,6 @@ module.exports = {
             res.redirect('/admin/view-products')
         })
     },
-
-
     getDeleteProduct: (req, res) => {
         if (req.session.admin) {
             let prodId = req.params.id
@@ -250,8 +230,6 @@ module.exports = {
             res.redirect('/admin')
         }
     },
-
-
     getProductCategury: (req, res) => {
         if (req.session.admin) {
             let categury = req.params.categury
@@ -265,8 +243,6 @@ module.exports = {
         }
 
     },
-
-
     getBlockUser: (req, res) => {
         if (req.session.admin) {
             let userId = req.params.id
@@ -281,8 +257,6 @@ module.exports = {
 
 
     },
-
-
     getUnBlockUser: (req, res) => {
         if (req.session.admin) {
             let userId = req.params.id
@@ -296,8 +270,6 @@ module.exports = {
         }
 
     },
-
-
     getAdminProfile: (req, res) => {
         if (req.session.admin) {
             let admin = req.session.admin
@@ -306,8 +278,6 @@ module.exports = {
             res.redirect('/admin')
         }
     },
-
-
     getAdminLogout: (req, res) => {
         if (req.session.admin) {
             req.session.admin = null
@@ -317,8 +287,6 @@ module.exports = {
             res.redirect('/admin')
         }
     },
-
-
     getViewCategury: (req, res) => {
         productHelpers.getCateguryList().then((data) => {
             let categury = data
@@ -334,8 +302,6 @@ module.exports = {
         })
 
     },
-
-
     postAddCategury: (req, res) => {
         if (req.session.admin) {
            // console.log(req.body);
@@ -353,16 +319,12 @@ module.exports = {
             res.redirect('/admin')
         }
     },
-
-
     getRemoveCategury: (req, res) => {
         let id = req.params.id
         productHelpers.removeCategury(id).then((data) => {
             res.redirect('/admin/view-categury')
         })
     },
-
-
     getViewOrderse: (req, res) => {
         if (req.session.admin) {
             adminHelpers.getAllOrders().then((orderData) => {
@@ -375,7 +337,6 @@ module.exports = {
             res.redirect('/admin')
         }
     },
-
     getViewOrderMore: (req, res) => {
         if (req.session.admin) {
             let userId = req.params.userId
