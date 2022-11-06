@@ -29,13 +29,12 @@
 
                                     </div>
                         <div class="form-group">
-                            <label for="productCategury">Categury</label>
+                            <label for="productCategury">Category</label>
                             <select class="form-control" id="productCategury" name="Categury">
-                                 
-                                <option>Mobile</option>
-                                <option>laptop</option>
-                                <option>Air Pods</option>
-                                <option>Watches</option>
+                                {{#each data}}
+                                <option>{{this.categuryName}}</option>
+                                {{/each}}
+                                
 
                             </select>
                         </div>

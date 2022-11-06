@@ -1,4 +1,3 @@
-const { resolve } = require('path')
 const userCollection = require('../models/schema/user')
 const productCollection = require('../models/schema/products')
 const adminCollection = require('../models/schema/admin')
@@ -440,7 +439,7 @@ module.exports = {
         })
 
     },
-    addBanner: (bannerData) => {
+    addBanner:(bannerData) => {
        // console.log(bannerData);
         return new Promise((res, rej) => {
             bannerCollection.create({
@@ -462,7 +461,4 @@ module.exports = {
                 })
         })
     }
-
-
-
 }

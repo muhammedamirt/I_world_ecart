@@ -11,6 +11,8 @@
                             <li>Mobile: {{userOrder.[0].orders.userMobile}}</li>
                             <li>Date: {{userOrder.[0].orders.date}}</li>
                             <li>Full Address: {{userOrder.[0].orders.address}}</li>
+                            <li>Offer :{{userOrder.[0].orders.offerData}}%</li>
+                            <li>Total Amount :<i class="bi bi-currency-rupee"></i>{{userOrder.[0].orders.totalAmount}}</li>
                             <li>Status:
 
                                 {{#ifEquals userOrder.[0].orders.paymentStatus "Canceld"}}
@@ -51,8 +53,6 @@
 
                                 <label class="sr-only" for="inlineFormInputName2"
                                     style="background-color:pink ;">Name</label>
-                                {{!-- <input type="text" class="form-control mb-2 mr-sm-2" id="inlineFormInputName2"
-                                    placeholder="Change Order Status"> --}}
                                 <select name="paymentStatus" style="width:100px ; ">
                                     {{#ifEquals userOrder.[0].orders.paymentStatus 'Success'}}
                                     <option selected>Success</option>

@@ -68,6 +68,7 @@ router.post('/add-banners',bannerStore.array("img",1), controller.postAddBanners
 
 router.get('/view-banners',controller.getViewBanners)
 
-// router.post('/add-new-banner',store.array("img",3),controller.postAddBanner)
-
+router.get('/500-error',(req,res)=>{
+    res.status(500).render('admin/500-error',{admin:true,adminError:true})
+})
 module.exports = router

@@ -1,29 +1,26 @@
+// env files
+require('dotenv').config();
+
 const userCollection = require('../models/schema/user')
 const bcrypt = require('bcrypt')
-const { response } = require('../app')
 const saltRounds = 10
 const cartCollection = require('../models/schema/cart')
 const productCollection = require('../models/schema/products')
 const orderCollection = require('../models/schema/order')
-const adminCollection = require('../models/schema/admin')
 const wishlistCollection = require('../models/schema/wishlist')
 const couponCollection = require('../models/schema/coupon')
 const bannerCollection = require('../models/schema/banners')
 const { Promise } = require('mongoose')
-const order = require('../models/schema/order')
-const { TodayInstance } = require('twilio/lib/rest/api/v2010/account/usage/record/today')
 const mongoose = require('mongoose')
 
-// const orderCollection = require('../models/schema/order')/
 
 const Razorpay = require('razorpay');
 
 let instance = new Razorpay({
-    key_id: 'rzp_test_XRAcAd05q4QasW',
-    key_secret: 'nq72hxHx3dkRXzWb61rU6cWN',
+    key_id:process.env.KEY_ID,
+    key_secret: process.env.KEY_SECRET,
 });
 
-const regExp = /^[a-zA-Z]*$/
 
 module.exports = {
     doSignup: (userData) => {
