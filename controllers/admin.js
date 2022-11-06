@@ -1,8 +1,6 @@
 const productHelpers = require("../helpers/productHelpers")
 const multer = require("multer")
-const upload = multer({ dest: 'uploads/' })
 const adminHelpers = require('../helpers/admin-helpers');
-const { response } = require("../app");
 const productCollection = require("../models/schema/products");
 const categury = require("../models/schema/categury");
 const admin = require("../models/schema/admin");

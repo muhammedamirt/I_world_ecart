@@ -14,8 +14,9 @@
 
                             <li>Name : {{userData.orders.userName}}</li>
                             <li>Mobile : {{userData.orders.userMobile}}</li>
-                            <li>Delivery Address :{{userData.orders.address}}</li>
-                            
+                            <li>Delivery Address :{{userData.orders.address}}</li>                           
+                            <li>Offer Detailes :{{userData.orders.offerData}}%</li>
+                            <li style="font-weight: bold;">All Total:<i class="bi bi-currency-rupee"></i>{{userData.orders.totalAmount}}</li>
                             <a href="/download-invoice/{{userData.orders._id}}"><label class="badge badge-primary">Dowload Data</label> </a>
                         </ul>
                     </div>

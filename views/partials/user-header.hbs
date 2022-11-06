@@ -1,5 +1,7 @@
 {{#if error}}
 {{else}}
+{{#if loginPage}}
+{{else}}
 {{#if userHome}}
 
 <header>
@@ -41,7 +43,8 @@
                      <form action="#">
                         <div class="search-info p-relative">
                            <button class="header-search-icon"><i class="fal fa-search"></i></button>
-                           <input type="search" placeholder="Search products..." onkeyup="favoriteSerch()" id="seachNow">
+                           <input type="search" placeholder="Search products..." onkeyup="favoriteSerch()"
+                              id="seachNow">
                         </div>
                      </form>
                   </div>
@@ -430,7 +433,7 @@
    </div>
 </div>
 <div class="body-overlay"></div>
-
+{{/if}}
 {{/if}}
 
 <script>

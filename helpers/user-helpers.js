@@ -119,7 +119,7 @@ module.exports = {
             try {
                 let cart = await cartCollection.findOne({ userId: userId })
                 let items = await productCollection.findOne({ _id: productId })
-                const { productName, Price: productPrice, images: productImages } = items
+                const { ProductName:productName, Price: productPrice, images: productImages } = items
                 const TotalPrice = productPrice
 
                 if (cart) {
@@ -333,6 +333,7 @@ module.exports = {
                 let paymentType = orderDocument.payment
                 let status = "pending"
                 let date = new Date().toJSON().slice(0, 10);
+                let couponOff = 0
                 // let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
                 let products = cart.cartItems
                 // console.log(products);
@@ -340,6 +341,7 @@ module.exports = {
                 if (userCoupon.couponStatus) {
                     let percentage = userCoupon.couponData.discount
                     totalAmount = Number(cart.totalAmount) * Number(percentage) / 100
+                    couponOff = percentage
                     user.coupon.push({
                         couponId: userCoupon.couponData._id
                     })
@@ -374,7 +376,8 @@ module.exports = {
                         products: products,
                         totalAmount: totalAmount,
                         paymentStatus: status,
-                        paymentType: paymentType
+                        paymentType: paymentType,
+                        offerData:couponOff
                     })
                     order.save(async (err, data) => {
                         let orderLength = data.orders.length
@@ -410,7 +413,8 @@ module.exports = {
                             products: products,
                             totalAmount: totalAmount,
                             paymentStatus: status,
-                            paymentType: paymentType
+                            paymentType: paymentType,
+                            offerData:couponOff
                         }]
 
                     }).then((data) => {

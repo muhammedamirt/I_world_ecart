@@ -28,8 +28,12 @@ module.exports = {
     getOneProduct: (prodId) => {
         return new Promise((res, rej) => {
             productCollection.findOne({ _id: prodId }).lean().then((data) => {
-                //// console.log(data); 
-                res(data)
+                console.log(data);
+                if(data){
+                    res(data)
+                }else{
+                    rej({dataNull:true})
+                }             
             })
         })
     },
@@ -141,8 +145,13 @@ module.exports = {
     },
     getRelatedProducts: (categoryName) => {
         return new Promise((res, rej) => {
+            console.log("helo");
             productCollection.find().lean().then((data) => {
-                res(data)
+                if(data){
+                    res(data)
+                }else{
+                    rej({dataNull:true})
+                }  
             })
         })
 

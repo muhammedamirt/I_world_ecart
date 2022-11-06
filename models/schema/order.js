@@ -40,6 +40,9 @@ const orderDetailes = new Schema({
     paymentStatus:{
         type:String,
         require:true
+    },
+    offerData:{
+        type:String,
     }
 })
 
