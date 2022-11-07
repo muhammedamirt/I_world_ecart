@@ -37,8 +37,8 @@ let invoiceData = {
 
     "settings": {
         "currency": "INR", // See documentation 'Locales and Currency' for more info. Leave empty for no currency.
-        "tax-notation":"Offer"
-    },  
+        "tax-notation": "Offer"
+    },
 
 };
 
@@ -56,9 +56,17 @@ module.exports = {
                 let bannerData;
                 await userHelpers.getBannersData().then((data) => {
                     bannerData = data
+                }).catch((data) => {
+                    if (data.catchErr) {
+                        res.redirect('/internal-server-error')
+                    }
                 })
                 userHelpers.getWishlistProducts(userId).then((data) => {
                     res.render("user/index.hbs", { userHome: true, user, data, bannerData })
+                }).catch((data) => {
+                    if (data.catchErr) {
+                        res.redirect('/internal-server-error')
+                    }
                 })
             } else {
                 res.render("user/index.hbs", { userHome: true, bannerData })
@@ -83,7 +91,6 @@ module.exports = {
     },
     postLogin: (req, res) => {
         try {
-
             userHelpers.doLogin(req.body)
                 .then((response) => {
                     req.session.user = response.user
@@ -94,6 +101,8 @@ module.exports = {
                         res.json({ emailErr: true })
                     } else if (response.passwordErr) {
                         res.json({ passwordErr: true })
+                    } else {
+                        res.redirect('/internal-server-error')
                     }
                 })
         } catch {
@@ -133,8 +142,11 @@ module.exports = {
                         .then(verification => console.log(verification.status));
                     res.json({ status: true })
                 }
+            }).catch((data) => {
+                if (data.catchErr) {
+                    res.redirect('/internal-server-error')
+                }
             })
-
         } catch (err) {
             res.redirect('/internal-server-error')
         }
@@ -147,14 +159,11 @@ module.exports = {
             } else {
                 if (otpErr.status) {
                     let message = otpErr.message
-                    console.log(message);
                     res.render("user/OTP-confermation", { message })
                     otpErr.message = {}
                 } else {
                     res.render("user/OTP-confermation")
                 }
-
-
             }
         } catch (err) {
             res.redirect('/internal-server-error')
@@ -164,35 +173,32 @@ module.exports = {
     postOtp: (req, res) => {
         try {
             const otp = req.body.OTP
-            console.log(otp)
             let signupData = req.session.detail
-            console.log(signupData);
 
             client.verify.v2.services(verifySid)
                 .verificationChecks
                 .create({ to: '+91' + signupData.Mobile, code: otp })
                 .then(verification_check => {
-                    // console.log(verification_check.status)
                     if (verification_check.status === "approved") {
                         userHelpers.doSignup(signupData).then((response) => {
-                            console.log(response);
                             req.session.user = response.user
                             req.session.loggedIn = true
                             res.redirect('/')
-                            console.log('data added');
                         }).catch((response) => {
-                            signupErr.errMessage = "Email Already Exist !"
-                            signupErr.status = true
-                            signupErr.data = response.balData
-                            console.log(signupErr);
-                            res.redirect('/user-signup')
+                            if (response.catchErr) {
+                                res.redirect('/internal-server-error')
+                            } else {
+                                signupErr.errMessage = "Email Already Exist !"
+                                signupErr.status = true
+                                signupErr.data = response.balData
+                                res.redirect('/user-signup')
+                            }
                         })
 
                     } else {
                         otpErr.message = "Enter valid OTP"
                         otpErr.status = true
                         res.redirect('/OTP-confermation')
-                        console.log("otp error");
                     }
                 })
         } catch (err) {
@@ -204,13 +210,13 @@ module.exports = {
         try {
             let user = req.session.user
             productHelpers.getCateguryList().then((category) => {
-                // console.log(category);
                 productHelpers.getProductDetails().then((products) => {
-                    // console.log(products);
-                    // console.log(images);
                     res.render('user/user-shop', { products, user, category })
-
                 })
+            }).catch((err) => {
+                if (err.catchErr) {
+                    res.redirect('/internal-server-error')
+                }
             })
         } catch (err) {
             res.redirect('/internal-server-error')
@@ -223,14 +229,15 @@ module.exports = {
             req.session.couponStatus = false
             userHelpers.getCartProducts(userId).then((cartData) => {
                 if (cartData) {
-                    console.log(cartData);
                     let productData = cartData.cartItems
-                    console.log(productData, "=======================");
                     res.render('user/cart-items', { productData, cartData })
 
                 } else {
-                    console.log("===========================");
                     res.render('user/cart-items')
+                }
+            }).catch((err) => {
+                if (err.catchErr) {
+                    res.redirect('/internal-server-error')
                 }
             })
         } catch {
@@ -242,7 +249,6 @@ module.exports = {
             let userId = req.session.user._id
             let userData;
             let addressList;
-            console.log(selectAdressData);
             if (selectAdressData) {
                 let selectAddress = selectAdressData
                 await userCollection.findOne({ _id: req.session.user._id })
@@ -261,7 +267,6 @@ module.exports = {
                     offData.dataStatus = false
                 }
                 if (offData.dataStatus) {
-                    console.log(offData);
                     let response = {}
                     response.offPercentage = offData.discount
                     userHelpers.getCartProducts(userId).then((cartData) => {
@@ -273,9 +278,12 @@ module.exports = {
                         } else {
                             res.render('user/cart-items')
                         }
+                    }).catch((err) => {
+                        if (err.catchErr) {
+                            res.redirect('/internal-server-error')
+                        }
                     })
                 } else {
-                    console.log("no coupon");
                     userHelpers.getCartProducts(userId).then((cartData) => {
                         if (cartData) {
                             let productData = cartData.cartItems
@@ -284,15 +292,20 @@ module.exports = {
                         } else {
                             res.render('user/cart-items')
                         }
+                    }).catch((err) => {
+                        if (err.catchErr) {
+                            res.redirect('/internal-server-error')
+                        }
                     })
                 }
             } else {
                 await userCollection.findOne({ _id: req.session.user._id })
                     .lean()
                     .then((data) => {
-                        userData = data
-                        addressList = data.address
-
+                        if (data) {
+                            userData = data
+                            addressList = data.address
+                        }
                     })
                 let offData = {
                     dataStatus: false
@@ -303,9 +316,7 @@ module.exports = {
                 } else {
                     offData.dataStatus = false
                 }
-
                 if (offData.dataStatus) {
-                    console.log(offData);
                     let response = {}
                     response.offPercentage = offData.discount
                     userHelpers.getCartProducts(userId).then((cartData) => {
@@ -316,6 +327,10 @@ module.exports = {
                         } else {
                             res.render('user/cart-items')
                         }
+                    }).catch((err) => {
+                        if (err.catchErr) {
+                            res.redirect('/internal-server-error')
+                        }
                     })
                 } else {
                     userHelpers.getCartProducts(userId).then((cartData) => {
@@ -325,6 +340,10 @@ module.exports = {
                         } else {
                             res.render('user/cart-items')
                         }
+                    }).catch((err) => {
+                        if (err.catchErr) {
+                            res.redirect('/internal-server-error')
+                        }
                     })
                 }
             }
@@ -332,7 +351,7 @@ module.exports = {
             res.redirect('/internal-server-error')
         }
     },
-    getProductDetails: (req, res) => {
+    getProductDetails:async (req, res) => {
         try {
             let user = req.session.user
             let productId = req.params.id
@@ -341,14 +360,14 @@ module.exports = {
                 let images = data.images
                 productHelpers.getRelatedProducts(req.params.category).then((data) => {
                     res.render('user/product-detailes', { product, user, images, data })
-                }).catch((response)=>{
-                    if(response.dataNull){
-                        res.redirect('*')
+                }).catch((response) => {
+                    if (response.dataNull) {
+                        res.redirect('/error-page')
                     }
                 })
-            }).catch((response)=>{
-                if(response.dataNull){
-                    res.redirect('*')
+            }).catch((response) => {
+                if (response.dataNull) {
+                    res.redirect('/error-page')
                 }
             })
         } catch {
@@ -373,6 +392,10 @@ module.exports = {
             let user = req.session.user
             userHelpers.getWishlistProducts(user._id).then((data) => {
                 res.render('user/wishlist', { user, data })
+            }).catch((err) => {
+                if (err.catchErr) {
+                    res.redirect('/internal-server-error')
+                }
             })
         } catch (err) {
             res.redirect('/internal-server-error')
@@ -391,9 +414,12 @@ module.exports = {
         try {
             let prodId = req.params.id
             userHelpers.editProfile(prodId, req.body).then((updateUser) => {
-                console.log("=============================");
                 req.session.user = updateUser
                 res.redirect('/view-profile')
+            }).catch((err) => {
+                if (err.catchErr) {
+                    res.redirect('/internal-server-error')
+                }
             })
         } catch (err) {
             res.redirect('/internal-server-error')
@@ -407,6 +433,10 @@ module.exports = {
                 userHelpers.findFilterCategoryProduct(filterCategury).then((products) => {
                     res.render('user/user-shop', { products, user, category })
                 })
+            }).catch((err) => {
+                if (err.catchErr) {
+                    res.redirect('/internal-server-error')
+                }
             })
         } catch (err) {
             res.redirect('/internal-server-error')
@@ -428,9 +458,12 @@ module.exports = {
                 let user = req.session.user
                 let productId = req.params.prodId
                 let userId = user._id
-                console.log(productId, userId)
                 userHelpers.addProductToCart(productId, userId).then((data) => {
                     res.json({ status: true })
+                }).catch((err) => {
+                    if (err.catchErr) {
+                        res.redirect('/internal-server-error')
+                    }
                 })
             } else {
                 res.json({ status: false })
@@ -447,6 +480,10 @@ module.exports = {
             userHelpers.addProductToCartQuantity(productId, quantity, userId)
                 .then((data) => {
                     res.redirect('/view-cart')
+                }).catch((err) => {
+                    if (err.catchErr) {
+                        res.redirect('/internal-server-error')
+                    }
                 })
         } catch (err) {
             res.redirect('/internal-server-error')
@@ -458,6 +495,10 @@ module.exports = {
             let userId = req.session.user._id
             userHelpers.removeCartProduct(productId, userId).then((data) => {
                 res.redirect('/view-cart')
+            }).catch((err) => {
+                if (err.catchErr) {
+                    res.redirect('/internal-server-error')
+                }
             })
         } catch (err) {
             res.redirect('/internal-server-error')
@@ -470,6 +511,10 @@ module.exports = {
             let userId = user._id
             userHelpers.incCartProductQuantity(productId, userId).then((data) => {
                 res.redirect('/view-cart')
+            }).catch((err) => {
+                if (err.catchErr) {
+                    res.redirect('/internal-server-error')
+                }
             })
 
         } catch (err) {
@@ -483,6 +528,10 @@ module.exports = {
             let userId = user._id
             userHelpers.decCartProductQuantity(productId, userId).then((data) => {
                 res.redirect('/view-cart')
+            }).catch((err) => {
+                if (err.catchErr) {
+                    res.redirect('/internal-server-error')
+                }
             })
         } catch (err) {
             res.redirect('/internal-server-error')
@@ -515,7 +564,12 @@ module.exports = {
                     }
 
                 }).catch((data) => {
-                    res.json({ issue: true })
+                    if (data?.catchErr) {
+                        res.redirect('/internal-server-error')
+                    } else {
+                        res.json({ issue: true })
+                    }
+
                 })
         } catch (err) {
             res.redirect('/internal-server-error')
@@ -543,9 +597,13 @@ module.exports = {
                     let products = data[0].orders.products
                     res.render('user/more-about-order', { userData, products })
                 } else {
-                    console.log("Unknoum error in ore about orders");
+                    res.redirect('/internal-server-error')
                 }
 
+            }).catch((err) => {
+                if (err.catchErr) {
+                    res.redirect('/internal-server-error')
+                }
             })
         } catch (err) {
             res.redirect('/internal-server-error')
@@ -557,8 +615,11 @@ module.exports = {
             let orderId = req.params.orderId
             userHelpers.userOrderCanceling(orderId, userId).then((data) => {
                 res.json({ status: true })
+            }).catch((err) => {
+                if (err.catchErr) {
+                    res.redirect('/internal-server-error')
+                }
             })
-
         } catch (err) {
             res.redirect('/internal-server-error')
         }
@@ -569,15 +630,15 @@ module.exports = {
             userHelpers.verifyPayment(req.body).then(() => {
                 userHelpers.changeOrderStatus(req.body['order[receipt]'], userId)
                     .then(() => {
-                        console.log('payment success');
                         res.json({ status: true })
                     })
                     .catch((err) => {
-                        console.log(err);
-                        res.json({ status: false })
-
+                        if (err?.catchErr) {
+                            res.redirect('/internal-server-error')
+                        } else {
+                            res.json({ status: false })
+                        }
                     })
-
             })
         } catch (err) {
             res.redirect('/internal-server-error')
@@ -592,7 +653,11 @@ module.exports = {
                     .then((data) => {
                         res.json({ status: true })
                     }).catch((data) => {
-                        res.json({ status: false })
+                        if (data?.catchErr) {
+                            res.redirect('/internal-server-error')
+                        } else {
+                            res.json({ status: false })
+                        }
                     })
             } else {
                 res.json('notLogged')
@@ -625,7 +690,11 @@ module.exports = {
                     req.session.couponStatus = false
                 }
             }).catch((err) => {
-                res.json(err)
+                if (err?.catchErr) {
+                    res.redirect('/internal-server-error')
+                } else {
+                    res.json(err)
+                }
             })
         } catch (err) {
             res.redirect('/internal-server-error')
@@ -636,6 +705,10 @@ module.exports = {
             let user = req.session.user._id
             userHelpers.editUserAddress(user, req.body).then((data) => {
                 res.redirect('/view-profile')
+            }).catch((err) => {
+                if (err.catchErr) {
+                    res.redirect('/internal-server-error')
+                }
             })
         } catch (err) {
             res.redirect('/internal-server-error')
@@ -647,6 +720,10 @@ module.exports = {
             let productId = req.params.productId
             userHelpers.removeWishlistProduct(userId, productId).then((data) => {
                 res.json({ status: true })
+            }).catch((err) => {
+                if (err.catchErr) {
+                    res.redirect('/internal-server-error')
+                }
             })
         } catch (err) {
             res.redirect('/internal-server-error')
@@ -670,6 +747,7 @@ module.exports = {
                     })
                 }
                 easyinvoice.createInvoice(invoiceData, async function (result) {
+              
                     /*  
                         5.  The 'result' variable will contain our invoice as a base64 encoded PDF
                             Now let's save our invoice to our local filesystem so we can have a look!
@@ -679,6 +757,10 @@ module.exports = {
                     await res.download('./public/invoice/invoice.pdf')
 
                 })
+            }).catch((err) => {
+                if (err?.catchErr) {
+                    res.redirect('/internal-server-error')
+                }
             })
         } catch (err) {
             res.redirect('/internal-server-error')
@@ -691,9 +773,12 @@ module.exports = {
             let userId = req.session.user._id
             let addressId = req.params.addressId
             userHelpers.selectAddress(userId, addressId).then((data) => {
-                console.log(data);
                 selectAdressData = data
                 res.redirect('/view-checkout')
+            }).catch((err) => {
+                if (err.catchErr) {
+                    res.redirect('/internal-server-error')
+                }
             })
         } catch (err) {
             res.redirect('/internal-server-error')
@@ -705,6 +790,10 @@ module.exports = {
             let userId = req.session.user._id
             userHelpers.getAddressList(userId).then((data) => {
                 res.render('user/manage-address', { data })
+            }).catch((err) => {
+                if (err?.catchErr) {
+                    res.redirect('/internal-server-error')
+                }
             })
         } catch (err) {
             res.redirect('/internal-server-error')
@@ -725,6 +814,10 @@ module.exports = {
             let addressId = req.params.addressId
             userHelpers.removeAddress(userId, addressId).then((data) => {
                 res.redirect('/manage-address')
+            }).catch((err) => {
+                if (err?.catchErr) {
+                    res.redirect('/internal-server-error')
+                }
             })
         } catch (err) {
             res.redirect('/internal-server-error')
@@ -736,6 +829,10 @@ module.exports = {
             let userId = req.session.user._id
             userHelpers.addNewAddress(userId, req.body).then((data) => {
                 res.redirect('/manage-address')
+            }).catch((err) => {
+                if (err?.catchErr) {
+                    res.redirect('/internal-server-error')
+                }
             })
         } catch (err) {
             res.redirect('/internal-server-error')

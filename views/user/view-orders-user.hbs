@@ -120,7 +120,6 @@
 
 <script>
     function confermOrderCancel(orderId) {
-        console.log(orderId)
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -136,7 +135,6 @@
                     method: 'post',
                     success: (response) => {
                         Swal.fire({
-
                             icon: 'success',
                             title: 'Order Canceld Successfully',
                             showConfirmButton: false,

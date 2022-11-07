@@ -17,7 +17,6 @@ module.exports = {
                 if (!err) {
                     res(data)
                 } else {
-                   // console.log(err);
                 }
             }).lean()
         })
@@ -28,33 +27,25 @@ module.exports = {
                 if (!err) {
                     res(data)
                 } else {
-                   // console.log(err);
                 }
             }).lean()
         })
     },
     doAdminLogin: (loginData) => {
-        //// console.log(loginData);
         Email = loginData.Email
-       // console.log(("=================="));
-        //// console.log(loginData);
         return new Promise((res, rej) => {
 
             adminCollection.findOne({ Email: Email }, ((err, data) => {
-                // // console.log(data);
                 if (data) {
                     let response = {}
                     if (data.Password == loginData.Password) {
                         response.adminData = data
                         response.status = true
-                        //// console.log(response.adminData);
                         res(response)
                     } else {
-                       // console.log('Password Error');
                         rej({ passwordErr: true })
                     }
                 } else {
-                   // console.log('Email error');
                     rej({ emailErr: true })
                 }
             })
@@ -98,7 +89,6 @@ module.exports = {
                     $sort: { "orders.date": -1 }
                 }
             ]).then((data) => {
-                //// console.log(data)
                 res(data)
             })
         })
@@ -122,7 +112,6 @@ module.exports = {
                     }
                 }
             ]).then((data) => {
-                //// console.log(data);
                 res(data)
             })
         })
@@ -140,13 +129,11 @@ module.exports = {
                     userOrder.orders[orderIndex] = changeStatusOrder
                     userOrder.save()
 
-                   // console.log(status, "+++++++++++++++++++++");
                     res()
                 } else {
                     rej()
                 }
             } else {
-               // console.log("No orders");
                 rej()
             }
         })
@@ -162,13 +149,11 @@ module.exports = {
                     cancelOrder.paymentStatus = 'Canceld'
                     userOrder.orders[orderIndex] = cancelOrder
                     userOrder.save()
-                   // console.log("cancel");
                     res()
                 } else {
                     rej()
                 }
             } else {
-               // console.log("No orders");
                 rej()
             }
         })
@@ -184,7 +169,6 @@ module.exports = {
                 couponCode: codeGen,
                 maximumPurchase: couponDetailes.maximumAmount
             }).then((data) => {
-                //// console.log(data);
                 res()
             })
         })
@@ -342,7 +326,6 @@ module.exports = {
                     }
                 },
             ]).limit(7).then((data) => {
-                //// console.log(data);
                 res(data)
             })
         })
@@ -381,7 +364,6 @@ module.exports = {
 
             ]).limit(30).then((data) => {
                 let response = {}
-                //// console.log(data);
                 orderCollection.aggregate([
 
                     {
@@ -393,10 +375,8 @@ module.exports = {
                         $unwind: "$orders"
                     },
                 ]).then((orders) => {
-                    //// console.log(orders);
                     response.canceldOrders = data[0].count
                     response.successOrders = orders.length - data[0].count
-                    //// console.log(response);
                     res(response)
                 })
 
@@ -433,14 +413,12 @@ module.exports = {
                     }
                 },
             ]).limit(30).then((data) => {
-                //// console.log(data);
                 res(data)
             })
         })
 
     },
     addBanner:(bannerData) => {
-       // console.log(bannerData);
         return new Promise((res, rej) => {
             bannerCollection.create({
                 Description: bannerData.Description,
@@ -456,7 +434,6 @@ module.exports = {
             bannerCollection.find()
                 .lean()
                 .then((data) => {
-                   // console.log(data)
                     res(data)
                 })
         })

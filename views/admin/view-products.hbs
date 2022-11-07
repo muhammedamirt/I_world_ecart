@@ -92,8 +92,8 @@
             if (result.isConfirmed) {
                 location.href = `/admin/delete-product/${productId}`
                 Swal.fire(
-                    'Deleted!',
-                    'Your file has been deleted.',
+                    'Blocked!',
+                    'This user cant do anything.',
                     'success'
                 )
             }
@@ -104,18 +104,18 @@
     const askUnblockConferm = (productId) => {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "This Product can buy!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, Remove it!'
+            confirmButtonText: 'Yes, Unblock it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 location.href = `/admin/recover-product/${productId}`
                 Swal.fire(
                     'Recovered',
-                    'Your file has been Recovered.',
+                    'This Product has been Recovered.',
                     'success'
                 )
             }

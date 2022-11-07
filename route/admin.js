@@ -12,8 +12,6 @@ router.get('/',controller.getAdminHome)
 
 router.post('/admin-login',controller.postAdminLogin)
 
-router.get('/home',controller.getHome)
-
 router.get('/dashbord',controller.getDashbord)
 
 router.get('/view-products',controller.getProducts)

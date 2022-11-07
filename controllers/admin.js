@@ -57,9 +57,6 @@ module.exports = {
         }
 
     },
-    getHome: (req, res) => {
-        res.render('admin/index.hbs', { admin: true })
-    },
     getDashbord: async (req, res) => {
         try {
             if (req.session.admin) {
@@ -259,7 +256,6 @@ module.exports = {
                 let userId = req.params.id
                 adminHelpers.blockUserAccount(userId)
                     .then((data) => {
-                        // console.log("User Blocked");
                         res.redirect('/admin/view-users')
                     })
             } else {
@@ -275,7 +271,6 @@ module.exports = {
                 let userId = req.params.id
                 adminHelpers.unblockUserAccount(userId)
                     .then((data) => {
-                        // console.log("User Unblocked");
                         res.redirect('/admin/view-users')
                     })
             } else {

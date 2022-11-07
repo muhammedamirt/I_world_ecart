@@ -266,7 +266,7 @@
             if (response.status) {
                Swal.fire(`${response.couponData.discount}% Discounted your Total Amount`)
                document.getElementById('discountedPercentage').innerHTML = response.couponData.discount + "%"
-               document.getElementById('allTotal').innerHTML = `${Number(totalAmount) * Number(response.couponData.discount) / 100}`
+               document.getElementById('allTotal').innerHTML = `${Number(totalAmount) - Number(totalAmount) * Number(response.couponData.discount) / 100}`
             } else if (response.noCoupon) {
                Swal.fire({
                   icon: 'error',
