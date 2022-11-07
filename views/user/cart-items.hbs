@@ -66,7 +66,7 @@
                               <td class="product-quantity">
                                  <span class="cart-minus" onclick="cartquantitydec('{{this.productId}}')">-</span>
                                  <input class="cart-input" type="number" value="{{this.ProductQuantity}}"
-                                    name="quantity" id="{{this.productId}}quantityValue" />
+                                    name="quantity" id="{{this.productId}}quantityValue" readonly/>
                                  <span class="cart-plus" onclick="cartquantityinc('{{this.productId}}')">+</span>
                               </td>
                               <td class="product-subtotal">
@@ -115,28 +115,6 @@
                         </div>
                      </div>
                   </section>
-                  {{!-- <section class="mt-5">
-                     <div class="container">
-                        <div class="row services-gx-item">
-                           <div class="col-lg-3 col-sm-6">
-                              <div class="tpservicesitem d-flex align-items-center mb-30" style="background-color:rgb(255, 255, 255) ;">
-                                 <div class="tpservicesitem__icon mr-20">
-                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                       width="36" height="36" viewBox="0 0 36 36">
-                                       <image id="services-icon-03.svg" width="36" height="36"
-                                          xlink:href="data:img/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAACnklEQVRYhcWYTYhOYRTHf02KrDTEAtOgfJQwFjK+S7FSIjaGmWGaSamZiAXiXbHwbWNB2IiShSxYYAwhSiSRSb1D2dGrLBSa0dG5ddyee+97733u9a/prfOce57fPfecc587FKiNwGvgJ/AMmFfkZknqBEaA28BO4B1QA1r+B8xWhTlpbKOBJ8C3sqECmHOOtXEK9aWsxycwv4BLMT4C9bIMqPWaGQszEbgFfNXf5hBUoTXVBxwO2a4DH4EKUAX6zdoY4GkRNbXE3HlYn4CDauvQDDYaH8nUfYXy9vieA3sj1vo1M23AK+C9w8dbTTXpb0OMj2RuUDMzBMyJ8LNQ87PAbNdNWuv0HxVh3xIqdIG+kRYmmDMn0l4YUkXjbDbma8DjNEG2xQy9LDC2K5s1QxfrDeIaepO0S9o8wFT1L6pj/1GnY+gJzFstxBllwojTD+CMI4ikeFqZMKINGmiWsc0FBjzCTK4XRrRGg61M8JO2XQVMSQlTd2asXujFsyPWd+iLUjb+DexR+4IiYERTgQ8RQXbrpqeARcAxYBgYb6C8wsRBHVKYIyE/sa0OXR/ADPqACSSF/V0DX3HAYGrGbuo1M4FWaJsHL8o3wP4IGFfNiL3XF8xarYtHwNIInySYcNYyq9Gc9qLe2kmt/Rm46wNG1JFwdxXTZS6YZbre7gvoTugsbNWim9V083V62B8yBXxAv1zH+gISmKsx6wt14wFTKw9MRqsJn0WpJBN4RIdfPZoJTDd+yyNmUib1aLDzOWJc1gx5gRlOc3pzqE9vqDsvTJfCZH3uE3R6C8zZvDDtGR5Tg34sHgcemq7blxemxzFP4rQJuGmOHTX9aujWs1EudaWsmV2mvY8Ci/MChCX/FLiQwv8ecNo3xF8BfwD4tdQxtW0vigAAAABJRU5ErkJggg==" />
-                                    </svg>
-                                 </div>
-                                 <div class="tpservicesitem__content">
-                                    <h4 class="tpservicesitem__title">Available Coupons</h4>
-                                    <p>copy the code</p>
-                                    <input type="text" value="bm3xigd1" class="form-control" style="border-radius:10px ; border:none ; background-color:rgb(255, 232, 243) ; font-weight: bold;"  id="codeCopy" readonly><button class="btn btn-inverse-info btn-icon" onclick="copyCode()"><i class="bi bi-clipboard"></i></button>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </section> --}}
                   <div class="row justify-content-end">
                      <div class="col-md-5 ">
                         <div class="cart-page-total">
@@ -167,7 +145,6 @@
 
 <script>
    function cartquantityinc(product) {
-      console.log(product)
       $.ajax({
          url: '/cartquantityinc/' + product,
          method: 'get',
@@ -188,11 +165,9 @@
    function cartquantitydec(product) {
       let quantity = document.getElementById(product + 'quantityValue').value
       if (quantity != 1) {
-         console.log(product)
          $.ajax({
             url: '/cartquantitydec/' + product,
             method: 'get',
-
          })
          let cartPrice = document.getElementById(product + "price").innerHTML
          let exQuantity = Number(quantity) - 1
@@ -254,7 +229,6 @@
    const discount = () => {
       let coupenCode = document.getElementById('couponCode').value
       let totalAmount = document.getElementById('allTotal').innerHTML
-      console.log(totalAmount)
       $.ajax({
          url: "/coupon-submission",
          method: "post",

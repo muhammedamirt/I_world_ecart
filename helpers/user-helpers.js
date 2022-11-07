@@ -205,18 +205,12 @@ module.exports = {
                         productItem.ProductQuantity = Number(productItem.ProductQuantity) + 1;
                         productItem.TotalPrice = Number(productItem.ProductQuantity) * Number(productItem.productPrice)
                         cart.cartItems[itemIndex] = productItem
-
                         cart.totalAmount = Number(cart.totalAmount) + Number(price)
-
                     } else {
                         cart.totalAmount = Number(cart.totalAmount) + Number(price)
                     }
-
                     cart.save();
-
-
                     res()
-
                 }
             } catch (err) {
                 rej({ catchErr: true })

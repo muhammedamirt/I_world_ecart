@@ -132,7 +132,6 @@
         }
         else {
             document.getElementById('firstNameErr').innerHTML = "Reject Special Carecterse&Numbers"
-            // console.log('fist name sp')
             flag = 0
 
         }
@@ -142,7 +141,6 @@
         }
         else {
             document.getElementById('lastNameErr').innerHTML = "Reject Special Carecterse&Numbers"
-            // console.log('last name sp')
             flag = 0
 
         }
@@ -150,27 +148,22 @@
             document.getElementById('userMobileErr').innerHTML = ""
             flag++
         } else {
-            //console.log('mobile wrong')
             document.getElementById('userMobileErr').innerHTML = "Maximum 10 carecters"
             flag = 0
         }
         if (validateEmail(userEmail)) {
             document.getElementById('emailErr').innerHTML = ""
-            //console.log("email is valid")
             flag++
         } else {
-            //console.log('not valid')
             document.getElementById('emailErr').innerHTML = "Enter A valid Email Adress"
             flag = 0
         }
         if (passWord.length >= 8) {
             document.getElementById('passwordErr').innerHTML = ""
-            //console.log("everything is ok")
             flag++
 
 
         } else {
-            // console.log('password max length')
             document.getElementById('passwordErr').innerHTML = "Password Must be 8 carecters"
             flag = 0
         }
@@ -183,7 +176,6 @@
                 method: 'post',
                 data: $("#signupSubmission").serialize(),
                 success: (response) => {
-                    console.log(response)
                     if (response.status) {
                         location.href = '/OTP-confermation'
                     } else if (response.emailExist) {

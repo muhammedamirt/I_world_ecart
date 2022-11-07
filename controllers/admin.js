@@ -199,6 +199,10 @@ module.exports = {
             }
             productHelpers.editProduuctDetailes(prodId, req.body).then((data) => {
                 res.redirect('/admin/view-products')
+            }).catch((err) => {
+                if (err.catchErr) {
+                    res.redirect('/admin/500-error')
+                }
             })
         } catch (err) {
             res.redirect('/admin/500-error')
@@ -210,6 +214,10 @@ module.exports = {
                 let prodId = req.params.id
                 productHelpers.deleteProduct(prodId).then((data) => {
                     res.redirect('/admin/view-products')
+                }).catch((err) => {
+                    if (err.catchErr) {
+                        res.redirect('/admin/500-error')
+                    }
                 })
             } else {
                 res.redirect('/admin')

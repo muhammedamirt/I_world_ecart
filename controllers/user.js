@@ -231,7 +231,6 @@ module.exports = {
                 if (cartData) {
                     let productData = cartData.cartItems
                     res.render('user/cart-items', { productData, cartData })
-
                 } else {
                     res.render('user/cart-items')
                 }

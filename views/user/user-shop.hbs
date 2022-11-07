@@ -216,7 +216,6 @@
 
 <script>
    const addToCart = (productId) => {
-      //console.log(productId)
 
       $.ajax({
          url: `/add-to-cart/${productId}`,
@@ -245,7 +244,6 @@
          url: `/add-to-wishlist/${productId}`,
          method: "get",
          success: (response) => {
-            console.log(response)
             if (response.status) {
                Swal.fire({
                   position: 'top-end',

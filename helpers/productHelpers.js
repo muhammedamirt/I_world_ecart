@@ -12,7 +12,7 @@ module.exports = {
                     Price: productData.Price,
                     Categury: productData.Categury,
                     Description: productData.Description,
-                    images: productData.img,
+                    images: productData.img,    
                     stock: productData.stock,
                     softRemove: true
                 })
@@ -160,7 +160,7 @@ module.exports = {
     },
     getRelatedProducts: (categoryName) => {
         return new Promise((res, rej) => {
-            productCollection.find().lean().then((data) => {
+            productCollection.find({Categury:categoryName}).lean().then((data) => {
                 if(data){
                     res(data)
                 }else{
@@ -168,7 +168,7 @@ module.exports = {
                 }  
             })
         })
-
     }
 }
 
+  

@@ -29,7 +29,6 @@ Handilebars.registerHelper("inc", function (value, options) {
 
 const error = (err, req, res, next) => {
   if (err) {
-    console.log(err);
   }
   next()
 }
@@ -84,7 +83,7 @@ mongoose.connect(process.env.ATLES_CONNECTION)
 
 
 app.listen(5000, () => {
-  console.log("server started");
+  let started = true
 })
 
 
