@@ -11,7 +11,6 @@ const mongoose = require("mongoose")
 const bodyParser = require("body-parser")
 const session = require('express-session')
 const cookieParser = require('cookie-parser')
-// const fileUpload = require('express-fileupload')
 const nocache = require('nocache')
 
 const Handilebars = require('handlebars')
