@@ -1,6 +1,4 @@
 node_modules/
-public/img
-public/product-images
 twillio
 .env
 iworld.pem
